@@ -272,8 +272,12 @@ tbody tr:hover { background:rgba(56,189,248,0.05); }
       <div class="filters">
         <div class="filters-row">
           <div class="filter-item">
-            <label>月份</label>
-            <select id="f-month"><option value="all">全部</option></select>
+            <label>月份范围</label>
+            <div class="range">
+              <select id="f-month-start"><option value="all">起始月</option></select>
+              <span>~</span>
+              <select id="f-month-end"><option value="all">结束月</option></select>
+            </div>
           </div>
           <div class="filter-item">
             <label>公司</label>
@@ -392,6 +396,14 @@ tbody tr:hover { background:rgba(56,189,248,0.05); }
           <div class="filter-item">
             <label>月份</label>
             <select id="p-personal-month"><option value="all">全部</option></select>
+          </div>
+          <div class="filter-item">
+            <label>岗级范围</label>
+            <div class="range">
+              <input type="number" id="p-level-min" placeholder="0" min="0" max="12">
+              <span>~</span>
+              <input type="number" id="p-level-max" placeholder="12" min="0" max="12">
+            </div>
           </div>
           <div class="filter-item">
             <button class="btn-reset" onclick="resetPersonal()">重置</button>
@@ -543,8 +555,12 @@ function fmt(n) {
 
 // ===== 初始化筛选下拉 =====
 function initFilters() {
-  const fMonth = document.getElementById('f-month');
-  DATA.months.forEach(m => { const o=document.createElement('option'); o.value=m; o.textContent=m; fMonth.appendChild(o); });
+  const fMonthStart = document.getElementById('f-month-start');
+  const fMonthEnd = document.getElementById('f-month-end');
+  DATA.months.forEach(m => { 
+    const o1=document.createElement('option'); o1.value=m; o1.textContent=m; fMonthStart.appendChild(o1);
+    const o2=document.createElement('option'); o2.value=m; o2.textContent=m; fMonthEnd.appendChild(o2);
+  });
   
   const fCompany = document.getElementById('f-company');
   DATA.filters.companies.forEach(c => { const o=document.createElement('option'); o.value=c; o.textContent=c; fCompany.appendChild(o); });
@@ -571,7 +587,8 @@ let currentPage = 1;
 const pageSize = 50;
 
 function getFilteredSalary() {
-  const month = document.getElementById('f-month').value;
+  const monthStart = document.getElementById('f-month-start').value;
+  const monthEnd = document.getElementById('f-month-end').value;
   const company = document.getElementById('f-company').value;
   const dept = document.getElementById('f-dept').value;
   const position = document.getElementById('f-position').value;
@@ -580,8 +597,24 @@ function getFilteredSalary() {
   const empType = document.getElementById('f-emptype').value;
   const project = document.getElementById('f-project').value;
   
+  // 计算月份范围
+  let months;
+  if (monthStart === 'all' && monthEnd === 'all') {
+    months = DATA.months;
+  } else if (monthStart === 'all') {
+    const endIdx = DATA.months.indexOf(monthEnd);
+    months = DATA.months.slice(0, endIdx + 1);
+  } else if (monthEnd === 'all') {
+    const startIdx = DATA.months.indexOf(monthStart);
+    months = DATA.months.slice(startIdx);
+  } else {
+    let startIdx = DATA.months.indexOf(monthStart);
+    let endIdx = DATA.months.indexOf(monthEnd);
+    if (startIdx > endIdx) { [startIdx, endIdx] = [endIdx, startIdx]; }
+    months = DATA.months.slice(startIdx, endIdx + 1);
+  }
+  
   let result = [];
-  const months = month === 'all' ? DATA.months : [month];
   months.forEach(m => {
     const emps = DATA.monthlyData[m] || [];
     emps.forEach(e => {
@@ -669,7 +702,7 @@ function changePage(delta) {
 }
 
 function resetFilters() {
-  ['f-month','f-company','f-dept','f-position','f-emptype','f-project'].forEach(id => {
+  ['f-month-start','f-month-end','f-company','f-dept','f-position','f-emptype','f-project'].forEach(id => {
     document.getElementById(id).value = 'all';
   });
   document.getElementById('f-level-min').value = '';
@@ -678,7 +711,7 @@ function resetFilters() {
   renderSalaryTable();
 }
 
-['f-month','f-company','f-dept','f-position','f-emptype','f-project'].forEach(id => {
+['f-month-start','f-month-end','f-company','f-dept','f-position','f-emptype','f-project'].forEach(id => {
   document.getElementById(id).addEventListener('change', () => { currentPage = 1; renderSalaryTable(); });
 });
 ['f-level-min','f-level-max'].forEach(id => {
@@ -901,9 +934,14 @@ nameInput.addEventListener('keydown', (e) => {
 });
 
 document.getElementById('p-personal-month').addEventListener('change', renderPersonal);
+['p-level-min','p-level-max'].forEach(id => {
+  document.getElementById(id).addEventListener('input', renderPersonal);
+});
 
 function renderPersonal() {
   const month = document.getElementById('p-personal-month').value;
+  const levelMin = document.getElementById('p-level-min').value;
+  const levelMax = document.getElementById('p-level-max').value;
   const summary = document.getElementById('personal-summary');
   const tableWrap = document.getElementById('personal-table-wrap');
   const empty = document.getElementById('personal-empty');
@@ -920,7 +958,10 @@ function renderPersonal() {
   months.forEach(m => {
     const emps = DATA.monthlyData[m] || [];
     emps.forEach(e => {
-      if (e.name === selectedName) records.push(e);
+      if (e.name !== selectedName) return;
+      if (levelMin && e.level && Number(e.level) < Number(levelMin)) return;
+      if (levelMax && e.level && Number(e.level) > Number(levelMax)) return;
+      records.push(e);
     });
   });
   
@@ -994,6 +1035,8 @@ function resetPersonal() {
   selectedName = '';
   nameInput.value = '';
   document.getElementById('p-personal-month').value = 'all';
+  document.getElementById('p-level-min').value = '';
+  document.getElementById('p-level-max').value = '';
   nameSuggestions.classList.remove('show');
   renderPersonal();
 }
