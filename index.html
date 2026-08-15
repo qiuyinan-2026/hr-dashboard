@@ -484,7 +484,10 @@ async function loadData() {
         if (!res.ok) throw new Error('数据加载失败');
         DATA = await res.json();
         initFilters();
+        initProjectFilters();
         renderDashboard();
+        renderSalaryTable();
+        renderProject();
     } catch(e) {
         document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:100px;font-size:18px;">数据加载中...<br><span style="font-size:14px;color:#94a3b8;">如长时间未显示，请刷新页面</span></div>';
         setTimeout(() => location.reload(), 3000);
@@ -995,11 +998,7 @@ function resetPersonal() {
   renderPersonal();
 }
 
-// ===== 初始化 =====
-initProjectFilters();
-renderSalaryTable();
-renderProject();
-
+// ===== 初始化（数据加载后自动执行） =====
 loadData();
 </script>
 </body>
