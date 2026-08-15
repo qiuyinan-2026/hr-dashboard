@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>聚光人力资源查询系统</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
@@ -228,6 +230,132 @@ tbody tr:hover { background:rgba(56,189,248,0.05); }
   .dashboard-cards { grid-template-columns: repeat(2, 1fr); }
   .dashboard-main-title { font-size:18px; }
 }
+
+/* ===== 仪表盘7模块样式（深色主题） ===== */
+.dash-module {
+  background: rgba(30,41,59,0.8);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.dash-module-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(148,163,184,0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dash-module-title .icon { font-size: 20px; }
+.chart-container { position: relative; height: 340px; }
+.chart-container.tall { height: 400px; }
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.chart-row .chart-subtitle { font-size: 13px; color: #94a3b8; margin-bottom: 8px; font-weight: 600; }
+
+/* 数据表格 */
+.dash-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 18px; }
+.dash-table th {
+  background: rgba(15,23,42,0.6);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #94a3b8;
+  border-bottom: 1px solid rgba(148,163,184,0.2);
+  white-space: nowrap;
+}
+.dash-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(148,163,184,0.08);
+  color: #cbd5e1;
+}
+.dash-table tr:hover { background: rgba(56,189,248,0.05); }
+.dash-table .text-right { text-align: right; }
+.dash-table .text-center { text-align: center; }
+.dash-table .val-blue { color: #3b82f6; font-weight: 600; }
+.dash-table .val-green { color: #10b981; font-weight: 600; }
+.dash-table .val-purple { color: #a78bfa; font-weight: 700; }
+.dash-table .val-orange { color: #f59e0b; font-weight: 600; }
+
+/* 环比 */
+.rate-up { color: #ef4444; }
+.rate-down { color: #10b981; }
+.rate-flat { color: #64748b; }
+
+/* 数据解读框 */
+.insight-box {
+  background: linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(167,139,250,0.06) 100%);
+  border-left: 4px solid #3b82f6;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-top: 18px;
+  font-size: 13px;
+  line-height: 1.9;
+  color: #cbd5e1;
+}
+.insight-box .insight-title {
+  font-weight: 700;
+  color: #60a5fa;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+.insight-box b { color: #a78bfa; }
+
+/* 部门切片器 */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-label { font-size: 13px; color: #94a3b8; margin-right: 4px; white-space: nowrap; }
+.filter-btn {
+  padding: 6px 16px;
+  border: 1px solid rgba(148,163,184,0.3);
+  border-radius: 20px;
+  background: rgba(15,23,42,0.5);
+  color: #cbd5e1;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+.filter-btn:hover { border-color: #3b82f6; color: #3b82f6; }
+.filter-btn.active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+
+/* 成本占比进度条 */
+.rate-bar {
+  display: inline-block;
+  width: 100%;
+  height: 14px;
+  background: rgba(15,23,42,0.6);
+  border-radius: 7px;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.rate-fill {
+  display: inline-block;
+  height: 100%;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
+}
+
+/* 热力矩阵 */
+.heatmap-cell {
+  text-align: right;
+  padding: 8px 10px !important;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+.heatmap-cell:hover { transform: scale(1.02); }
+
+@media (max-width: 900px) {
+  .chart-row { grid-template-columns: 1fr; }
+}
+
 </style>
 </head>
 <body>
@@ -461,27 +589,150 @@ tbody tr:hover { background:rgba(56,189,248,0.05); }
 
       <div class="dashboard-cards" id="dashboard-cards"></div>
 
-      <div class="dashboard-section">
-        <div class="section-title">📈 月度人力成本趋势</div>
-        <div class="table-wrap">
-          <div class="table-scroll">
-            <table class="profit-table" id="dashboard-monthly-table">
-              <thead>
-                <tr>
-                  <th>月份</th>
-                  <th class="text-center">在岗人数</th>
-                  <th class="text-right">应发工资</th>
-                  <th class="text-right">绩效奖金</th>
-                  <th class="text-right">单位社保</th>
-                  <th class="text-right col-highlight">人力成本</th>
-                  <th class="text-right">实发工资</th>
-                  <th class="text-right col-highlight-green">人均人力成本</th>
-                </tr>
-              </thead>
-              <tbody id="dashboard-monthly-tbody"></tbody>
+      <div class="dashboard-cards" id="dashboard-cards"></div>
+
+      <!-- Module 1: 月度人力成本分析 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">📈</span> 月度人力成本分析</div>
+        <div class="chart-container"><canvas id="dash-monthly-chart"></canvas></div>
+        <table class="dash-table" id="dash-monthly-table">
+          <thead>
+            <tr>
+              <th>月份</th>
+              <th class="text-center">在岗人数</th>
+              <th class="text-right">应发工资</th>
+              <th class="text-right">绩效/奖励</th>
+              <th class="text-right">单位社保</th>
+              <th class="text-right">个人所得税</th>
+              <th class="text-right">实发工资</th>
+              <th class="text-right">人力成本</th>
+              <th class="text-center">环比</th>
+            </tr>
+          </thead>
+          <tbody id="dash-monthly-tbody"></tbody>
+        </table>
+        <div class="insight-box" id="dash-monthly-insight"></div>
+      </div>
+
+      <!-- Module 2: 部门人力成本分析 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">🏢</span> 部门人力成本分析（1-7月累计）</div>
+        <div class="filter-bar" id="dash-dept-filter"></div>
+        <div class="chart-row">
+          <div>
+            <div class="chart-subtitle">各部门累计人力成本（按金额排序）</div>
+            <div class="chart-container"><canvas id="dash-dept-chart"></canvas></div>
+          </div>
+          <div>
+            <div class="chart-subtitle">部门月度人力成本趋势（可切换部门）</div>
+            <div class="chart-container"><canvas id="dash-dept-trend-chart"></canvas></div>
+          </div>
+        </div>
+        <table class="dash-table" id="dash-dept-table">
+          <thead>
+            <tr>
+              <th>部门</th>
+              <th class="text-center">人次</th>
+              <th class="text-right">应发工资</th>
+              <th class="text-right">绩效</th>
+              <th class="text-right">单位社保</th>
+              <th class="text-right">实发工资</th>
+              <th class="text-right">人均实发</th>
+              <th class="text-right">人力成本</th>
+              <th class="text-center">成本占比</th>
+              <th class="text-center">成本条</th>
+            </tr>
+          </thead>
+          <tbody id="dash-dept-tbody"></tbody>
+        </table>
+        <div class="insight-box" id="dash-dept-insight"></div>
+      </div>
+
+      <!-- Module 3: 岗级人力成本分析 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">🎖️</span> 岗级人力成本分析（1-7月累计）</div>
+        <div class="chart-row">
+          <div class="chart-container"><canvas id="dash-level-chart"></canvas></div>
+          <div class="chart-container"><canvas id="dash-level-salary-chart"></canvas></div>
+        </div>
+        <table class="dash-table" id="dash-level-table">
+          <thead>
+            <tr>
+              <th>岗级</th>
+              <th class="text-center">人次</th>
+              <th class="text-right">应发工资</th>
+              <th class="text-right">人均应发</th>
+              <th class="text-right">绩效</th>
+              <th class="text-right">单位社保</th>
+              <th class="text-right">实发工资</th>
+              <th class="text-right">人均实发</th>
+              <th class="text-right">人力成本</th>
+            </tr>
+          </thead>
+          <tbody id="dash-level-tbody"></tbody>
+        </table>
+        <div class="insight-box" id="dash-level-insight"></div>
+      </div>
+
+      <!-- Module 4: 主体公司 & 员工类型分析 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">🏛️</span> 主体公司 & 员工类型分析（1-7月累计）</div>
+        <div class="chart-row">
+          <div>
+            <div class="chart-subtitle">各主体人力成本</div>
+            <div class="chart-container"><canvas id="dash-entity-chart"></canvas></div>
+            <table class="dash-table" id="dash-entity-table">
+              <thead><tr><th>主体</th><th class="text-center">人次</th><th class="text-right">应发</th><th class="text-right">绩效</th><th class="text-right">社保</th><th class="text-right">实发</th><th class="text-right">人均</th><th class="text-right">人力成本</th></tr></thead>
+              <tbody id="dash-entity-tbody"></tbody>
+            </table>
+          </div>
+          <div>
+            <div class="chart-subtitle">员工类型分布</div>
+            <div class="chart-container"><canvas id="dash-type-chart"></canvas></div>
+            <table class="dash-table" id="dash-type-table">
+              <thead><tr><th>类型</th><th class="text-center">人次</th><th class="text-right">应发</th><th class="text-right">人均</th><th class="text-right">社保</th><th class="text-right">人力成本</th></tr></thead>
+              <tbody id="dash-type-tbody"></tbody>
             </table>
           </div>
         </div>
+        <div class="insight-box" id="dash-entity-insight"></div>
+      </div>
+
+      <!-- Module 5: 部门×月度热力矩阵 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">🔄</span> 部门×月度人力成本趋势矩阵</div>
+        <div style="overflow-x:auto;">
+          <table class="dash-table" id="dash-heatmap-table">
+            <thead id="dash-heatmap-thead"></thead>
+            <tbody id="dash-heatmap-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Module 6: 岗位人力成本 TOP15 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">👤</span> 岗位人力成本 TOP15（1-7月累计）</div>
+        <table class="dash-table" id="dash-position-table">
+          <thead>
+            <tr>
+              <th>岗位</th>
+              <th class="text-center">人次</th>
+              <th class="text-right">应发工资</th>
+              <th class="text-right">人均应发</th>
+              <th class="text-right">绩效</th>
+              <th class="text-right">单位社保</th>
+              <th class="text-right">人力成本</th>
+            </tr>
+          </thead>
+          <tbody id="dash-position-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Module 7: 人均效能趋势分析 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">📊</span> 人均效能趋势分析</div>
+        <div class="chart-container tall"><canvas id="dash-efficiency-chart"></canvas></div>
+        <div class="insight-box" id="dash-efficiency-insight"></div>
       </div>
     </div>
   </div>
@@ -820,70 +1071,647 @@ document.getElementById('p-month').addEventListener('change', renderProject);
 document.getElementById('p-group').addEventListener('change', renderProject);
 document.getElementById('p-project').addEventListener('change', renderProject);
 
-// ===== 人力资源仪表盘 =====
-function formatWan(n) {
-  if (n >= 10000) {
-    return (n / 10000).toFixed(2) + '万';
-  }
-  return fmt(n);
+// ===== 人力资源仪表盘（7大模块） =====
+let _dashCharts = {};
+
+function _dashDestroyCharts() {
+  Object.keys(_dashCharts).forEach(k => {
+    if (_dashCharts[k]) { try { _dashCharts[k].destroy(); } catch(e){} }
+  });
+  _dashCharts = {};
+}
+
+function _dashFmt(n) {
+  if (n === null || n === undefined || isNaN(n)) return '0';
+  n = Number(n);
+  if (Math.abs(n) >= 10000) return (n / 10000).toFixed(2) + '万';
+  return Math.round(n).toLocaleString('zh-CN') + '元';
+}
+
+function _dashFmtRaw(n) {
+  if (n === null || n === undefined || isNaN(n)) return 0;
+  return Number(n);
+}
+
+function _dashLevelGroup(level) {
+  const l = parseInt(level);
+  if (isNaN(l)) return '其他';
+  if (l === 0) return '兼职';
+  if (l >= 1 && l <= 4) return '基层';
+  if (l >= 5 && l <= 8) return '中层';
+  if (l >= 9 && l <= 12) return '高层';
+  return '其他';
+}
+
+const _DASH_COLORS = {
+  blue: '#3b82f6', green: '#10b981', purple: '#a78bfa',
+  orange: '#f59e0b', red: '#ef4444', cyan: '#06b6d4',
+  pink: '#ec4899', teal: '#14b8a6', indigo: '#6366f1',
+  amber: '#f59e0b', lime: '#84cc16', rose: '#f43f5e'
+};
+const _DASH_PALETTE = [_DASH_COLORS.blue, _DASH_COLORS.green, _DASH_COLORS.orange, _DASH_COLORS.red,
+  _DASH_COLORS.purple, _DASH_COLORS.cyan, _DASH_COLORS.pink, _DASH_COLORS.teal,
+  _DASH_COLORS.indigo, _DASH_COLORS.amber, _DASH_COLORS.lime, _DASH_COLORS.rose];
+
+function _dashChartDefaults() {
+  if (typeof Chart === 'undefined') return;
+  Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif";
+  Chart.defaults.font.size = 12;
+  Chart.defaults.color = '#94a3b8';
 }
 
 function renderDashboard() {
-  const s = DATA.dashboardStats;
-  
-  // 6个统计卡片
+  _dashDestroyCharts();
+  _dashChartDefaults();
+
+  const months = DATA.months;
+  const allEmps = [];
+  months.forEach(m => { allEmps.push(...(DATA.monthlyData[m] || [])); });
+
+  // ===== 聚合计算 =====
+  // 月度
+  const monthly = {};
+  months.forEach(m => {
+    const emps = DATA.monthlyData[m] || [];
+    monthly[m] = {
+      headcount: emps.length,
+      gross: emps.reduce((s,e) => s + _dashFmtRaw(e.benyuexinzi), 0),
+      net: emps.reduce((s,e) => s + _dashFmtRaw(e.shifagongzi), 0),
+      perf: emps.reduce((s,e) => s + _dashFmtRaw(e.jixiao), 0),
+      social: emps.reduce((s,e) => s + _dashFmtRaw(e.danweijiaona), 0),
+      tax: emps.reduce((s,e) => s + _dashFmtRaw(e.gerensuodeshui), 0),
+      cost: emps.reduce((s,e) => s + _dashFmtRaw(e.danweirengongchengben), 0),
+    };
+  });
+
+  // 部门
+  const deptMap = {};
+  allEmps.forEach(e => {
+    const d = e.dept || '未知';
+    if (!deptMap[d]) deptMap[d] = { headcount:0, gross:0, net:0, perf:0, social:0, cost:0, monthly:{} };
+    deptMap[d].headcount++;
+    deptMap[d].gross += _dashFmtRaw(e.benyuexinzi);
+    deptMap[d].net += _dashFmtRaw(e.shifagongzi);
+    deptMap[d].perf += _dashFmtRaw(e.jixiao);
+    deptMap[d].social += _dashFmtRaw(e.danweijiaona);
+    deptMap[d].cost += _dashFmtRaw(e.danweirengongchengben);
+    if (!deptMap[d].monthly[e.month]) deptMap[d].monthly[e.month] = 0;
+    deptMap[d].monthly[e.month] += _dashFmtRaw(e.danweirengongchengben);
+  });
+  const deptList = Object.keys(deptMap).sort((a,b) => deptMap[b].cost - deptMap[a].cost);
+  const totalCost = allEmps.reduce((s,e) => s + _dashFmtRaw(e.danweirengongchengben), 0);
+  const totalGross = allEmps.reduce((s,e) => s + _dashFmtRaw(e.benyuexinzi), 0);
+  const totalNet = allEmps.reduce((s,e) => s + _dashFmtRaw(e.shifagongzi), 0);
+  const totalPerf = allEmps.reduce((s,e) => s + _dashFmtRaw(e.jixiao), 0);
+  const totalSocial = allEmps.reduce((s,e) => s + _dashFmtRaw(e.danweijiaona), 0);
+  const avgHeadcount = Math.round(months.reduce((s,m) => s + monthly[m].headcount, 0) / months.length);
+  const latestHeadcount = monthly[months[months.length-1]].headcount;
+
+  // 岗级
+  const levelMap = {};
+  ['兼职','基层','中层','高层','其他'].forEach(l => {
+    levelMap[l] = { headcount:0, gross:0, net:0, perf:0, social:0, cost:0 };
+  });
+  allEmps.forEach(e => {
+    const lg = _dashLevelGroup(e.level);
+    levelMap[lg].headcount++;
+    levelMap[lg].gross += _dashFmtRaw(e.benyuexinzi);
+    levelMap[lg].net += _dashFmtRaw(e.shifagongzi);
+    levelMap[lg].perf += _dashFmtRaw(e.jixiao);
+    levelMap[lg].social += _dashFmtRaw(e.danweijiaona);
+    levelMap[lg].cost += _dashFmtRaw(e.danweirengongchengben);
+  });
+
+  // 主体公司
+  const entityMap = {};
+  allEmps.forEach(e => {
+    const c = e.company || '未知';
+    if (!entityMap[c]) entityMap[c] = { headcount:0, gross:0, net:0, perf:0, social:0, cost:0 };
+    entityMap[c].headcount++;
+    entityMap[c].gross += _dashFmtRaw(e.benyuexinzi);
+    entityMap[c].net += _dashFmtRaw(e.shifagongzi);
+    entityMap[c].perf += _dashFmtRaw(e.jixiao);
+    entityMap[c].social += _dashFmtRaw(e.danweijiaona);
+    entityMap[c].cost += _dashFmtRaw(e.danweirengongchengben);
+  });
+  const entityList = Object.keys(entityMap).sort((a,b) => entityMap[b].cost - entityMap[a].cost);
+
+  // 员工类型
+  const typeMap = {};
+  allEmps.forEach(e => {
+    const t = e.empType || '未知';
+    if (!typeMap[t]) typeMap[t] = { headcount:0, gross:0, net:0, perf:0, social:0, cost:0 };
+    typeMap[t].headcount++;
+    typeMap[t].gross += _dashFmtRaw(e.benyuexinzi);
+    typeMap[t].net += _dashFmtRaw(e.shifagongzi);
+    typeMap[t].perf += _dashFmtRaw(e.jixiao);
+    typeMap[t].social += _dashFmtRaw(e.danweijiaona);
+    typeMap[t].cost += _dashFmtRaw(e.danweirengongchengben);
+  });
+  const typeList = Object.keys(typeMap).sort((a,b) => typeMap[b].headcount - typeMap[a].headcount);
+
+  // 岗位
+  const posMap = {};
+  allEmps.forEach(e => {
+    const p = e.position || '未知';
+    if (!posMap[p]) posMap[p] = { headcount:0, gross:0, net:0, perf:0, social:0, cost:0 };
+    posMap[p].headcount++;
+    posMap[p].gross += _dashFmtRaw(e.benyuexinzi);
+    posMap[p].net += _dashFmtRaw(e.shifagongzi);
+    posMap[p].perf += _dashFmtRaw(e.jixiao);
+    posMap[p].social += _dashFmtRaw(e.danweijiaona);
+    posMap[p].cost += _dashFmtRaw(e.danweirengongchengben);
+  });
+  const posList = Object.keys(posMap).sort((a,b) => posMap[b].cost - posMap[a].cost).slice(0, 15);
+
+  // ===== KPI卡片 =====
   document.getElementById('dashboard-cards').innerHTML = `
     <div class="dash-card purple">
       <div class="dash-card-label">累计人力成本</div>
-      <div class="dash-card-value">${formatWan(s.total_labor_cost)}</div>
-      <div class="dash-card-desc">= 应发${formatWan(s.total_gross_salary)} + 社保${formatWan(s.total_company_social)}</div>
+      <div class="dash-card-value">${_dashFmt(totalCost)}</div>
+      <div class="dash-card-desc">= 应发${_dashFmt(totalGross)} + 社保${_dashFmt(totalSocial)}</div>
     </div>
     <div class="dash-card blue">
       <div class="dash-card-label">累计应发工资</div>
-      <div class="dash-card-value">${formatWan(s.total_gross_salary)}</div>
-      <div class="dash-card-desc">占人力成本${(s.total_gross_salary/s.total_labor_cost*100).toFixed(1)}%</div>
+      <div class="dash-card-value">${_dashFmt(totalGross)}</div>
+      <div class="dash-card-desc">占人力成本${totalCost>0?(totalGross/totalCost*100).toFixed(1):0}%</div>
     </div>
     <div class="dash-card green">
       <div class="dash-card-label">累计实发工资</div>
-      <div class="dash-card-value">${formatWan(s.total_net_salary)}</div>
+      <div class="dash-card-value">${_dashFmt(totalNet)}</div>
       <div class="dash-card-desc">扣除社保+个税</div>
     </div>
     <div class="dash-card orange">
       <div class="dash-card-label">累计绩效奖金</div>
-      <div class="dash-card-value">${formatWan(s.total_performance)}</div>
-      <div class="dash-card-desc">占应发${(s.total_performance/s.total_gross_salary*100).toFixed(1)}%</div>
+      <div class="dash-card-value">${_dashFmt(totalPerf)}</div>
+      <div class="dash-card-desc">占应发${totalGross>0?(totalPerf/totalGross*100).toFixed(1):0}%</div>
     </div>
     <div class="dash-card cyan">
       <div class="dash-card-label">累计单位社保</div>
-      <div class="dash-card-value">${formatWan(s.total_company_social)}</div>
-      <div class="dash-card-desc">占人力成本${(s.total_company_social/s.total_labor_cost*100).toFixed(1)}%</div>
+      <div class="dash-card-value">${_dashFmt(totalSocial)}</div>
+      <div class="dash-card-desc">占人力成本${totalCost>0?(totalSocial/totalCost*100).toFixed(1):0}%</div>
     </div>
     <div class="dash-card rose">
       <div class="dash-card-label">平均在岗人数</div>
-      <div class="dash-card-value">${s.avg_headcount}人</div>
-      <div class="dash-card-desc">6月在岗${s.latest_headcount}人</div>
+      <div class="dash-card-value">${avgHeadcount}人</div>
+      <div class="dash-card-desc">7月在岗${latestHeadcount}人</div>
     </div>
   `;
-  
-  // 月度趋势表格
-  const tbody = document.getElementById('dashboard-monthly-tbody');
-  tbody.innerHTML = DATA.months.map(m => {
-    const d = s.monthly[m] || {};
-    const avg = d.headcount > 0 ? d.labor_cost / d.headcount : 0;
-    return `
-      <tr>
-        <td>${m}</td>
-        <td class="text-center">${d.headcount || 0}</td>
-        <td class="text-right">¥${fmt(d.gross_salary)}</td>
-        <td class="text-right">¥${fmt(d.performance)}</td>
-        <td class="text-right">¥${fmt(d.company_social)}</td>
-        <td class="text-right col-highlight">¥${fmt(d.labor_cost)}</td>
-        <td class="text-right">¥${fmt(d.net_salary)}</td>
-        <td class="text-right col-highlight-green">¥${fmt(avg)}</td>
-      </tr>
+
+  // ===== Module 1: 月度人力成本分析 =====
+  // 图表
+  const monthlyCtx = document.getElementById('dash-monthly-chart');
+  if (monthlyCtx) {
+    _dashCharts.monthly = new Chart(monthlyCtx, {
+      type: 'bar',
+      data: {
+        labels: months,
+        datasets: [
+          { label:'应发工资', data: months.map(m=>monthly[m].gross), backgroundColor:_DASH_COLORS.blue, borderRadius:4 },
+          { label:'实发工资', data: months.map(m=>monthly[m].net), backgroundColor:_DASH_COLORS.green, borderRadius:4 },
+          { label:'绩效奖金', data: months.map(m=>monthly[m].perf), backgroundColor:_DASH_COLORS.orange, borderRadius:4 },
+          { label:'单位社保', data: months.map(m=>monthly[m].social), backgroundColor:_DASH_COLORS.cyan, borderRadius:4 },
+          { label:'人力成本', data: months.map(m=>monthly[m].cost), type:'line', borderColor:_DASH_COLORS.purple,
+            backgroundColor:_DASH_COLORS.purple+'20', fill:true, tension:0.3, borderWidth:3, pointRadius:5 },
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ position:'top', labels:{color:'#cbd5e1'} } },
+        scales:{
+          x:{ ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y:{ beginAtZero:true, ticks:{color:'#94a3b8', callback:v=>(v/10000).toFixed(0)+'万'}, grid:{color:'rgba(148,163,184,0.1)'} }
+        }
+      }
+    });
+  }
+
+  // 月度表格
+  const mTbody = document.getElementById('dash-monthly-tbody');
+  if (mTbody) {
+    mTbody.innerHTML = months.map((m, i) => {
+      const d = monthly[m];
+      let rateHtml = '<span class="rate-flat">—</span>';
+      if (i > 0) {
+        const prev = monthly[months[i-1]].cost;
+        if (prev > 0) {
+          const rate = (d.cost - prev) / prev * 100;
+          if (rate >= 0) rateHtml = `<span class="rate-up">↑${rate.toFixed(1)}%</span>`;
+          else rateHtml = `<span class="rate-down">↓${Math.abs(rate).toFixed(1)}%</span>`;
+        }
+      }
+      return `<tr>
+        <td class="text-center" style="font-weight:600">${m}</td>
+        <td class="text-center">${d.headcount}</td>
+        <td class="text-right val-blue">${_dashFmt(d.gross)}</td>
+        <td class="text-right">${_dashFmt(d.perf)}</td>
+        <td class="text-right">${_dashFmt(d.social)}</td>
+        <td class="text-right">${_dashFmt(d.tax)}</td>
+        <td class="text-right val-green">${_dashFmt(d.net)}</td>
+        <td class="text-right val-purple">${_dashFmt(d.cost)}</td>
+        <td class="text-center">${rateHtml}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 月度解读
+  const maxMonth = months.reduce((a,b) => monthly[a].cost > monthly[b].cost ? a : b);
+  const minMonth = months.reduce((a,b) => monthly[a].cost < monthly[b].cost ? a : b);
+  const monthAvg = totalCost / months.length;
+  const lastRate = months.length > 1 ? ((monthly[months[months.length-1]].cost - monthly[months[months.length-2]].cost) / monthly[months[months.length-2]].cost * 100) : 0;
+  const firstHc = monthly[months[0]].headcount;
+  const lastHc = monthly[months[months.length-1]].headcount;
+  document.getElementById('dash-monthly-insight').innerHTML = `
+    <div class="insight-title">💡 数据解读</div>
+    ${months[0]}-${months[months.length-1]}累计人力成本 <b>${_dashFmt(totalCost)}</b>，月均 ${_dashFmt(monthAvg)}。其中应发工资 ${_dashFmt(totalGross)}（占 ${totalCost>0?(totalGross/totalCost*100).toFixed(1):0}%），单位社保 ${_dashFmt(totalSocial)}（占 ${totalCost>0?(totalSocial/totalCost*100).toFixed(1):0}%）。<br>
+    人力成本最高的月份为 <b>${maxMonth}</b>（${_dashFmt(monthly[maxMonth].cost)}），最低为 <b>${minMonth}</b>（${_dashFmt(monthly[minMonth].cost)}），月度波动幅度 ${monthly[minMonth].cost>0?((monthly[maxMonth].cost-monthly[minMonth].cost)/monthly[minMonth].cost*100).toFixed(1):0}%。<br>
+    ${months[months.length-1]}环比${lastRate>=0?'上升':'下降'} ${Math.abs(lastRate).toFixed(1)}%。<br>
+    在岗人数从${months[0]}的${firstHc}人变化到${months[months.length-1]}的${lastHc}人，${lastHc>=firstHc?'净增':'净减'}${Math.abs(lastHc-firstHc)}人。
+  `;
+
+  // ===== Module 2: 部门人力成本分析 =====
+  // 切片器
+  const filterBar = document.getElementById('dash-dept-filter');
+  if (filterBar) {
+    let btns = '<span class="filter-label">🔍 部门切片器：</span>';
+    btns += `<button class="filter-btn active" onclick="_dashFilterDept('全部')">全部</button>`;
+    deptList.forEach(d => {
+      btns += `<button class="filter-btn" onclick="_dashFilterDept('${d}')">${d}</button>`;
+    });
+    filterBar.innerHTML = btns;
+  }
+
+  // 部门柱状图
+  const deptCtx = document.getElementById('dash-dept-chart');
+  if (deptCtx) {
+    _dashCharts.dept = new Chart(deptCtx, {
+      type:'bar',
+      data: {
+        labels: deptList,
+        datasets:[{ label:'累计人力成本', data: deptList.map(d=>deptMap[d].cost),
+          backgroundColor: deptList.map((_,i)=>_DASH_PALETTE[i%_DASH_PALETTE.length]), borderRadius:4 }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+        plugins:{ legend:{display:false} },
+        scales:{
+          x:{ beginAtZero:true, ticks:{color:'#94a3b8', callback:v=>(v/10000).toFixed(0)+'万'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y:{ ticks:{color:'#cbd5e1'}, grid:{display:false} }
+        }
+      }
+    });
+  }
+
+  // 部门趋势图
+  const deptTrendCtx = document.getElementById('dash-dept-trend-chart');
+  if (deptTrendCtx) {
+    const allDeptMonthly = months.map(m => deptList.reduce((s,d) => s + (deptMap[d].monthly[m]||0), 0));
+    _dashCharts.deptTrend = new Chart(deptTrendCtx, {
+      type:'line',
+      data: {
+        labels: months,
+        datasets:[{ label:'全部部门人力成本', data: allDeptMonthly,
+          borderColor:_DASH_COLORS.purple, backgroundColor:_DASH_COLORS.purple+'20',
+          fill:true, tension:0.3, borderWidth:3, pointRadius:5 }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'top', labels:{color:'#cbd5e1'}} },
+        scales:{
+          x:{ ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y:{ beginAtZero:true, ticks:{color:'#94a3b8', callback:v=>(v/10000).toFixed(0)+'万'}, grid:{color:'rgba(148,163,184,0.1)'} }
+        }
+      }
+    });
+  }
+
+  // 部门表格
+  const deptTbody = document.getElementById('dash-dept-tbody');
+  if (deptTbody) {
+    const maxDeptCost = deptList.length > 0 ? deptMap[deptList[0]].cost : 1;
+    deptTbody.innerHTML = deptList.map(d => {
+      const info = deptMap[d];
+      const pct = totalCost > 0 ? (info.cost / totalCost * 100) : 0;
+      const barW = maxDeptCost > 0 ? (info.cost / maxDeptCost * 100) : 0;
+      const avgNet = info.headcount > 0 ? info.net / info.headcount : 0;
+      return `<tr>
+        <td style="font-weight:600">${d}</td>
+        <td class="text-center">${info.headcount}</td>
+        <td class="text-right">${_dashFmt(info.gross)}</td>
+        <td class="text-right">${_dashFmt(info.perf)}</td>
+        <td class="text-right">${_dashFmt(info.social)}</td>
+        <td class="text-right">${_dashFmt(info.net)}</td>
+        <td class="text-right">${_dashFmt(avgNet)}</td>
+        <td class="text-right val-purple">${_dashFmt(info.cost)}</td>
+        <td class="text-center" style="color:#94a3b8">${pct.toFixed(1)}%</td>
+        <td style="min-width:120px"><div class="rate-bar"><span class="rate-fill" style="width:${barW.toFixed(1)}%"></span></div></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 部门解读
+  if (deptList.length > 0) {
+    const topDept = deptList[0];
+    const top3Pct = deptList.slice(0,3).reduce((s,d) => s + deptMap[d].cost, 0) / totalCost * 100;
+    const highestAvgDept = deptList.reduce((a,b) => (deptMap[a].net/deptMap[a].headcount) > (deptMap[b].net/deptMap[b].headcount) ? a : b);
+    const highestAvg = deptMap[highestAvgDept].net / deptMap[highestAvgDept].headcount;
+    document.getElementById('dash-dept-insight').innerHTML = `
+      <div class="insight-title">💡 数据解读</div>
+      <b>${months.length}个月累计</b>共 ${deptList.length} 个部门，总人力成本 ${_dashFmt(totalCost)}。<br>
+      人力成本最高的部门为 <b>${topDept}</b>，累计 ${_dashFmt(deptMap[topDept].cost)}（占总成本 ${(deptMap[topDept].cost/totalCost*100).toFixed(1)}%），人均实发 ${_dashFmt(deptMap[topDept].net/deptMap[topDept].headcount)}，${deptMap[topDept].headcount}人次。<br>
+      前3大部门（${deptList.slice(0,3).join('、')}）合计占总人力成本 ${top3Pct.toFixed(1)}%，成本集中度较高。<br>
+      人均实发最高的是 <b>${highestAvgDept}</b>（${_dashFmt(highestAvg)}/人），建议关注高人均部门的绩效产出匹配度。
     `;
-  }).join('');
+  }
+
+  // ===== Module 3: 岗级人力成本分析 =====
+  const levelLabels = ['兼职','基层','中层','高层','其他'];
+  const levelCtx = document.getElementById('dash-level-chart');
+  if (levelCtx) {
+    _dashCharts.level = new Chart(levelCtx, {
+      type:'bar',
+      data: {
+        labels: levelLabels,
+        datasets:[
+          { label:'人力成本', data: levelLabels.map(l=>levelMap[l].cost), backgroundColor:_DASH_COLORS.purple, borderRadius:4, yAxisID:'y' },
+          { label:'人次', data: levelLabels.map(l=>levelMap[l].headcount), type:'line', borderColor:_DASH_COLORS.orange,
+            backgroundColor:_DASH_COLORS.orange, borderWidth:2, tension:0.3, yAxisID:'y1' },
+        ]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'top', labels:{color:'#cbd5e1'}} },
+        scales:{
+          x:{ ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y:{ beginAtZero:true, position:'left', ticks:{color:'#94a3b8', callback:v=>(v/10000).toFixed(0)+'万'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y1:{ beginAtZero:true, position:'right', grid:{display:false}, ticks:{color:'#f59e0b'} }
+        }
+      }
+    });
+  }
+
+  const levelSalaryCtx = document.getElementById('dash-level-salary-chart');
+  if (levelSalaryCtx) {
+    _dashCharts.levelSalary = new Chart(levelSalaryCtx, {
+      type:'bar',
+      data: {
+        labels: levelLabels,
+        datasets:[{ label:'人均实发工资', data: levelLabels.map(l => levelMap[l].headcount>0?levelMap[l].net/levelMap[l].headcount:0),
+          backgroundColor:_DASH_COLORS.green, borderRadius:4 }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{
+          x:{ ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y:{ beginAtZero:true, ticks:{color:'#94a3b8', callback:v=>(v/10000).toFixed(1)+'万'}, grid:{color:'rgba(148,163,184,0.1)'} }
+        }
+      }
+    });
+  }
+
+  // 岗级表格
+  const levelTbody = document.getElementById('dash-level-tbody');
+  if (levelTbody) {
+    levelTbody.innerHTML = levelLabels.map(l => {
+      const info = levelMap[l];
+      const avgGross = info.headcount > 0 ? info.gross / info.headcount : 0;
+      const avgNet = info.headcount > 0 ? info.net / info.headcount : 0;
+      return `<tr>
+        <td class="text-center" style="font-weight:600">${l}</td>
+        <td class="text-center">${info.headcount}</td>
+        <td class="text-right">${_dashFmt(info.gross)}</td>
+        <td class="text-right">${_dashFmt(avgGross)}</td>
+        <td class="text-right">${_dashFmt(info.perf)}</td>
+        <td class="text-right">${_dashFmt(info.social)}</td>
+        <td class="text-right">${_dashFmt(info.net)}</td>
+        <td class="text-right">${_dashFmt(avgNet)}</td>
+        <td class="text-right val-purple">${_dashFmt(info.cost)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 岗级解读
+  const totalHeadcount = allEmps.length;
+  const jcAvg = levelMap['基层'].headcount > 0 ? levelMap['基层'].net / levelMap['基层'].headcount : 1;
+  const gcAvg = levelMap['高层'].headcount > 0 ? levelMap['高层'].net / levelMap['高层'].headcount : 0;
+  document.getElementById('dash-level-insight').innerHTML = `
+    <div class="insight-title">💡 数据解读</div>
+    共 5 个层级（兼职/基层/中层/高层/其他），总人次 ${totalHeadcount}。<br>
+    ${levelLabels.map(l => {
+      const info = levelMap[l];
+      const hcPct = totalHeadcount > 0 ? (info.headcount / totalHeadcount * 100) : 0;
+      const costPct = totalCost > 0 ? (info.cost / totalCost * 100) : 0;
+      const avgNet = info.headcount > 0 ? info.net / info.headcount : 0;
+      return `<b>${l}</b>：${info.headcount}人次（占 ${hcPct.toFixed(1)}%），人力成本 ${_dashFmt(info.cost)}（占 ${costPct.toFixed(1)}%），人均实发 ${_dashFmt(avgNet)}。`;
+    }).join('<br>')}<br>
+    高层以 ${totalHeadcount>0?(levelMap['高层'].headcount/totalHeadcount*100).toFixed(1):0}% 的人次占比贡献了 ${totalCost>0?(levelMap['高层'].cost/totalCost*100).toFixed(1):0}% 的人力成本，建议关注核心人才保留。<br>
+    高层人均实发是基层的 ${jcAvg>0?(gcAvg/jcAvg).toFixed(1):0} 倍，层级薪资梯度明显。
+  `;
+
+  // ===== Module 4: 主体公司 & 员工类型分析 =====
+  const entityCtx = document.getElementById('dash-entity-chart');
+  if (entityCtx) {
+    _dashCharts.entity = new Chart(entityCtx, {
+      type:'doughnut',
+      data: {
+        labels: entityList,
+        datasets:[{ data: entityList.map(e=>entityMap[e].cost),
+          backgroundColor: entityList.map((_,i)=>_DASH_PALETTE[i%_DASH_PALETTE.length]),
+          borderWidth:2, borderColor:'rgba(15,23,42,0.8)' }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'bottom', labels:{color:'#cbd5e1'}} }, cutout:'55%' }
+    });
+  }
+
+  const typeCtx = document.getElementById('dash-type-chart');
+  if (typeCtx) {
+    _dashCharts.type = new Chart(typeCtx, {
+      type:'pie',
+      data: {
+        labels: typeList,
+        datasets:[{ data: typeList.map(t=>typeMap[t].headcount),
+          backgroundColor: typeList.map((_,i)=>_DASH_PALETTE[i%_DASH_PALETTE.length]),
+          borderWidth:2, borderColor:'rgba(15,23,42,0.8)' }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'bottom', labels:{color:'#cbd5e1'}} } }
+    });
+  }
+
+  // 主体表格
+  const entityTbody = document.getElementById('dash-entity-tbody');
+  if (entityTbody) {
+    entityTbody.innerHTML = entityList.map(e => {
+      const info = entityMap[e];
+      const avg = info.headcount > 0 ? info.net / info.headcount : 0;
+      return `<tr>
+        <td style="font-weight:600">${e}</td>
+        <td class="text-center">${info.headcount}</td>
+        <td class="text-right">${_dashFmt(info.gross)}</td>
+        <td class="text-right">${_dashFmt(info.perf)}</td>
+        <td class="text-right">${_dashFmt(info.social)}</td>
+        <td class="text-right">${_dashFmt(info.net)}</td>
+        <td class="text-right">${_dashFmt(avg)}</td>
+        <td class="text-right val-purple">${_dashFmt(info.cost)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 类型表格
+  const typeTbody = document.getElementById('dash-type-tbody');
+  if (typeTbody) {
+    typeTbody.innerHTML = typeList.map(t => {
+      const info = typeMap[t];
+      const avg = info.headcount > 0 ? info.gross / info.headcount : 0;
+      return `<tr>
+        <td style="font-weight:600">${t}</td>
+        <td class="text-center">${info.headcount}</td>
+        <td class="text-right">${_dashFmt(info.gross)}</td>
+        <td class="text-right">${_dashFmt(avg)}</td>
+        <td class="text-right">${_dashFmt(info.social)}</td>
+        <td class="text-right val-purple">${_dashFmt(info.cost)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 主体解读
+  if (entityList.length > 0) {
+    const topEntity = entityList[0];
+    document.getElementById('dash-entity-insight').innerHTML = `
+      <div class="insight-title">💡 数据解读</div>
+      人力成本最高的主体为 <b>${topEntity}</b>（${_dashFmt(entityMap[topEntity].cost)}，占 ${totalCost>0?(entityMap[topEntity].cost/totalCost*100).toFixed(1):0}%）。<br>
+      员工类型方面，${typeList.slice(0,2).map(t => `${t}：${typeMap[t].headcount}人（${totalHeadcount>0?(typeMap[t].headcount/totalHeadcount*100).toFixed(1):0}%），人力成本 ${_dashFmt(typeMap[t].cost)}`).join('；')}。
+    `;
+  }
+
+  // ===== Module 5: 部门×月度热力矩阵 =====
+  const heatThead = document.getElementById('dash-heatmap-thead');
+  const heatTbody = document.getElementById('dash-heatmap-tbody');
+  if (heatThead && heatTbody) {
+    heatThead.innerHTML = `<tr><th>部门</th>${months.map(m=>`<th class="text-right">${m}</th>`).join('')}</tr>`;
+    // Find max value for heatmap coloring
+    let maxVal = 0;
+    deptList.forEach(d => {
+      months.forEach(m => {
+        const v = deptMap[d].monthly[m] || 0;
+        if (v > maxVal) maxVal = v;
+      });
+    });
+    heatTbody.innerHTML = deptList.map(d => {
+      const cells = months.map(m => {
+        const v = deptMap[d].monthly[m] || 0;
+        const intensity = maxVal > 0 ? v / maxVal : 0;
+        // Blue gradient: from transparent to solid blue
+        const bg = `rgba(59,130,246,${(0.1 + intensity * 0.7).toFixed(2)})`;
+        const textColor = intensity > 0.5 ? '#fff' : '#cbd5e1';
+        return `<td class="heatmap-cell" style="background:${bg};color:${textColor}">${v>0?_dashFmt(v):'0元'}</td>`;
+      }).join('');
+      return `<tr><td style="font-weight:600;white-space:nowrap">${d}</td>${cells}</tr>`;
+    }).join('');
+  }
+
+  // ===== Module 6: 岗位人力成本 TOP15 =====
+  const posTbody = document.getElementById('dash-position-tbody');
+  if (posTbody) {
+    posTbody.innerHTML = posList.map(p => {
+      const info = posMap[p];
+      const avgGross = info.headcount > 0 ? info.gross / info.headcount : 0;
+      return `<tr>
+        <td style="font-weight:600">${p}</td>
+        <td class="text-center">${info.headcount}</td>
+        <td class="text-right">${_dashFmt(info.gross)}</td>
+        <td class="text-right">${_dashFmt(avgGross)}</td>
+        <td class="text-right">${_dashFmt(info.perf)}</td>
+        <td class="text-right">${_dashFmt(info.social)}</td>
+        <td class="text-right val-purple">${_dashFmt(info.cost)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ===== Module 7: 人均效能趋势分析 =====
+  const effCtx = document.getElementById('dash-efficiency-chart');
+  if (effCtx) {
+    const perCapitaCost = months.map(m => monthly[m].headcount > 0 ? monthly[m].cost / monthly[m].headcount : 0);
+    const perCapitaNet = months.map(m => monthly[m].headcount > 0 ? monthly[m].net / monthly[m].headcount : 0);
+    const headcounts = months.map(m => monthly[m].headcount);
+    _dashCharts.efficiency = new Chart(effCtx, {
+      type:'line',
+      data: {
+        labels: months,
+        datasets: [
+          { label:'人均实发工资', data: perCapitaNet, borderColor:_DASH_COLORS.green,
+            backgroundColor:_DASH_COLORS.green+'20', fill:true, tension:0.3, borderWidth:3, pointRadius:5, yAxisID:'y' },
+          { label:'人均人力成本', data: perCapitaCost, borderColor:_DASH_COLORS.purple,
+            backgroundColor:_DASH_COLORS.purple+'20', fill:true, tension:0.3, borderWidth:3, pointRadius:5, yAxisID:'y' },
+          { label:'在岗人数', data: headcounts, borderColor:_DASH_COLORS.blue,
+            backgroundColor:_DASH_COLORS.blue, tension:0.3, borderWidth:2, pointRadius:4, yAxisID:'y1' },
+        ]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'top', labels:{color:'#cbd5e1'}} },
+        scales:{
+          x:{ ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y:{ beginAtZero:true, position:'left', ticks:{color:'#94a3b8', callback:v=>(v/10000).toFixed(1)+'万'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y1:{ beginAtZero:true, position:'right', grid:{display:false}, ticks:{color:'#3b82f6'} }
+        }
+      }
+    });
+  }
+
+  // 人均效能解读
+  const maxNetMonth = months.reduce((a,b) => (monthly[a].net/monthly[a].headcount) > (monthly[b].net/monthly[b].headcount) ? a : b);
+  const minNetMonth = months.reduce((a,b) => (monthly[a].net/monthly[a].headcount) < (monthly[b].net/monthly[b].headcount) ? a : b);
+  const firstPerCapCost = monthly[months[0]].headcount > 0 ? monthly[months[0]].cost / monthly[months[0]].headcount : 0;
+  const lastPerCapCost = monthly[months[months.length-1]].headcount > 0 ? monthly[months[months.length-1]].cost / monthly[months[months.length-1]].headcount : 0;
+  const costChange = firstPerCapCost > 0 ? ((lastPerCapCost - firstPerCapCost) / firstPerCapCost * 100) : 0;
+  const socialPct = totalCost > 0 ? (totalSocial / totalCost * 100) : 0;
+  document.getElementById('dash-efficiency-insight').innerHTML = `
+    <div class="insight-title">💡 数据解读</div>
+    人均实发工资最高的月份为 <b>${maxNetMonth}</b>（${_dashFmt(monthly[maxNetMonth].net/monthly[maxNetMonth].headcount)}/人），最低为 <b>${minNetMonth}</b>（${_dashFmt(monthly[minNetMonth].net/monthly[minNetMonth].headcount)}/人）。<br>
+    人均人力成本从${months[0]}的 ${_dashFmt(firstPerCapCost)} 变化到${months[months.length-1]}的 ${_dashFmt(lastPerCapCost)}，变化 ${costChange>=0?'+':''}${costChange.toFixed(1)}%。<br>
+    单位社保占人力成本比例平均 ${socialPct.toFixed(1)}%，建议关注社保基数调整影响。
+  `;
 }
+
+// 部门切片器切换函数
+function _dashFilterDept(deptName) {
+  document.querySelectorAll('#dash-dept-filter .filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === deptName);
+  });
+  if (!_dashCharts.deptTrend) return;
+  const months = DATA.months;
+  if (deptName === '全部') {
+    const allEmps = [];
+    months.forEach(m => { allEmps.push(...(DATA.monthlyData[m] || [])); });
+    const deptMap = {};
+    allEmps.forEach(e => {
+      const d = e.dept || '未知';
+      if (!deptMap[d]) deptMap[d] = { monthly:{} };
+      if (!deptMap[d].monthly[e.month]) deptMap[d].monthly[e.month] = 0;
+      deptMap[d].monthly[e.month] += Number(e.danweirengongchengben) || 0;
+    });
+    const deptList = Object.keys(deptMap);
+    const allDeptMonthly = months.map(m => deptList.reduce((s,d) => s + (deptMap[d].monthly[m]||0), 0));
+    _dashCharts.deptTrend.data.datasets = [{
+      label: '全部部门人力成本', data: allDeptMonthly,
+      borderColor: _DASH_COLORS.purple, backgroundColor: _DASH_COLORS.purple+'20',
+      fill: true, tension: 0.3, borderWidth: 3, pointRadius: 5
+    }];
+  } else {
+    const emps = [];
+    months.forEach(m => { emps.push(...(DATA.monthlyData[m] || [])); });
+    const deptEmps = emps.filter(e => e.dept === deptName);
+    const monthlyData = months.map(m => deptEmps.filter(e=>e.month===m).reduce((s,e)=>s+(Number(e.danweirengongchengben)||0),0));
+    const deptList = DATA.filters.departments || [];
+    const idx = deptList.indexOf(deptName);
+    const color = _DASH_PALETTE[(idx >= 0 ? idx : 0) % _DASH_PALETTE.length];
+    _dashCharts.deptTrend.data.datasets = [{
+      label: deptName + ' 人力成本', data: monthlyData,
+      borderColor: color, backgroundColor: color+'20',
+      fill: true, tension: 0.3, borderWidth: 3, pointRadius: 5
+    }];
+  }
+  _dashCharts.deptTrend.update();
+}
+
 
 // ===== 个人收入查询 =====
 const nameInput = document.getElementById('p-name');
