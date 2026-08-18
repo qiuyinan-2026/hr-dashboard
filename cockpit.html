@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>聚光管理驾驶舱</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #0a1628 0%, #0f1f3d 50%, #0a1628 100%);
+    color: #e2e8f0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 顶部标题栏 */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 32px;
+    background: rgba(10, 22, 40, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .topbar-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #38bdf8, #a855f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .topbar-title {
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+  }
+  .topbar-subtitle {
+    font-size: 11px;
+    color: #475569;
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+  .topbar-right {
+    font-size: 12px;
+    color: #64748b;
+  }
+  .topbar-right .pulse {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #34d399;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* 标签栏 */
+  .tabbar {
+    display: flex;
+    gap: 4px;
+    padding: 0 32px;
+    background: rgba(15, 31, 61, 0.6);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    position: relative;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab:hover {
+    color: #94a3b8;
+  }
+  .tab.active {
+    color: #fff;
+  }
+  .tab.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 16px;
+    right: 16px;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+  }
+  .tab .tab-icon {
+    font-size: 16px;
+  }
+  .tab .badge-coming {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    color: #94a3b8;
+    font-weight: 500;
+  }
+
+  .tab[data-tab="0"].active { color: #7dd3fc; }
+  .tab[data-tab="0"].active::after { background: linear-gradient(90deg, #38bdf8, #0ea5e9); }
+  .tab[data-tab="1"].active { color: #6ee7b7; }
+  .tab[data-tab="1"].active::after { background: linear-gradient(90deg, #34d399, #10b981); }
+  .tab[data-tab="2"].active { color: #fdba74; }
+  .tab[data-tab="2"].active::after { background: linear-gradient(90deg, #fb923c, #f97316); }
+  .tab[data-tab="3"].active { color: #d8b4fe; }
+  .tab[data-tab="3"].active::after { background: linear-gradient(90deg, #a855f7, #8b5cf6); }
+
+  /* 内容区 */
+  .content {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  .content-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    background: #fff;
+  }
+  .content-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+  .placeholder-icon {
+    font-size: 64px;
+    opacity: 0.3;
+  }
+  .placeholder-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #475569;
+  }
+  .placeholder-desc {
+    font-size: 14px;
+    color: #334155;
+  }
+  .hidden { display: none !important; }
+
+  /* 加载提示 */
+  .loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    z-index: 10;
+  }
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(56,189,248,0.2);
+    border-top-color: #38bdf8;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .loading-text {
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  /* 密码验证遮罩 */
+  .auth-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, #0a1628 0%, #0f1f3d 50%, #0a1628 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(8px);
+  }
+  .auth-overlay.hidden { display: none; }
+  .auth-box {
+    background: rgba(15, 31, 61, 0.9);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 44px 40px;
+    width: 380px;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .auth-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #38bdf8, #a855f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 20px;
+  }
+  .auth-title {
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #38bdf8, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+  .auth-subtitle {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 28px;
+  }
+  .auth-input {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 15px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    color: #e2e8f0;
+    outline: none;
+    transition: all 0.3s ease;
+    text-align: center;
+    letter-spacing: 3px;
+  }
+  .auth-input:focus {
+    border-color: #38bdf8;
+    background: rgba(56,189,248,0.08);
+    box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+  }
+  .auth-input::placeholder {
+    color: #475569;
+    letter-spacing: 1px;
+  }
+  .auth-btn {
+    width: 100%;
+    margin-top: 16px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 2px;
+  }
+  .auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(56,189,248,0.35);
+  }
+  .auth-btn:active { transform: translateY(0); }
+  .auth-error {
+    color: #f87171;
+    font-size: 13px;
+    margin-top: 12px;
+    min-height: 18px;
+  }
+  .auth-hint {
+    margin-top: 20px;
+    font-size: 11px;
+    color: #334155;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 700px) {
+    .topbar { padding: 12px 16px; }
+    .topbar-title { font-size: 16px; letter-spacing: 1px; }
+    .topbar-subtitle { display: none; }
+    .topbar-right { display: none; }
+    .tabbar { padding: 0 12px; }
+    .tab { padding: 12px 14px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 密码验证遮罩 -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-box">
+    <div class="auth-icon">🔒</div>
+    <div class="auth-title">聚光管理驾驶舱</div>
+    <div class="auth-subtitle">请输入访问密码以继续</div>
+    <input type="password" class="auth-input" id="authInput" placeholder="请输入密码" autocomplete="off">
+    <button class="auth-btn" id="authBtn">验 证 进 入</button>
+    <div class="auth-error" id="authError"></div>
+    <div class="auth-hint">验证成功后 24 小时内无需重复输入</div>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">聚</div>
+    <div>
+      <div class="topbar-title">聚光管理驾驶舱</div>
+      <div class="topbar-subtitle">JUGUANG MANAGEMENT COCKPIT</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="pulse"></span>财务数据自动更新：每月 5/15/25 日 10:00
+  </div>
+</div>
+
+<div class="tabbar">
+  <button class="tab active" data-tab="0" data-url="https://juguangzb.feishuapp.com/app/app_17bytez7qwn/">
+    <span class="tab-icon">📊</span>聚光项目数据
+  </button>
+  <button class="tab" data-tab="1" data-url="https://aka.doubaocdn.com/s/LqfahvMdjN">
+    <span class="tab-icon">💰</span>聚光财务数据
+  </button>
+  <button class="tab" data-tab="2" data-url="https://qiuyinan-2026.github.io/hr-dashboard/live_room.html">
+    <span class="tab-icon">🎬</span>直播间平面图
+  </button>
+</div>
+
+<div class="content">
+  <div class="loading" id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">正在加载数据…</div>
+  </div>
+  <iframe class="content-frame" id="contentFrame" src="https://juguangzb.feishuapp.com/app/app_17bytez7qwn/" onload="hideLoading()"></iframe>
+</div>
+
+<script>
+  // ===== 密码验证 =====
+  const ACCESS_PASSWORD = 'juguang505';
+  const AUTH_KEY = 'juguang_cockpit_auth_ts';
+  const AUTH_DURATION = 24 * 60 * 60 * 1000; // 24小时
+
+  const authOverlay = document.getElementById('authOverlay');
+  const authInput = document.getElementById('authInput');
+  const authBtn = document.getElementById('authBtn');
+  const authError = document.getElementById('authError');
+
+  function checkAuth() {
+    const ts = localStorage.getItem(AUTH_KEY);
+    if (ts && (Date.now() - parseInt(ts)) < AUTH_DURATION) {
+      authOverlay.classList.add('hidden');
+      return true;
+    }
+    return false;
+  }
+
+  function doAuth() {
+    const val = authInput.value.trim();
+    if (val === ACCESS_PASSWORD) {
+      localStorage.setItem(AUTH_KEY, Date.now().toString());
+      authOverlay.classList.add('hidden');
+      authError.textContent = '';
+    } else {
+      authError.textContent = '密码错误，请重新输入';
+      authInput.value = '';
+      authInput.focus();
+    }
+  }
+
+  authBtn.addEventListener('click', doAuth);
+  authInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') doAuth();
+  });
+
+  // 页面加载时检查
+  if (!checkAuth()) {
+    authInput.focus();
+  }
+
+  // ===== 标签切换 =====
+  const tabs = document.querySelectorAll('.tab');
+  const frame = document.getElementById('contentFrame');
+  const loading = document.getElementById('loading');
+  const placeholders = [];
+
+  function showLoading() {
+    loading.classList.remove('hidden');
+  }
+  function hideLoading() {
+    loading.classList.add('hidden');
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const url = tab.getAttribute('data-url');
+      const tabIdx = tab.getAttribute('data-tab');
+
+      // 隐藏所有占位
+      placeholders.forEach(p => p.classList.add('hidden'));
+
+      if (url) {
+        frame.classList.remove('hidden');
+        showLoading();
+        frame.src = url;
+      } else {
+        frame.classList.add('hidden');
+        hideLoading();
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
