@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>聚光直播间平面图</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  min-height: 100vh;
+  color: #e2e8f0;
+  padding: 20px;
+}
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #a78bfa, #818cf8, #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+.header .subtitle {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+/* 控制区 */
+.control-panel {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+  backdrop-filter: blur(10px);
+}
+.control-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.control-item label {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+.control-item select {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #e2e8f0;
+  font-size: 14px;
+  min-width: 220px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.control-item select:hover, .control-item select:focus {
+  border-color: #818cf8;
+}
+.control-item select option {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+.btn-associate {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 40px;
+}
+.btn-associate:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+.btn-reset {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  height: 40px;
+  transition: all 0.2s;
+}
+.btn-reset:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+/* 楼层区域 */
+.floor-section {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+}
+.floor-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #c4b5fd;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.floor-title .icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.floor-title .count {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 400;
+  margin-left: 8px;
+}
+
+/* 直播间网格 */
+.room-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.room-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* 直播间卡片 */
+.room-card {
+  background: linear-gradient(145deg, rgba(51, 65, 85, 0.6), rgba(30, 41, 59, 0.8));
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 160px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: all 0.3s;
+  cursor: pointer;
+  overflow: hidden;
+}
+.room-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  opacity: 0.6;
+}
+.room-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.15);
+}
+.room-card.occupied {
+  border-color: rgba(34, 197, 94, 0.4);
+}
+.room-card.occupied::before {
+  background: linear-gradient(90deg, #22c55e, #10b981);
+}
+.room-card.studio {
+  background: linear-gradient(145deg, rgba(180, 83, 9, 0.3), rgba(30, 41, 59, 0.8));
+  border-color: rgba(245, 158, 11, 0.4);
+}
+.room-card.studio::before {
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+.room-number {
+  font-size: 14px;
+  font-weight: 700;
+  color: #a78bfa;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.room-card.occupied .room-number {
+  color: #4ade80;
+}
+.room-card.studio .room-number {
+  color: #fbbf24;
+}
+.room-number .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #64748b;
+}
+.room-card.occupied .room-number .dot {
+  background: #22c55e;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.room-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-top: 8px;
+  word-break: break-all;
+  line-height: 1.4;
+}
+.room-name .empty {
+  color: #64748b;
+  font-style: italic;
+  font-size: 13px;
+}
+.room-project-id {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+/* 四楼特殊布局 */
+.floor-4-layout {
+  display: flex;
+  gap: 16px;
+}
+.floor-4-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.floor-4-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 五楼特殊布局 */
+.floor-5-layout {
+  display: flex;
+  gap: 16px;
+}
+.floor-5-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.floor-5-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 统计信息 */
+.stats-bar {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+}
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stat-label {
+  font-size: 12px;
+  color: #94a3b8;
+}
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+.stat-value.green { color: #4ade80; }
+.stat-value.purple { color: #a78bfa; }
+
+/* 提示消息 */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(34, 197, 94, 0.9);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transform: translateX(120%);
+  transition: transform 0.3s;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+.toast.show {
+  transform: translateX(0);
+}
+.toast.error {
+  background: rgba(239, 68, 68, 0.9);
+}
+
+@media (max-width: 768px) {
+  .control-panel { flex-direction: column; align-items: stretch; }
+  .control-item select { min-width: 100%; }
+  .room-card { min-width: 140px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎬 聚光直播间平面图</h1>
+  <div class="subtitle">三楼 · 四楼 · 五楼 直播间布局与项目关联管理</div>
+</div>
+
+<!-- 控制区 -->
+<div class="control-panel">
+  <div class="control-item">
+    <label>直播间编号</label>
+    <select id="roomSelect">
+      <option value="">请选择直播间</option>
+    </select>
+  </div>
+  <div class="control-item">
+    <label>直播间名称（项目）</label>
+    <select id="projectSelect">
+      <option value="">请选择项目</option>
+    </select>
+  </div>
+  <button class="btn-associate" onclick="associateRoom()">🔗 关 联</button>
+  <button class="btn-reset" onclick="clearAssociation()">清除选中关联</button>
+  <div class="control-item" style="margin-left:auto;">
+    <label>操作提示</label>
+    <div style="font-size:12px;color:#94a3b8;max-width:280px;">选择直播间编号和项目名称，点击关联即可更新平面图。数据自动保存。</div>
+  </div>
+</div>
+
+<!-- 三楼 -->
+<div class="floor-section">
+  <div class="floor-title">
+    <span class="icon">3</span>
+    三楼直播间
+    <span class="count">共11间（1-12号，无7号）</span>
+  </div>
+  <div class="room-grid" id="floor3"></div>
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-label">已关联</span>
+      <span class="stat-value green" id="floor3-used">0</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">空闲</span>
+      <span class="stat-value purple" id="floor3-free">11</span>
+    </div>
+  </div>
+</div>
+
+<!-- 四楼 -->
+<div class="floor-section">
+  <div class="floor-title">
+    <span class="icon">4</span>
+    四楼直播间
+    <span class="count">共4间（13-16号）</span>
+  </div>
+  <div class="room-grid" id="floor4"></div>
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-label">已关联</span>
+      <span class="stat-value green" id="floor4-used">0</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">空闲</span>
+      <span class="stat-value purple" id="floor4-free">4</span>
+    </div>
+  </div>
+</div>
+
+<!-- 五楼 -->
+<div class="floor-section">
+  <div class="floor-title">
+    <span class="icon">5</span>
+    五楼直播间
+    <span class="count">共5间（17-21号）+ 摄影棚</span>
+  </div>
+  <div class="room-grid" id="floor5"></div>
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-label">已关联</span>
+      <span class="stat-value green" id="floor5-used">0</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">空闲</span>
+      <span class="stat-value purple" id="floor5-free">5</span>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== 项目数据（来自飞书表格2026账单 - A/B/C组） ==========
+const PROJECTS = [
+  { group: 'A组', id: '1001', name: '阴山优麦冲饮' },
+  { group: 'A组', id: '1002', name: '阴山优麦食品' },
+  { group: 'A组', id: '1003', name: '抖音超市美妆' },
+  { group: 'A组', id: '1004', name: '抖超箱包' },
+  { group: 'A组', id: '1005', name: '追觅戒指' },
+  { group: 'A组', id: '1006', name: '美菱小家电' },
+  { group: 'A组', id: '1007', name: '蓝漂' },
+  { group: 'B组', id: '1008', name: '古井店播' },
+  { group: 'B组', id: '1009', name: '桂格' },
+  { group: 'B组', id: '1010', name: '南方黑芝麻-1' },
+  { group: 'B组', id: '1011', name: '南方黑芝麻-2' },
+  { group: 'B组', id: '1012', name: '旺旺' },
+  { group: 'B组', id: '1013', name: '乐锦记' },
+  { group: 'B组', id: '1014', name: '养舒优1' },
+  { group: 'B组', id: '1015', name: '养舒优2' },
+  { group: 'C组', id: '1016', name: '素颜霜' },
+  { group: 'C组', id: '1017', name: '拓趣（沐浴油）' },
+  { group: 'C组', id: '1018', name: '拓趣（护手霜）' },
+];
+
+// ========== 直播间布局配置 ==========
+const FLOOR3 = [
+  [1, 2, 3, 4, 5, 6],
+  [8, 9, 10, 11, 12]
+];
+const FLOOR4 = [
+  [13, 14, 15],
+  [16]
+];
+const FLOOR5 = [
+  ['studio', 18, 17],
+  [21, 20, 19]
+];
+
+const STORAGE_KEY = 'juguang_room_associations';
+
+// ========== 初始化 ==========
+function init() {
+  initRoomSelect();
+  initProjectSelect();
+  loadAssociations();
+  renderAllFloors();
+}
+
+function initRoomSelect() {
+  const sel = document.getElementById('roomSelect');
+  const allRooms = [1,2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
+  allRooms.forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = n;
+    opt.textContent = n + '号直播间';
+    sel.appendChild(opt);
+  });
+}
+
+function initProjectSelect() {
+  const sel = document.getElementById('projectSelect');
+  let currentGroup = '';
+  let optgroup = null;
+  PROJECTS.forEach(p => {
+    if (p.group !== currentGroup) {
+      currentGroup = p.group;
+      optgroup = document.createElement('optgroup');
+      optgroup.label = p.group;
+      sel.appendChild(optgroup);
+    }
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = `${p.name}（${p.id}）`;
+    optgroup.appendChild(opt);
+  });
+}
+
+// ========== 关联数据管理 ==========
+function getAssociations() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function saveAssociations(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function loadAssociations() {
+  // 数据已在渲染时读取
+}
+
+function associateRoom() {
+  const roomId = document.getElementById('roomSelect').value;
+  const projectId = document.getElementById('projectSelect').value;
+  
+  if (!roomId) {
+    showToast('请选择直播间编号', true);
+    return;
+  }
+  if (!projectId) {
+    showToast('请选择项目名称', true);
+    return;
+  }
+  
+  const associations = getAssociations();
+  const project = PROJECTS.find(p => p.id === projectId);
+  associations[roomId] = {
+    projectId: project.id,
+    projectName: project.name,
+    group: project.group,
+    updatedAt: new Date().toLocaleString('zh-CN')
+  };
+  saveAssociations(associations);
+  renderAllFloors();
+  showToast(`${roomId}号直播间已关联：${project.name}`);
+  
+  // 清空选择
+  document.getElementById('roomSelect').value = '';
+  document.getElementById('projectSelect').value = '';
+}
+
+function clearAssociation() {
+  const roomId = document.getElementById('roomSelect').value;
+  if (!roomId) {
+    showToast('请先选择要清除的直播间', true);
+    return;
+  }
+  const associations = getAssociations();
+  if (associations[roomId]) {
+    delete associations[roomId];
+    saveAssociations(associations);
+    renderAllFloors();
+    showToast(`${roomId}号直播间关联已清除`);
+  } else {
+    showToast(`${roomId}号直播间暂无关联`, true);
+  }
+}
+
+function clearRoom(roomId) {
+  if (confirm(`确定要清除${roomId}号直播间的关联吗？`)) {
+    const associations = getAssociations();
+    delete associations[roomId];
+    saveAssociations(associations);
+    renderAllFloors();
+    showToast(`${roomId}号直播间关联已清除`);
+  }
+}
+
+// ========== 渲染 ==========
+function renderAllFloors() {
+  renderFloor('floor3', FLOOR3, 3);
+  renderFloor('floor4', FLOOR4, 4);
+  renderFloor('floor5', FLOOR5, 5);
+  updateStats();
+}
+
+function renderFloor(containerId, layout, floorNum) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const associations = getAssociations();
+  
+  layout.forEach(row => {
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'room-row';
+    
+    row.forEach(roomId => {
+      const card = createRoomCard(roomId, associations[roomId]);
+      rowDiv.appendChild(card);
+    });
+    
+    container.appendChild(rowDiv);
+  });
+}
+
+function createRoomCard(roomId, association) {
+  const card = document.createElement('div');
+  card.className = 'room-card';
+  
+  if (roomId === 'studio') {
+    card.classList.add('studio');
+    card.innerHTML = `
+      <div class="room-number">
+        <span class="dot"></span>
+        摄影棚
+      </div>
+      <div class="room-name">公共摄影区域</div>
+      <div class="room-project-id">共用空间</div>
+    `;
+    return card;
+  }
+  
+  if (association) {
+    card.classList.add('occupied');
+    card.innerHTML = `
+      <div class="room-number">
+        <span class="dot"></span>
+        ${roomId}号直播间
+      </div>
+      <div class="room-name">${association.projectName}</div>
+      <div class="room-project-id">${association.group} · ${association.projectId}</div>
+    `;
+  } else {
+    card.innerHTML = `
+      <div class="room-number">
+        <span class="dot"></span>
+        ${roomId}号直播间
+      </div>
+      <div class="room-name"><span class="empty">空闲中</span></div>
+      <div class="room-project-id">点击关联项目</div>
+    `;
+  }
+  
+  card.onclick = () => {
+    document.getElementById('roomSelect').value = roomId;
+    if (association) {
+      document.getElementById('projectSelect').value = association.projectId;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
+  return card;
+}
+
+function updateStats() {
+  const associations = getAssociations();
+  const floor3Rooms = [1,2,3,4,5,6,8,9,10,11,12];
+  const floor4Rooms = [13,14,15,16];
+  const floor5Rooms = [17,18,19,20,21];
+  
+  const f3used = floor3Rooms.filter(r => associations[r]).length;
+  const f4used = floor4Rooms.filter(r => associations[r]).length;
+  const f5used = floor5Rooms.filter(r => associations[r]).length;
+  
+  document.getElementById('floor3-used').textContent = f3used;
+  document.getElementById('floor3-free').textContent = 11 - f3used;
+  document.getElementById('floor4-used').textContent = f4used;
+  document.getElementById('floor4-free').textContent = 4 - f4used;
+  document.getElementById('floor5-used').textContent = f5used;
+  document.getElementById('floor5-free').textContent = 5 - f5used;
+}
+
+// ========== 工具函数 ==========
+function showToast(msg, isError = false) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => {
+    toast.className = 'toast';
+  }, 2500);
+}
+
+// 启动
+init();
+</script>
+</body>
+</html>
