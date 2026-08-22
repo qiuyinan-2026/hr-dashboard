@@ -1,0 +1,3582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>聚光直播 2026 经营数据仪表盘系统</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #0a1628 0%, #0f1f3d 50%, #0a1628 100%);
+    color: #e2e8f0;
+    min-height: 100vh;
+}
+
+/* ========== 顶部导航栏 ========== */
+.top-nav {
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+    padding: 0 30px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+}
+.nav-title {
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.nav-tabs {
+    display: flex;
+    gap: 8px;
+}
+.nav-tab {
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #94a3b8;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+    background: transparent;
+}
+.nav-tab:hover {
+    color: #e2e8f0;
+    background: rgba(56, 189, 248, 0.1);
+}
+.nav-tab.active {
+    color: #fff;
+    background: linear-gradient(135deg, rgba(56,189,248,0.2), rgba(129,140,248,0.2));
+    border-color: rgba(56, 189, 248, 0.4);
+}
+
+/* ========== 页面容器 ========== */
+.page-container {
+    display: none;
+    padding: 24px 30px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+.page-container.active {
+    display: block;
+}
+
+/* ========== 通用样式 ========== */
+.page-header {
+    margin-bottom: 24px;
+}
+.page-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #f1f5f9;
+}
+.page-header p {
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* 筛选区 */
+.filter-bar {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.filter-item label {
+    font-size: 12px;
+    color: #64748b;
+}
+.filter-item select {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: #e2e8f0;
+    font-size: 13px;
+    cursor: pointer;
+    min-width: 140px;
+}
+.filter-item select:focus {
+    outline: none;
+    border-color: #38bdf8;
+}
+.filter-btn {
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 18px;
+}
+.filter-btn:hover {
+    opacity: 0.9;
+}
+
+/* 汇总卡片 */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+.summary-card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+}
+.summary-card.blue::before { background: linear-gradient(90deg, #38bdf8, #0ea5e9); }
+.summary-card.green::before { background: linear-gradient(90deg, #34d399, #10b981); }
+.summary-card.orange::before { background: linear-gradient(90deg, #fb923c, #f97316); }
+.summary-card .label {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+.summary-card .value {
+    font-size: 28px;
+    font-weight: 700;
+}
+.summary-card.blue .value { color: #38bdf8; }
+.summary-card.green .value { color: #34d399; }
+.summary-card.orange .value { color: #fb923c; }
+.summary-card .unit {
+    font-size: 14px;
+    font-weight: 400;
+    margin-left: 4px;
+    opacity: 0.8;
+}
+
+/* 数据表格 */
+.data-table-wrapper {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.data-table-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.data-table-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+.data-table-header .count {
+    font-size: 12px;
+    color: #64748b;
+}
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.data-table th {
+    background: rgba(30, 41, 59, 0.5);
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+    position: sticky;
+    top: 0;
+}
+.data-table td {
+    padding: 10px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+.data-table tr:hover {
+    background: rgba(56, 189, 248, 0.05);
+}
+.data-table .num {
+    text-align: right;
+    font-family: 'SF Mono', 'Monaco', monospace;
+}
+
+/* 分页 */
+.pagination {
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    border-top: 1px solid rgba(56, 189, 248, 0.1);
+}
+.page-btn {
+    padding: 6px 12px;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 6px;
+    color: #94a3b8;
+    font-size: 12px;
+    cursor: pointer;
+}
+.page-btn.active {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: #38bdf8;
+    color: #38bdf8;
+}
+.page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ========== 应收款分析页面样式 ========== */
+.receivable-section {
+    margin-bottom: 24px;
+}
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 14px;
+    padding-left: 12px;
+    border-left: 3px solid #38bdf8;
+}
+
+/* 目标卡片 */
+.target-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+}
+.target-card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 10px;
+    padding: 16px;
+}
+.target-card .tc-label {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 6px;
+}
+.target-card .tc-value {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.target-card .tc-sub {
+    font-size: 11px;
+    color: #64748b;
+}
+.target-card.red .tc-value { color: #f87171; }
+.target-card.blue .tc-value { color: #38bdf8; }
+.target-card.green .tc-value { color: #34d399; }
+.target-card.orange .tc-value { color: #fb923c; }
+
+/* 进度条 */
+.rate-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.rate-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 80px;
+}
+.rate-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+    border-radius: 3px;
+    transition: width 0.5s;
+}
+.rate-text {
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 45px;
+    text-align: right;
+}
+
+/* 标签 */
+.tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+.tag.pass { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+.tag.fail { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+.tag.warn { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
+.tag.zero { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+
+/* 分组圆点 */
+.group-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+/* 当前月高亮模块 */
+.current-month-box {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.1), rgba(248, 113, 113, 0.05));
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.current-month-box .cm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.current-month-box .cm-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fb923c;
+}
+.current-month-box .cm-badge {
+    padding: 4px 12px;
+    background: rgba(248, 113, 113, 0.2);
+    border-radius: 12px;
+    font-size: 12px;
+    color: #f87171;
+    font-weight: 600;
+}
+.cm-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+.cm-stat {
+    text-align: center;
+}
+.cm-stat .cm-label {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 6px;
+}
+.cm-stat .cm-value {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* 双列布局 */
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* 图表容器 */
+.chart-box {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 12px;
+    padding: 16px;
+}
+.chart-box h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #e2e8f0;
+}
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+/* ========== Dashboard 页面样式（继承原有） ========== */
+.dashboard { max-width: 1400px; margin: 0 auto; }
+.dashboard-header { text-align: center; padding: 20px 0 24px; }
+.dashboard-header h1 {
+    font-size: 26px; font-weight: 700;
+    background: linear-gradient(135deg, #38bdf8, #818cf8, #a855f7);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: 6px;
+}
+.dashboard-header .subtitle { color: #64748b; font-size: 13px; }
+.dashboard-section { margin-bottom: 28px; }
+.section-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 1px solid rgba(56,189,248,0.15);
+}
+.section-header .icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+}
+.section-header h2 { font-size: 17px; font-weight: 600; color: #e2e8f0; }
+.section-header .desc { font-size: 12px; color: #64748b; margin-left: auto; }
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.kpi-card {
+    background: rgba(15,23,42,0.6); border: 1px solid rgba(56,189,248,0.15);
+    border-radius: 12px; padding: 18px; position: relative; overflow: hidden;
+}
+.kpi-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.kpi-card.blue::before { background: linear-gradient(90deg,#38bdf8,#0ea5e9); }
+.kpi-card.green::before { background: linear-gradient(90deg,#34d399,#10b981); }
+.kpi-card.red::before { background: linear-gradient(90deg,#f87171,#ef4444); }
+.kpi-card.purple::before { background: linear-gradient(90deg,#a855f7,#8b5cf6); }
+.kpi-card.orange::before { background: linear-gradient(90deg,#fb923c,#f97316); }
+.kpi-card .kpi-label { font-size: 13px; color: #94a3b8; margin-bottom: 8px; }
+.kpi-card .kpi-value { font-size: 26px; font-weight: 700; }
+.kpi-card.blue .kpi-value { color: #38bdf8; }
+.kpi-card.green .kpi-value { color: #34d399; }
+.kpi-card.red .kpi-value { color: #f87171; }
+.kpi-card.purple .kpi-value { color: #a855f7; }
+.kpi-card.orange .kpi-value { color: #fb923c; }
+.kpi-card .kpi-unit { font-size: 13px; font-weight: 400; opacity: 0.8; margin-left: 3px; }
+.kpi-card .kpi-sub { font-size: 11px; color: #64748b; margin-top: 6px; }
+.chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.chart-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.chart-card {
+    background: rgba(15,23,42,0.6); border: 1px solid rgba(56,189,248,0.15);
+    border-radius: 12px; padding: 16px;
+}
+.chart-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #e2e8f0; }
+.chart-wrap { position: relative; height: 320px; }
+.chart-wrap.tall { height: 400px; }
+
+@media (max-width: 1024px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-grid-2, .chart-grid-3 { grid-template-columns: 1fr; }
+    .summary-cards { grid-template-columns: 1fr; }
+    .target-cards { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .cm-stats { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== 顶部导航 ========== -->
+<div class="top-nav">
+    <div class="nav-title">聚光直播 · 2026经营数据系统</div>
+    <div class="nav-tabs">
+        <button class="nav-tab active" data-page="finance">财务收入数据查询</button>
+        <button class="nav-tab" data-page="dashboard">经营数据仪表盘</button>
+        <button class="nav-tab" data-page="receivable">应收款分析</button>
+    </div>
+</div>
+
+<!-- ========== 页面1：财务收入数据查询 ========== -->
+<div class="page-container active" id="page-finance">
+    <div class="page-header">
+        <h1>财务收入数据查询</h1>
+        <p>支持按月份、项目名称、部门名称多维度筛选查询 · 数据周期：2026年1月-7月</p>
+    </div>
+
+    <!-- 筛选区 -->
+    <div class="filter-bar">
+        <div class="filter-item">
+            <label>月份</label>
+            <select id="filterMonth">
+                <option value="all">全部月份</option><option value="1月">1月</option><option value="2月">2月</option><option value="3月">3月</option><option value="4月">4月</option><option value="5月">5月</option><option value="6月">6月</option><option value="7月">7月</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>项目名称</label>
+            <select id="filterProject">
+                <option value="all">全部项目</option><option value="阴山优麦冲饮">阴山优麦冲饮</option><option value="阴山优麦食品">阴山优麦食品</option><option value="抖音超市美妆">抖音超市美妆</option><option value="抖超箱包">抖超箱包</option><option value="追觅戒指">追觅戒指</option><option value="美菱小家电">美菱小家电</option><option value="蓝漂">蓝漂</option><option value="古井店播">古井店播</option><option value="桂格">桂格</option><option value="南方黑芝麻-1">南方黑芝麻-1</option><option value="南方黑芝麻-2">南方黑芝麻-2</option><option value="旺旺">旺旺</option><option value="乐锦记">乐锦记</option><option value="养舒优1">养舒优1</option><option value="养舒优2">养舒优2</option><option value="素颜霜">素颜霜</option><option value="拓趣（沐浴油）">拓趣（沐浴油）</option><option value="拓趣（护手霜）">拓趣（护手霜）</option><option value="古井（达）">古井（达）</option><option value="阴山优麦（达）">阴山优麦（达）</option><option value="素颜霜（达）">素颜霜（达）</option><option value="南方黑芝麻（达）">南方黑芝麻（达）</option><option value="蓝漂（达）">蓝漂（达）</option><option value="阴山优麦">阴山优麦</option><option value="南方黑芝麻（私）">南方黑芝麻（私）</option><option value="DAVIDGARCE男装">DAVIDGARCE男装</option><option value="营业外收入">营业外收入</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>部门名称</label>
+            <select id="filterGroup">
+                <option value="all">全部部门</option><option value="A组">A组</option><option value="B组">B组</option><option value="C组">C组</option><option value="传媒">传媒</option><option value="私域">私域</option><option value="聚能">聚能</option><option value="其他">其他</option>
+            </select>
+        </div>
+        <button class="filter-btn" onclick="resetFilters()">重置筛选</button>
+    </div>
+
+    <!-- 汇总卡片 -->
+    <div class="summary-cards">
+        <div class="summary-card blue">
+            <div class="label">项目总收入</div>
+            <div class="value" id="sumEstimate">836.24<span class="unit">万元</span></div>
+        </div>
+        <div class="summary-card green">
+            <div class="label">项目总回款</div>
+            <div class="value" id="sumReceived">620.64<span class="unit">万元</span></div>
+        </div>
+        <div class="summary-card orange">
+            <div class="label">项目总应收款</div>
+            <div class="value" id="sumReceivable">215.60<span class="unit">万元</span></div>
+        </div>
+    </div>
+
+    <!-- 数据列表 -->
+    <div class="data-table-wrapper">
+        <div class="data-table-header">
+            <h3>收入明细数据</h3>
+            <span class="count" id="recordCount">共 119 条记录</span>
+        </div>
+        <div style="max-height: 600px; overflow-y: auto;">
+            <table class="data-table" id="financeTable">
+                <thead>
+                    <tr>
+                        <th>项目名称</th>
+                        <th>部门</th>
+                        <th>月份</th>
+                        <th style="text-align:right">项目收入</th>
+                        <th>开票状态</th>
+                        <th style="text-align:right">回款数据</th>
+                        <th style="text-align:right">应收款数据</th>
+                    </tr>
+                </thead>
+                <tbody id="financeTableBody">
+                    
+    <tr>
+        <td>阴山优麦冲饮</td>
+        <td>A组</td>
+        <td>1月</td>
+        <td class="num">282,539.21</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">282,539.21</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦冲饮</td>
+        <td>A组</td>
+        <td>2月</td>
+        <td class="num">190,298.65</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">190,298.65</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦冲饮</td>
+        <td>A组</td>
+        <td>3月</td>
+        <td class="num">264,899.28</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">264,899.28</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦冲饮</td>
+        <td>A组</td>
+        <td>4月</td>
+        <td class="num">281,646.52</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">281,646.52</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦冲饮</td>
+        <td>A组</td>
+        <td>5月</td>
+        <td class="num">260,553.28</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">260,553.28</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦冲饮</td>
+        <td>A组</td>
+        <td>6月</td>
+        <td class="num">286,059.10</td>
+        <td>已开票</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">286,059.10</td>
+    </tr>
+    <tr>
+        <td>阴山优麦冲饮</td>
+        <td>A组</td>
+        <td>7月</td>
+        <td class="num">251,339.52</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">251,339.52</td>
+    </tr>
+    <tr>
+        <td>阴山优麦食品</td>
+        <td>A组</td>
+        <td>1月</td>
+        <td class="num">120,485.12</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">120,485.12</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦食品</td>
+        <td>A组</td>
+        <td>2月</td>
+        <td class="num">95,087.90</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">95,087.90</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦食品</td>
+        <td>A组</td>
+        <td>3月</td>
+        <td class="num">116,659.80</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">116,659.80</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦食品</td>
+        <td>A组</td>
+        <td>4月</td>
+        <td class="num">78,498.58</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">78,498.58</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦食品</td>
+        <td>A组</td>
+        <td>5月</td>
+        <td class="num">76,432.18</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">76,432.18</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦食品</td>
+        <td>A组</td>
+        <td>6月</td>
+        <td class="num">75,232.78</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">75,232.78</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦食品</td>
+        <td>A组</td>
+        <td>7月</td>
+        <td class="num">75,000.74</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">75,000.74</td>
+    </tr>
+    <tr>
+        <td>抖音超市美妆</td>
+        <td>A组</td>
+        <td>1月</td>
+        <td class="num">145,293.02</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">145,293.02</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>抖音超市美妆</td>
+        <td>A组</td>
+        <td>2月</td>
+        <td class="num">64,975.08</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">64,975.08</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>抖音超市美妆</td>
+        <td>A组</td>
+        <td>3月</td>
+        <td class="num">81,500.48</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">81,500.48</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>抖音超市美妆</td>
+        <td>A组</td>
+        <td>4月</td>
+        <td class="num">97,296.98</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">97,296.98</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>抖音超市美妆</td>
+        <td>A组</td>
+        <td>5月</td>
+        <td class="num">124,844.14</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">124,844.14</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>抖音超市美妆</td>
+        <td>A组</td>
+        <td>6月</td>
+        <td class="num">72,646.77</td>
+        <td>已开票</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">72,646.77</td>
+    </tr>
+    <tr>
+        <td>抖音超市美妆</td>
+        <td>A组</td>
+        <td>7月</td>
+        <td class="num">120,825.00</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">120,825.00</td>
+    </tr>
+    <tr>
+        <td>抖超箱包</td>
+        <td>A组</td>
+        <td>5月</td>
+        <td class="num">8,286.58</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">8,286.58</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>抖超箱包</td>
+        <td>A组</td>
+        <td>6月</td>
+        <td class="num">600.00</td>
+        <td>已开票</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">600.00</td>
+    </tr>
+    <tr>
+        <td>追觅戒指</td>
+        <td>A组</td>
+        <td>5月</td>
+        <td class="num">41,442.88</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">41,442.88</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>追觅戒指</td>
+        <td>A组</td>
+        <td>6月</td>
+        <td class="num">74,025.76</td>
+        <td>已开票</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">74,025.76</td>
+    </tr>
+    <tr>
+        <td>追觅戒指</td>
+        <td>A组</td>
+        <td>7月</td>
+        <td class="num">68,000.00</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">68,000.00</td>
+    </tr>
+    <tr>
+        <td>美菱小家电</td>
+        <td>A组</td>
+        <td>4月</td>
+        <td class="num">8,760.75</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">8,760.75</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>美菱小家电</td>
+        <td>A组</td>
+        <td>5月</td>
+        <td class="num">12,635.11</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">12,635.11</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>美菱小家电</td>
+        <td>A组</td>
+        <td>6月</td>
+        <td class="num">5,700.00</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">5,700.00</td>
+    </tr>
+    <tr>
+        <td>蓝漂</td>
+        <td>A组</td>
+        <td>3月</td>
+        <td class="num">29,384.10</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">29,384.10</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>蓝漂</td>
+        <td>A组</td>
+        <td>4月</td>
+        <td class="num">29,945.53</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">29,945.53</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>蓝漂</td>
+        <td>A组</td>
+        <td>5月</td>
+        <td class="num">30,000.00</td>
+        <td>已开票</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">30,000.00</td>
+    </tr>
+    <tr>
+        <td>古井店播</td>
+        <td>B组</td>
+        <td>1月</td>
+        <td class="num">116,177.28</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">116,177.28</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>古井店播</td>
+        <td>B组</td>
+        <td>2月</td>
+        <td class="num">97,098.55</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">97,098.55</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>古井店播</td>
+        <td>B组</td>
+        <td>3月</td>
+        <td class="num">62,658.28</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">62,658.28</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>古井店播</td>
+        <td>B组</td>
+        <td>4月</td>
+        <td class="num">60,600.00</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">60,600.00</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>古井店播</td>
+        <td>B组</td>
+        <td>5月</td>
+        <td class="num">51,733.06</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">51,733.06</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>古井店播</td>
+        <td>B组</td>
+        <td>6月</td>
+        <td class="num">56,077.03</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">56,077.03</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>古井店播</td>
+        <td>B组</td>
+        <td>7月</td>
+        <td class="num">42,407.10</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">42,407.10</td>
+    </tr>
+    <tr>
+        <td>桂格</td>
+        <td>B组</td>
+        <td>1月</td>
+        <td class="num">458,249.01</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">458,249.01</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>桂格</td>
+        <td>B组</td>
+        <td>2月</td>
+        <td class="num">158,549.72</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">158,549.72</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>桂格</td>
+        <td>B组</td>
+        <td>3月</td>
+        <td class="num">149,149.72</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">149,149.72</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>桂格</td>
+        <td>B组</td>
+        <td>4月</td>
+        <td class="num">149,557.34</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">149,557.34</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>桂格</td>
+        <td>B组</td>
+        <td>5月</td>
+        <td class="num">143,932.85</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">143,932.85</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>桂格</td>
+        <td>B组</td>
+        <td>6月</td>
+        <td class="num">131,080.56</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">131,080.56</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>桂格</td>
+        <td>B组</td>
+        <td>7月</td>
+        <td class="num">128,981.16</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">128,981.16</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻-1</td>
+        <td>B组</td>
+        <td>1月</td>
+        <td class="num">173,791.01</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">178,291.01</td>
+        <td class="num" style="color:#fca5a5">-4,500.00</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻-1</td>
+        <td>B组</td>
+        <td>2月</td>
+        <td class="num">109,723.08</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">109,723.08</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻-1</td>
+        <td>B组</td>
+        <td>3月</td>
+        <td class="num">103,677.37</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">103,677.37</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻-1</td>
+        <td>B组</td>
+        <td>4月</td>
+        <td class="num">67,116.89</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">67,116.89</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻-1</td>
+        <td>B组</td>
+        <td>5月</td>
+        <td class="num">77,599.83</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">77,599.83</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻-1</td>
+        <td>B组</td>
+        <td>6月</td>
+        <td class="num">91,670.52</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">91,670.52</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻-1</td>
+        <td>B组</td>
+        <td>7月</td>
+        <td class="num">86,730.76</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">86,730.76</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻-2</td>
+        <td>B组</td>
+        <td>7月</td>
+        <td class="num">74,425.86</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">74,425.86</td>
+    </tr>
+    <tr>
+        <td>旺旺</td>
+        <td>B组</td>
+        <td>1月</td>
+        <td class="num">73,711.92</td>
+        <td>已开票</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">73,711.92</td>
+    </tr>
+    <tr>
+        <td>旺旺</td>
+        <td>B组</td>
+        <td>2月</td>
+        <td class="num">40,940.64</td>
+        <td>已开票</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">40,940.64</td>
+    </tr>
+    <tr>
+        <td>旺旺</td>
+        <td>B组</td>
+        <td>4月</td>
+        <td class="num">14,084.25</td>
+        <td>已开票</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">14,084.25</td>
+    </tr>
+    <tr>
+        <td>旺旺</td>
+        <td>B组</td>
+        <td>5月</td>
+        <td class="num">70,087.01</td>
+        <td>已开票</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">70,087.01</td>
+    </tr>
+    <tr>
+        <td>旺旺</td>
+        <td>B组</td>
+        <td>6月</td>
+        <td class="num">75,950.57</td>
+        <td>已开票</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">75,950.57</td>
+    </tr>
+    <tr>
+        <td>乐锦记</td>
+        <td>B组</td>
+        <td>4月</td>
+        <td class="num">50,000.00</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">50,000.00</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>乐锦记</td>
+        <td>B组</td>
+        <td>5月</td>
+        <td class="num">30,241.94</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">30,241.94</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>养舒优1</td>
+        <td>B组</td>
+        <td>4月</td>
+        <td class="num">26,129.17</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">26,129.17</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>养舒优1</td>
+        <td>B组</td>
+        <td>5月</td>
+        <td class="num">217,133.68</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">217,133.68</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>养舒优1</td>
+        <td>B组</td>
+        <td>6月</td>
+        <td class="num">202,899.74</td>
+        <td>已开票</td>
+        <td class="num" style="color:#6ee7b7">2,899.00</td>
+        <td class="num" style="color:#fca5a5">200,000.74</td>
+    </tr>
+    <tr>
+        <td>养舒优1</td>
+        <td>B组</td>
+        <td>7月</td>
+        <td class="num">161,179.60</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">161,179.60</td>
+    </tr>
+    <tr>
+        <td>养舒优2</td>
+        <td>B组</td>
+        <td>7月</td>
+        <td class="num">36,678.64</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">36,678.64</td>
+    </tr>
+    <tr>
+        <td>素颜霜</td>
+        <td>C组</td>
+        <td>1月</td>
+        <td class="num">26,852.02</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">26,852.02</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>素颜霜</td>
+        <td>C组</td>
+        <td>2月</td>
+        <td class="num">27,235.38</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">27,235.38</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>素颜霜</td>
+        <td>C组</td>
+        <td>3月</td>
+        <td class="num">23,929.46</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">23,929.46</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>素颜霜</td>
+        <td>C组</td>
+        <td>4月</td>
+        <td class="num">17,214.05</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">17,214.05</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>素颜霜</td>
+        <td>C组</td>
+        <td>6月</td>
+        <td class="num">1,935.78</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">1,935.78</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>拓趣（沐浴油）</td>
+        <td>C组</td>
+        <td>4月</td>
+        <td class="num">31,338.81</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">30,000.00</td>
+        <td class="num" style="color:#fca5a5">1,338.81</td>
+    </tr>
+    <tr>
+        <td>拓趣（沐浴油）</td>
+        <td>C组</td>
+        <td>5月</td>
+        <td class="num">30,000.00</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">30,000.00</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>拓趣（沐浴油）</td>
+        <td>C组</td>
+        <td>6月</td>
+        <td class="num">30,000.00</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">30,000.00</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>拓趣（沐浴油）</td>
+        <td>C组</td>
+        <td>7月</td>
+        <td class="num">58,016.00</td>
+        <td>-</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">58,016.00</td>
+    </tr>
+    <tr>
+        <td>拓趣（护手霜）</td>
+        <td>C组</td>
+        <td>1月</td>
+        <td class="num">57,351.78</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">57,351.78</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>拓趣（护手霜）</td>
+        <td>C组</td>
+        <td>2月</td>
+        <td class="num">59,804.09</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">59,804.09</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>拓趣（护手霜）</td>
+        <td>C组</td>
+        <td>3月</td>
+        <td class="num">62,634.04</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">62,634.04</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>拓趣（护手霜）</td>
+        <td>C组</td>
+        <td>4月</td>
+        <td class="num">57,734.41</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">57,734.41</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>拓趣（护手霜）</td>
+        <td>C组</td>
+        <td>5月</td>
+        <td class="num">62,080.87</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">62,080.87</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>拓趣（护手霜）</td>
+        <td>C组</td>
+        <td>6月</td>
+        <td class="num">58,798.82</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">58,798.82</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>拓趣（护手霜）</td>
+        <td>C组</td>
+        <td>7月</td>
+        <td class="num">45,000.00</td>
+        <td>已开票</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">45,000.00</td>
+    </tr>
+    <tr>
+        <td>古井（达）</td>
+        <td>传媒</td>
+        <td>1月</td>
+        <td class="num">64,300.70</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">64,300.70</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>古井（达）</td>
+        <td>传媒</td>
+        <td>2月</td>
+        <td class="num">29,876.65</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">29,876.65</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>古井（达）</td>
+        <td>传媒</td>
+        <td>3月</td>
+        <td class="num">32,769.34</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">32,769.34</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>古井（达）</td>
+        <td>传媒</td>
+        <td>4月</td>
+        <td class="num">13,243.48</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">13,243.48</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>古井（达）</td>
+        <td>传媒</td>
+        <td>5月</td>
+        <td class="num">42,447.67</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">42,447.67</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>古井（达）</td>
+        <td>传媒</td>
+        <td>6月</td>
+        <td class="num">5,932.10</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">5,932.10</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>古井（达）</td>
+        <td>传媒</td>
+        <td>7月</td>
+        <td class="num">10,000.00</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">10,000.00</td>
+    </tr>
+    <tr>
+        <td>阴山优麦（达）</td>
+        <td>传媒</td>
+        <td>3月</td>
+        <td class="num">13,117.10</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">13,117.10</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦（达）</td>
+        <td>传媒</td>
+        <td>4月</td>
+        <td class="num">3,097.15</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">3,097.15</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦（达）</td>
+        <td>传媒</td>
+        <td>6月</td>
+        <td class="num">13,473.03</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">13,473.03</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>素颜霜（达）</td>
+        <td>传媒</td>
+        <td>1月</td>
+        <td class="num">8,648.48</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">8,648.48</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>素颜霜（达）</td>
+        <td>传媒</td>
+        <td>2月</td>
+        <td class="num">7,910.02</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">7,910.02</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>素颜霜（达）</td>
+        <td>传媒</td>
+        <td>3月</td>
+        <td class="num">4,330.71</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">4,330.71</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>素颜霜（达）</td>
+        <td>传媒</td>
+        <td>4月</td>
+        <td class="num">2,303.76</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">2,303.76</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>素颜霜（达）</td>
+        <td>传媒</td>
+        <td>6月</td>
+        <td class="num">1,935.78</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">1,935.78</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻（达）</td>
+        <td>传媒</td>
+        <td>3月</td>
+        <td class="num">3,893.46</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">3,893.46</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>蓝漂（达）</td>
+        <td>传媒</td>
+        <td>4月</td>
+        <td class="num">4,074.30</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">4,074.30</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦</td>
+        <td>私域</td>
+        <td>1月</td>
+        <td class="num">8,768.12</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">8,768.12</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦</td>
+        <td>私域</td>
+        <td>2月</td>
+        <td class="num">3,214.35</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">3,214.35</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦</td>
+        <td>私域</td>
+        <td>3月</td>
+        <td class="num">5,363.13</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">5,363.13</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦</td>
+        <td>私域</td>
+        <td>4月</td>
+        <td class="num">6,542.90</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">6,542.90</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦</td>
+        <td>私域</td>
+        <td>5月</td>
+        <td class="num">19,814.04</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">19,814.04</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦</td>
+        <td>私域</td>
+        <td>6月</td>
+        <td class="num">34,635.32</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">34,635.32</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>阴山优麦</td>
+        <td>私域</td>
+        <td>7月</td>
+        <td class="num">29,766.40</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">29,766.40</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻（私）</td>
+        <td>私域</td>
+        <td>1月</td>
+        <td class="num">17,525.15</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">17,525.15</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻（私）</td>
+        <td>私域</td>
+        <td>2月</td>
+        <td class="num">23,236.18</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">23,236.18</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻（私）</td>
+        <td>私域</td>
+        <td>3月</td>
+        <td class="num">31,575.59</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">31,575.59</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻（私）</td>
+        <td>私域</td>
+        <td>4月</td>
+        <td class="num">30,814.41</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">30,814.41</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻（私）</td>
+        <td>私域</td>
+        <td>5月</td>
+        <td class="num">21,962.51</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">21,962.51</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻（私）</td>
+        <td>私域</td>
+        <td>6月</td>
+        <td class="num">27,801.74</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">27,801.74</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>南方黑芝麻（私）</td>
+        <td>私域</td>
+        <td>7月</td>
+        <td class="num">26,964.20</td>
+        <td>未对账</td>
+        <td class="num" style="color:#6ee7b7">0</td>
+        <td class="num" style="color:#fca5a5">26,964.20</td>
+    </tr>
+    <tr>
+        <td>DAVIDGARCE男装</td>
+        <td>聚能</td>
+        <td>3月</td>
+        <td class="num">11,835.18</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">11,835.18</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>营业外收入</td>
+        <td>其他</td>
+        <td>1月</td>
+        <td class="num">21,613.20</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">21,613.20</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>营业外收入</td>
+        <td>其他</td>
+        <td>2月</td>
+        <td class="num">19,029.16</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">19,029.16</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>营业外收入</td>
+        <td>其他</td>
+        <td>3月</td>
+        <td class="num">18,882.06</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">18,882.06</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>营业外收入</td>
+        <td>其他</td>
+        <td>4月</td>
+        <td class="num">15,825.00</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">15,825.00</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+    <tr>
+        <td>营业外收入</td>
+        <td>其他</td>
+        <td>5月</td>
+        <td class="num">15,000.00</td>
+        <td>已回款</td>
+        <td class="num" style="color:#6ee7b7">15,000.00</td>
+        <td class="num" style="color:#fca5a5">0</td>
+    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ========== 页面2：经营数据仪表盘 ========== -->
+<div class="page-container" id="page-dashboard">
+    
+
+<div class="header">
+  <h1>聚光直播 · 2026 经营数据仪表盘</h1>
+  <div class="meta">数据周期：<span>2026年1月 — 7月</span> ｜ 更新时间：<span>2026-08-12</span></div>
+</div>
+
+<!-- 第一板块 -->
+<div class="section-title">第一板块 · 核心指标概览 <span class="badge">数据卡片</span></div>
+<div class="cards-grid">
+  <div class="card blue">
+    <div class="card-label"><span class="dot"></span>业务总收入（1-7月）</div>
+    <div class="card-value">836.24<span class="card-unit">万元</span></div>
+    <div class="card-sub">累计收入小计 <strong>¥8,362,366.85</strong></div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>年度目标 2,000 万</span><span>41.81%</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:41.81%"></div></div>
+    </div>
+  </div>
+  <div class="card green">
+    <div class="card-label"><span class="dot"></span>回款总计（1-7月）</div>
+    <div class="card-value">620.64<span class="card-unit">万元</span></div>
+    <div class="card-sub">累计回款小计 <strong>¥6,206,406.31</strong></div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>占业务收入比</span><span>74.22%</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:74.22%"></div></div>
+    </div>
+  </div>
+  <div class="card red">
+    <div class="card-label"><span class="dot"></span>应收款总计</div>
+    <div class="card-value">215.60<span class="card-unit">万元</span></div>
+    <div class="card-sub">业务收入 − 回款总计 = <strong>¥2,155,960.54</strong></div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>未回款占比</span><span>25.78%</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:25.78%"></div></div>
+    </div>
+  </div>
+  <div class="card purple">
+    <div class="card-label"><span class="dot"></span>年底前每月收入目标</div>
+    <div class="card-value">232.75<span class="card-unit">万元/月</span></div>
+    <div class="card-sub">剩余 <strong>5 个月</strong>（8-12月）需完成 <strong>1,163.76 万</strong></div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>距年度目标缺口</span><span>58.19%</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:58.19%"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 第二板块 -->
+<div class="section-title">第二板块 · 项目收入分析 <span class="badge">柱状图排名</span></div>
+<div class="chart-row-full">
+  <div class="chart-box">
+    <h3>（1）各项目总收入降序排名 <span class="hint">单位：元</span></h3>
+    <div class="chart-container tall"><canvas id="chartRevenue"></canvas></div>
+  </div>
+</div>
+<div class="chart-row-full">
+  <div class="chart-box">
+    <h3>（2）各项目月均收入排名 <span class="hint">月均 = 总收入 ÷ 存续月份数，单位：元/月</span></h3>
+    <div class="chart-container tall"><canvas id="chartAvgMonthly"></canvas></div>
+  </div>
+</div>
+
+<!-- 第三板块 -->
+<div class="section-title">第三板块 · 应收账款分析 <span class="badge">应收款 + 风险预警</span></div>
+<div class="cards-grid-3">
+  <div class="card red">
+    <div class="card-label"><span class="dot"></span>2026年度总的应收款</div>
+    <div class="card-value">215.60<span class="card-unit">万元</span></div>
+    <div class="card-sub">各项目（预估收入 − 实际回款）汇总 <strong>¥2,155,960.55</strong></div>
+  </div>
+  <div class="card orange">
+    <div class="card-label"><span class="dot"></span>超过2个月未回款总额</div>
+    <div class="card-value">94.51<span class="card-unit">万元</span></div>
+    <div class="card-sub">1-6月到期未回款部分 <strong>¥945,145.57</strong><br>占2026应收款 <strong>43.84%</strong></div>
+  </div>
+  <div class="card purple">
+    <div class="card-label"><span class="dot"></span>年度应收款总计（含往年）</div>
+    <div class="card-value">247.06<span class="card-unit">万元</span></div>
+    <div class="card-sub">
+      <strong>¥2,470,640.55</strong>
+      <div class="year-breakdown">
+        <span class="year-item">2024: ¥314,680</span>
+        <span class="year-item">2025: ¥0</span>
+        <span class="year-item">2026: ¥2,155,960.55</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="chart-row-full" style="margin-top:24px">
+  <div class="chart-box">
+    <h3>（2）各项目应收款降序排名 <span class="hint">红色 = 超过2个月（含2个月）未回款预警</span></h3>
+    <div class="legend-inline">
+      <span><span class="sw" style="background:#f87171"></span>超2个月未回款</span>
+      <span><span class="sw" style="background:#38bdf8"></span>正常应收款</span>
+    </div>
+    <div class="chart-container tall"><canvas id="chartReceivable"></canvas></div>
+  </div>
+</div>
+<div class="chart-row-full">
+  <div class="chart-box">
+    <h3>（3）每月应收款情况 <span class="hint">鼠标悬浮查看未回款项目明细</span></h3>
+    <div class="chart-container medium"><canvas id="chartMonthlyReceivable"></canvas></div>
+  </div>
+</div>
+
+<!-- 第四板块 -->
+<div class="section-title">第四板块 · 收入分析 <span class="badge">趋势 + 排名</span></div>
+<div class="chart-row-full">
+  <div class="chart-box">
+    <h3>（1）每月收入趋势 + 存续项目数量 <span class="hint">柱状图=收入（万元），折线=存续项目数</span></h3>
+    <div class="chart-container normal"><canvas id="chartTrend"></canvas></div>
+  </div>
+</div>
+<div class="chart-row-full">
+  <div class="chart-box">
+    <h3>（2）项目月均收入排名 <span class="hint">年度总收入 ÷ 存续月份，单位：元/月</span></h3>
+    <div class="chart-container tall"><canvas id="chartAvgRank"></canvas></div>
+  </div>
+</div>
+<div class="chart-row-full">
+  <div class="chart-box">
+    <h3>（3）项目存续时间排名 <span class="hint">按有收入数据的月份数降序</span></h3>
+    <div class="chart-container medium"><canvas id="chartActiveMonths"></canvas></div>
+  </div>
+</div>
+
+<div class="footer">数据来源：飞书表格「2026账单」｜ 聚光直播经营分析 ｜ 共 27 个项目</div>
+
+<script>
+// ========== 数据 ==========
+const projectsByRevenue = [
+  {name:"阴山优麦冲饮",value:1817335.56},{name:"桂格",value:1319500.36},
+  {name:"南方黑芝麻-1",value:710309.46},{name:"抖音超市美妆",value:707381.47},
+  {name:"阴山优麦食品",value:637397.10},{name:"养舒优1",value:607342.19},
+  {name:"古井（季度结算）",value:486751.30},{name:"拓趣（护手霜）",value:403404.01},
+  {name:"旺旺",value:274774.39},{name:"古井（达）",value:198569.94},
+  {name:"追觅戒指",value:183468.64},{name:"南方黑芝麻（私）",value:179879.78},
+  {name:"拓趣（沐浴油）",value:149354.81},{name:"阴山优麦",value:108104.26},
+  {name:"素颜霜",value:97166.69},{name:"营业外收入",value:90349.42},
+  {name:"蓝漂",value:89329.63},{name:"乐锦记",value:80241.94},
+  {name:"南方黑芝麻-2",value:74425.86},{name:"养舒优2",value:36678.64},
+  {name:"阴山优麦（达）",value:29687.28},{name:"美菱小家电",value:27095.86},
+  {name:"素颜霜（达）",value:25128.75},{name:"DAVIDGARCE男装",value:11835.18},
+  {name:"抖超箱包",value:8886.58},{name:"蓝漂（达）",value:4074.30},
+  {name:"南方黑芝麻（达）",value:3893.46}
+];
+
+const projectsByAvg = [
+  {name:"阴山优麦冲饮",value:259619.37,months:7},{name:"桂格",value:188500.05,months:7},
+  {name:"养舒优1",value:151835.55,months:4},{name:"南方黑芝麻-1",value:101472.78,months:7},
+  {name:"抖音超市美妆",value:101054.50,months:7},{name:"阴山优麦食品",value:91056.73,months:7},
+  {name:"南方黑芝麻-2",value:74425.86,months:1},{name:"古井（季度结算）",value:69535.90,months:7},
+  {name:"追觅戒指",value:61156.21,months:3},{name:"拓趣（护手霜）",value:57629.14,months:7},
+  {name:"旺旺",value:54954.88,months:5},{name:"乐锦记",value:40120.97,months:2},
+  {name:"拓趣（沐浴油）",value:37338.70,months:4},{name:"养舒优2",value:36678.64,months:1},
+  {name:"蓝漂",value:29776.54,months:3},{name:"古井（达）",value:28367.13,months:7},
+  {name:"南方黑芝麻（私）",value:25697.11,months:7},{name:"素颜霜",value:19433.34,months:5},
+  {name:"营业外收入",value:18069.88,months:5},{name:"阴山优麦",value:15443.47,months:7},
+  {name:"DAVIDGARCE男装",value:11835.18,months:1},{name:"阴山优麦（达）",value:9895.76,months:3},
+  {name:"美菱小家电",value:9031.95,months:3},{name:"素颜霜（达）",value:5025.75,months:5},
+  {name:"抖超箱包",value:4443.29,months:2},{name:"蓝漂（达）",value:4074.30,months:1},
+  {name:"南方黑芝麻（达）",value:3893.46,months:1}
+];
+
+const projectsByReceivable = [
+  {name:"阴山优麦冲饮",value:537398.62,overdue:true},{name:"养舒优1",value:361180.34,overdue:true},
+  {name:"旺旺",value:274774.39,overdue:true},{name:"抖音超市美妆",value:193471.77,overdue:true},
+  {name:"追觅戒指",value:142025.76,overdue:true},{name:"桂格",value:128981.16,overdue:false},
+  {name:"南方黑芝麻-1",value:82230.76,overdue:false},{name:"阴山优麦食品",value:75000.74,overdue:false},
+  {name:"南方黑芝麻-2",value:74425.86,overdue:false},{name:"拓趣（沐浴油）",value:59354.81,overdue:true},
+  {name:"拓趣（护手霜）",value:45000.00,overdue:false},{name:"古井（季度结算）",value:42407.10,overdue:false},
+  {name:"养舒优2",value:36678.64,overdue:false},{name:"蓝漂",value:30000.00,overdue:true},
+  {name:"阴山优麦",value:29766.40,overdue:false},{name:"南方黑芝麻（私）",value:26964.20,overdue:false},
+  {name:"古井（达）",value:10000.00,overdue:false},{name:"美菱小家电",value:5700.00,overdue:true},
+  {name:"抖超箱包",value:600.00,overdue:true}
+];
+
+const monthlyReceivable = [
+  {month:"1月",receivable:69211.92,unpaid:[{name:"旺旺",amount:73711.92}]},
+  {month:"2月",receivable:40940.64,unpaid:[{name:"旺旺",amount:40940.64}]},
+  {month:"3月",receivable:0,unpaid:[]},
+  {month:"4月",receivable:15423.06,unpaid:[{name:"旺旺",amount:14084.25},{name:"拓趣（沐浴油）",amount:1338.81}]},
+  {month:"5月",receivable:100087.01,unpaid:[{name:"蓝漂",amount:30000},{name:"旺旺",amount:70087.01}]},
+  {month:"6月",receivable:714982.94,unpaid:[{name:"阴山优麦冲饮",amount:286059.10},{name:"养舒优1",amount:200000.74},{name:"抖音超市美妆",amount:72646.77},{name:"旺旺",amount:75950.57},{name:"追觅戒指",amount:74025.76},{name:"美菱小家电",amount:5700},{name:"抖超箱包",amount:600}]},
+  {month:"7月",receivable:1215314.98,unpaid:[{name:"阴山优麦冲饮",amount:251339.52},{name:"养舒优1",amount:161179.60},{name:"桂格",amount:128981.16},{name:"抖音超市美妆",amount:120825},{name:"南方黑芝麻-1",amount:86730.76},{name:"追觅戒指",amount:68000},{name:"拓趣（沐浴油）",amount:58016},{name:"阴山优麦食品",amount:75000.74},{name:"南方黑芝麻-2",amount:74425.86},{name:"拓趣（护手霜）",amount:45000},{name:"古井（季度结算）",amount:42407.10},{name:"养舒优2",amount:36678.64},{name:"阴山优麦",amount:29766.40},{name:"南方黑芝麻（私）",amount:26964.20},{name:"古井（达）",amount:10000}]}
+];
+
+const monthlyTrend = {
+  months: ["1月","2月","3月","4月","5月","6月","7月"],
+  revenue: [157.53, 92.70, 101.63, 104.58, 133.62, 124.65, 121.53],
+  activeCount: [14, 14, 17, 21, 19, 19, 15]
+};
+
+const projectsByActive = [
+  {name:"阴山优麦冲饮",value:7,total:1817335.56},{name:"桂格",value:7,total:1319500.36},
+  {name:"南方黑芝麻-1",value:7,total:710309.46},{name:"抖音超市美妆",value:7,total:707381.47},
+  {name:"阴山优麦食品",value:7,total:637397.10},{name:"古井（季度结算）",value:7,total:486751.30},
+  {name:"拓趣（护手霜）",value:7,total:403404.01},{name:"古井（达）",value:7,total:198569.94},
+  {name:"南方黑芝麻（私）",value:7,total:179879.78},{name:"阴山优麦",value:7,total:108104.26},
+  {name:"旺旺",value:5,total:274774.39},{name:"素颜霜",value:5,total:97166.69},
+  {name:"营业外收入",value:5,total:90349.42},{name:"素颜霜（达）",value:5,total:25128.75},
+  {name:"养舒优1",value:4,total:607342.19},{name:"拓趣（沐浴油）",value:4,total:149354.81},
+  {name:"追觅戒指",value:3,total:183468.64},{name:"蓝漂",value:3,total:89329.63},
+  {name:"阴山优麦（达）",value:3,total:29687.28},{name:"美菱小家电",value:3,total:27095.86},
+  {name:"乐锦记",value:2,total:80241.94},{name:"抖超箱包",value:2,total:8886.58},
+  {name:"南方黑芝麻-2",value:1,total:74425.86},{name:"养舒优2",value:1,total:36678.64},
+  {name:"DAVIDGARCE男装",value:1,total:11835.18},{name:"蓝漂（达）",value:1,total:4074.30},
+  {name:"南方黑芝麻（达）",value:1,total:3893.46}
+];
+
+// ========== 通用配置 ==========
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.font.family = '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+
+// 数值标签插件
+const valueLabelPlugin = {
+  id: 'valueLabel',
+  afterDatasetsDraw(chart) {
+    const { ctx, chartArea } = chart;
+    ctx.save();
+    ctx.font = '11px -apple-system, "PingFang SC", sans-serif';
+    ctx.textBaseline = 'middle';
+    chart.data.datasets.forEach((dataset, i) => {
+      const meta = chart.getDatasetMeta(i);
+      meta.data.forEach((bar, index) => {
+        const value = dataset.data[index];
+        if (value === 0) return;
+        const formatted = value >= 10000 ? (value/10000).toFixed(1) + '万' : value.toFixed(0);
+        ctx.fillStyle = '#cbd5e1';
+        // 横向柱状图：标签在柱子右侧
+        if (chart.options.indexAxis === 'y') {
+          ctx.textAlign = 'left';
+          ctx.fillText(formatted, bar.x + 6, bar.y);
+        } else {
+          ctx.textAlign = 'center';
+          ctx.fillText(formatted, bar.x, bar.y - 8);
+        }
+      });
+    });
+    ctx.restore();
+  }
+};
+
+const tooltipStyle = {
+  backgroundColor: 'rgba(15,23,42,0.95)',
+  titleColor: '#e2e8f0',
+  bodyColor: '#cbd5e1',
+  borderColor: 'rgba(56,189,248,0.3)',
+  borderWidth: 1,
+  padding: 12,
+  titleFont: { size: 13, weight: '600' },
+  bodyFont: { size: 12 }
+};
+
+// ========== 图表1：项目总收入 ==========
+new Chart(document.getElementById('chartRevenue'), {
+  type: 'bar',
+  data: {
+    labels: projectsByRevenue.map(p => p.name),
+    datasets: [{
+      data: projectsByRevenue.map(p => p.value),
+      backgroundColor: 'rgba(56,189,248,0.65)',
+      borderColor: '#38bdf8',
+      borderWidth: 1,
+      borderRadius: 4,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...tooltipStyle, callbacks: { label: c => '总收入: ¥' + c.parsed.x.toLocaleString('zh-CN', {minimumFractionDigits:2}) } }
+    },
+    scales: {
+      x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+    }
+  },
+  plugins: [valueLabelPlugin]
+});
+
+// ========== 图表2：项目月均收入 ==========
+new Chart(document.getElementById('chartAvgMonthly'), {
+  type: 'bar',
+  data: {
+    labels: projectsByAvg.map(p => p.name + ' (' + p.months + '月)'),
+    datasets: [{
+      data: projectsByAvg.map(p => p.value),
+      backgroundColor: 'rgba(52,211,153,0.65)',
+      borderColor: '#34d399',
+      borderWidth: 1,
+      borderRadius: 4,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...tooltipStyle, callbacks: { label: c => '月均收入: ¥' + c.parsed.x.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '/月' } }
+    },
+    scales: {
+      x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+    }
+  },
+  plugins: [valueLabelPlugin]
+});
+
+// ========== 图表3：项目应收款（红色预警） ==========
+new Chart(document.getElementById('chartReceivable'), {
+  type: 'bar',
+  data: {
+    labels: projectsByReceivable.map(p => p.name),
+    datasets: [{
+      data: projectsByReceivable.map(p => p.value),
+      backgroundColor: projectsByReceivable.map(p => p.overdue ? 'rgba(248,113,113,0.75)' : 'rgba(56,189,248,0.55)'),
+      borderColor: projectsByReceivable.map(p => p.overdue ? '#f87171' : '#38bdf8'),
+      borderWidth: 1,
+      borderRadius: 4,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        ...tooltipStyle,
+        callbacks: {
+          label: function(c) {
+            const p = projectsByReceivable[c.dataIndex];
+            return '应收款: ¥' + c.parsed.x.toLocaleString('zh-CN', {minimumFractionDigits:2}) + (p.overdue ? '  ⚠ 超2个月未回款' : '');
+          }
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+    }
+  },
+  plugins: [valueLabelPlugin]
+});
+
+// ========== 图表4：每月应收款（tooltip明细） ==========
+new Chart(document.getElementById('chartMonthlyReceivable'), {
+  type: 'bar',
+  data: {
+    labels: monthlyReceivable.map(m => m.month),
+    datasets: [{
+      label: '当月应收款',
+      data: monthlyReceivable.map(m => m.receivable),
+      backgroundColor: monthlyReceivable.map((m,i) => i >= 5 ? 'rgba(248,113,113,0.6)' : 'rgba(251,146,60,0.6)'),
+      borderColor: monthlyReceivable.map((m,i) => i >= 5 ? '#f87171' : '#fb923c'),
+      borderWidth: 1,
+      borderRadius: 6,
+      barPercentage: 0.55
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        ...tooltipStyle,
+        callbacks: {
+          title: function(items) { return items[0].label + ' 应收款明细'; },
+          label: function(c) {
+            const m = monthlyReceivable[c.dataIndex];
+            return '当月应收: ¥' + c.parsed.y.toLocaleString('zh-CN', {minimumFractionDigits:2});
+          },
+          afterLabel: function(c) {
+            const m = monthlyReceivable[c.dataIndex];
+            if (m.unpaid.length === 0) return '（无未回款项目）';
+            return m.unpaid.map(u => '  • ' + u.name + ': ¥' + u.amount.toLocaleString('zh-CN', {minimumFractionDigits:2})).join('\n');
+          }
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+      y: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+    }
+  }
+});
+
+// ========== 图表5：每月收入趋势 + 存续项目数 ==========
+new Chart(document.getElementById('chartTrend'), {
+  data: {
+    labels: monthlyTrend.months,
+    datasets: [
+      {
+        type: 'bar',
+        label: '月度收入（万元）',
+        data: monthlyTrend.revenue,
+        backgroundColor: 'rgba(56,189,248,0.55)',
+        borderColor: '#38bdf8',
+        borderWidth: 1,
+        borderRadius: 6,
+        barPercentage: 0.5,
+        yAxisID: 'y'
+      },
+      {
+        type: 'line',
+        label: '存续项目数',
+        data: monthlyTrend.activeCount,
+        borderColor: '#a855f7',
+        backgroundColor: 'rgba(168,85,247,0.1)',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#a855f7',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        tension: 0.3,
+        fill: false,
+        yAxisID: 'y1'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { labels: { color: '#94a3b8', usePointStyle: true, padding: 16 } },
+      tooltip: { ...tooltipStyle }
+    },
+    scales: {
+      x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+      y: {
+        position: 'left',
+        title: { display: true, text: '收入（万元）', color: '#38bdf8', font: { size: 11 } },
+        ticks: { color: '#64748b' },
+        grid: { color: 'rgba(255,255,255,0.04)' }
+      },
+      y1: {
+        position: 'right',
+        title: { display: true, text: '存续项目数', color: '#a855f7', font: { size: 11 } },
+        ticks: { color: '#64748b', stepSize: 2 },
+        grid: { drawOnChartArea: false },
+        min: 0,
+        max: 25
+      }
+    }
+  }
+});
+
+// ========== 图表6：项目月均收入排名（第四板块） ==========
+new Chart(document.getElementById('chartAvgRank'), {
+  type: 'bar',
+  data: {
+    labels: projectsByAvg.map(p => p.name),
+    datasets: [{
+      data: projectsByAvg.map(p => p.value),
+      backgroundColor: 'rgba(129,140,248,0.6)',
+      borderColor: '#818cf8',
+      borderWidth: 1,
+      borderRadius: 4,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...tooltipStyle, callbacks: { label: c => '月均: ¥' + c.parsed.x.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '/月 （存续' + projectsByAvg[c.dataIndex].months + '个月）' } }
+    },
+    scales: {
+      x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+    }
+  },
+  plugins: [valueLabelPlugin]
+});
+
+// ========== 图表7：项目存续时间排名 ==========
+new Chart(document.getElementById('chartActiveMonths'), {
+  type: 'bar',
+  data: {
+    labels: projectsByActive.map(p => p.name),
+    datasets: [{
+      data: projectsByActive.map(p => p.value),
+      backgroundColor: projectsByActive.map(p => {
+        if (p.value >= 7) return 'rgba(52,211,153,0.65)';
+        if (p.value >= 4) return 'rgba(56,189,248,0.6)';
+        if (p.value >= 2) return 'rgba(251,146,60,0.6)';
+        return 'rgba(248,113,113,0.55)';
+      }),
+      borderColor: projectsByActive.map(p => {
+        if (p.value >= 7) return '#34d399';
+        if (p.value >= 4) return '#38bdf8';
+        if (p.value >= 2) return '#fb923c';
+        return '#f87171';
+      }),
+      borderWidth: 1,
+      borderRadius: 4,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...tooltipStyle, callbacks: { label: c => '存续 ' + c.parsed.x + ' 个月，总收入 ¥' + projectsByActive[c.dataIndex].total.toLocaleString('zh-CN', {minimumFractionDigits:2}) } }
+    },
+    scales: {
+      x: { ticks: { color: '#64748b', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.04)' }, max: 8 },
+      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+    }
+  },
+  plugins: [valueLabelPlugin]
+});
+</script>
+
+</div>
+
+<!-- ========== 页面3：应收款分析 ========== -->
+<div class="page-container" id="page-receivable">
+    <div class="page-header">
+        <h1>应收款分析</h1>
+        <p>多维度回款分析与应收款监控 · 数据周期：2026年1月-7月 · 更新时间：2026-08-12</p>
+    </div>
+
+    <!-- 年度目标与完成率 -->
+    <div class="receivable-section">
+        <div class="section-title">年度目标与完成率</div>
+        <div class="target-cards">
+            <div class="target-card red">
+                <div class="tc-label">年度回款目标</div>
+                <div class="tc-value">2000<span style="font-size:14px">万元</span></div>
+                <div class="tc-sub">全年回款考核目标</div>
+            </div>
+            <div class="target-card blue">
+                <div class="tc-label">已完成回款</div>
+                <div class="tc-value">620.64<span style="font-size:14px">万元</span></div>
+                <div class="tc-sub">完成率 31.0%</div>
+            </div>
+            <div class="target-card orange">
+                <div class="tc-label">剩余目标</div>
+                <div class="tc-value">1379.36<span style="font-size:14px">万元</span></div>
+                <div class="tc-sub">还需完成 69.0%</div>
+            </div>
+            <div class="target-card green">
+                <div class="tc-label">年底前月均目标</div>
+                <div class="tc-value">229.89<span style="font-size:14px">万元/月</span></div>
+                <div class="tc-sub">剩余6个月需完成</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 实际经营数据 -->
+    <div class="receivable-section">
+        <div class="section-title">实际经营数据</div>
+        <div class="target-cards">
+            <div class="target-card blue">
+                <div class="tc-label">业务总收入</div>
+                <div class="tc-value">836.24<span style="font-size:14px">万元</span></div>
+                <div class="tc-sub">27个项目累计</div>
+            </div>
+            <div class="target-card green">
+                <div class="tc-label">回款总计</div>
+                <div class="tc-value">620.64<span style="font-size:14px">万元</span></div>
+                <div class="tc-sub">回款率 74.2%</div>
+            </div>
+            <div class="target-card orange">
+                <div class="tc-label">应收款总计</div>
+                <div class="tc-value">215.60<span style="font-size:14px">万元</span></div>
+                <div class="tc-sub">占收入 25.8%</div>
+            </div>
+            <div class="target-card red">
+                <div class="tc-label">超2个月未回款</div>
+                <div class="tc-value">87.87<span style="font-size:14px">万元</span></div>
+                <div class="tc-sub">需重点跟进</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 当前月（7月）回款数据 -->
+    <div class="receivable-section">
+        <div class="current-month-box">
+            <div class="cm-header">
+                <div class="cm-title">📊 当前月（7月）回款数据</div>
+                <div class="cm-badge">⚠ 回款率 0% - 待跟进</div>
+            </div>
+            <div class="cm-stats">
+                <div class="cm-stat">
+                    <div class="cm-label">7月预估收入</div>
+                    <div class="cm-value" style="color:#38bdf8">121.53万</div>
+                </div>
+                <div class="cm-stat">
+                    <div class="cm-label">7月已回款</div>
+                    <div class="cm-value" style="color:#34d399">0万</div>
+                </div>
+                <div class="cm-stat">
+                    <div class="cm-label">7月应收款</div>
+                    <div class="cm-value" style="color:#fb923c">121.53万</div>
+                </div>
+                <div class="cm-stat">
+                    <div class="cm-label">月度目标</div>
+                    <div class="cm-value" style="color:#f87171">166万</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 月度回款趋势 + 月度目标达成 -->
+    <div class="receivable-section">
+        <div class="two-col">
+            <div class="chart-box">
+                <h3>月度回款趋势与目标红线</h3>
+                <div class="chart-container">
+                    <canvas id="chartMonthlyTrend"></canvas>
+                </div>
+            </div>
+            <div class="data-table-wrapper">
+                <div class="data-table-header">
+                    <h3>月度目标达成情况</h3>
+                </div>
+                <div style="max-height: 340px; overflow-y: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>月份</th>
+                                <th style="text-align:right">目标</th>
+                                <th style="text-align:right">预估</th>
+                                <th style="text-align:right">回款</th>
+                                <th style="text-align:right">未回</th>
+                                <th>回款率</th>
+                                <th style="text-align:right">预估率</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+    <tr>
+        <td style="font-weight:600">1月</td>
+        <td class="num" style="color:#f87171;font-weight:700">1,350,000.00</td>
+        <td class="num">1,575,306.02</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">1,506,094.10</td>
+        <td class="num" style="color:#fb923c;font-weight:600">69,211.92</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:100%"></span></span>
+            <span class="rate-text">111.6%</span>
+        </td>
+        <td class="num">116.7%</td>
+        <td><span class="tag pass">达标</span></td>
+    </tr>
+    <tr>
+        <td style="font-weight:600">2月</td>
+        <td class="num" style="color:#f87171;font-weight:700">1,350,000.00</td>
+        <td class="num">926,979.45</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">886,038.81</td>
+        <td class="num" style="color:#fb923c;font-weight:600">40,940.64</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:65.63250444444445%"></span></span>
+            <span class="rate-text">65.6%</span>
+        </td>
+        <td class="num">68.7%</td>
+        <td><span class="tag fail">未达标</span></td>
+    </tr>
+    <tr>
+        <td style="font-weight:600">3月</td>
+        <td class="num" style="color:#f87171;font-weight:700">1,350,000.00</td>
+        <td class="num">1,016,259.10</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">1,016,259.10</td>
+        <td class="num" style="color:#fb923c;font-weight:600">0</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:75.27845185185184%"></span></span>
+            <span class="rate-text">75.3%</span>
+        </td>
+        <td class="num">75.3%</td>
+        <td><span class="tag fail">未达标</span></td>
+    </tr>
+    <tr>
+        <td style="font-weight:600">4月</td>
+        <td class="num" style="color:#f87171;font-weight:700">1,350,000.00</td>
+        <td class="num">1,045,824.28</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">1,030,401.22</td>
+        <td class="num" style="color:#fb923c;font-weight:600">15,423.06</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:76.3260162962963%"></span></span>
+            <span class="rate-text">76.3%</span>
+        </td>
+        <td class="num">77.5%</td>
+        <td><span class="tag fail">未达标</span></td>
+    </tr>
+    <tr>
+        <td style="font-weight:600">5月</td>
+        <td class="num" style="color:#f87171;font-weight:700">1,350,000.00</td>
+        <td class="num">1,336,227.63</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">1,236,140.62</td>
+        <td class="num" style="color:#fb923c;font-weight:600">100,087.01</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:91.56597185185186%"></span></span>
+            <span class="rate-text">91.6%</span>
+        </td>
+        <td class="num">99.0%</td>
+        <td><span class="tag fail">未达标</span></td>
+    </tr>
+    <tr>
+        <td style="font-weight:600">6月</td>
+        <td class="num" style="color:#f87171;font-weight:700">1,350,000.00</td>
+        <td class="num">1,246,455.40</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">531,472.46</td>
+        <td class="num" style="color:#fb923c;font-weight:600">714,982.94</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:39.368330370370366%"></span></span>
+            <span class="rate-text">39.4%</span>
+        </td>
+        <td class="num">92.3%</td>
+        <td><span class="tag fail">未达标</span></td>
+    </tr>
+    <tr>
+        <td style="font-weight:600">7月</td>
+        <td class="num" style="color:#f87171;font-weight:700">1,660,000.00</td>
+        <td class="num">1,215,314.98</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
+        <td class="num" style="color:#fb923c;font-weight:600">1,215,314.98</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:0.0%"></span></span>
+            <span class="rate-text">0.0%</span>
+        </td>
+        <td class="num">73.2%</td>
+        <td><span class="tag fail">未达标</span></td>
+    </tr>
+<tr style="background:rgba(56,189,248,0.1);font-weight:700">
+    <td>合计</td>
+    <td class="num" style="color:#f87171">9,760,000.00</td>
+    <td class="num">8,362,366.86</td>
+    <td class="num" style="color:#6ee7b7">6,206,406.31</td>
+    <td class="num" style="color:#fb923c">2,155,960.55</td>
+    <td class="rate-cell">
+        <span class="rate-bar"><span class="rate-fill" style="width:63.6%;background:linear-gradient(90deg,#34d399,#10b981)"></span></span>
+        <span class="rate-text" style="color:#34d399">63.6%</span>
+    </td>
+    <td class="num">85.7%</td>
+    <td><span class="tag fail">6个月未达标</span></td>
+</tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 业务组回款汇总 -->
+    <div class="receivable-section">
+        <div class="section-title">业务组回款汇总</div>
+        <div class="data-table-wrapper">
+            <div class="data-table-header">
+                <h3>各业务组收入/回款/应收款对比</h3>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>业务组</th>
+                        <th style="text-align:right">预估收入</th>
+                        <th style="text-align:right">已回款</th>
+                        <th style="text-align:right">应收款</th>
+                        <th>回款率</th>
+                        <th style="text-align:center">项目数</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+    <tr>
+        <td style="font-weight:600"><span class="group-dot" style="background:#38bdf8"></span>A组</td>
+        <td class="num">3,470,894.84</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">2,486,697.95</td>
+        <td class="num" style="color:#fb923c;font-weight:600">984,196.89</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:71.64428957461587%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
+            <span class="rate-text" style="color:#38bdf8">71.6%</span>
+        </td>
+        <td class="num" style="text-align:center">7</td>
+    </tr>
+    <tr>
+        <td style="font-weight:600"><span class="group-dot" style="background:#34d399"></span>B组</td>
+        <td class="num">3,590,024.14</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">2,589,345.89</td>
+        <td class="num" style="color:#fb923c;font-weight:600">1,000,678.25</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:72.12614146934399%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
+            <span class="rate-text" style="color:#34d399">72.1%</span>
+        </td>
+        <td class="num" style="text-align:center">8</td>
+    </tr>
+    <tr>
+        <td style="font-weight:600"><span class="group-dot" style="background:#fb923c"></span>C组</td>
+        <td class="num">649,925.51</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">545,570.70</td>
+        <td class="num" style="color:#fb923c;font-weight:600">104,354.81</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:83.94357377970898%;background:linear-gradient(90deg,#fb923c,#fb923cdd)"></span></span>
+            <span class="rate-text" style="color:#fb923c">83.9%</span>
+        </td>
+        <td class="num" style="text-align:center">3</td>
+    </tr>
+    <tr>
+        <td style="font-weight:600"><span class="group-dot" style="background:#a855f7"></span>传媒</td>
+        <td class="num">261,353.73</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">251,353.73</td>
+        <td class="num" style="color:#fb923c;font-weight:600">10,000.00</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:96.17376801930472%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
+            <span class="rate-text" style="color:#a855f7">96.2%</span>
+        </td>
+        <td class="num" style="text-align:center">5</td>
+    </tr>
+    <tr>
+        <td style="font-weight:600"><span class="group-dot" style="background:#f87171"></span>私域</td>
+        <td class="num">287,984.04</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">231,253.44</td>
+        <td class="num" style="color:#fb923c;font-weight:600">56,730.60</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:80.3007833350765%;background:linear-gradient(90deg,#f87171,#f87171dd)"></span></span>
+            <span class="rate-text" style="color:#f87171">80.3%</span>
+        </td>
+        <td class="num" style="text-align:center">2</td>
+    </tr>
+    <tr>
+        <td style="font-weight:600"><span class="group-dot" style="background:#0ea5e9"></span>聚能</td>
+        <td class="num">11,835.18</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">11,835.18</td>
+        <td class="num" style="color:#fb923c;font-weight:600">0</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#0ea5e9,#0ea5e9dd)"></span></span>
+            <span class="rate-text" style="color:#0ea5e9">100.0%</span>
+        </td>
+        <td class="num" style="text-align:center">1</td>
+    </tr>
+    <tr>
+        <td style="font-weight:600"><span class="group-dot" style="background:#94a3b8"></span>其他</td>
+        <td class="num">90,349.42</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">90,349.42</td>
+        <td class="num" style="color:#fb923c;font-weight:600">0</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#94a3b8,#94a3b8dd)"></span></span>
+            <span class="rate-text" style="color:#94a3b8">100.0%</span>
+        </td>
+        <td class="num" style="text-align:center">1</td>
+    </tr>
+<tr style="background:rgba(56,189,248,0.1);font-weight:700">
+    <td>合计</td>
+    <td class="num">8,362,366.86</td>
+    <td class="num" style="color:#6ee7b7">6,206,406.31</td>
+    <td class="num" style="color:#fb923c">2,155,960.55</td>
+    <td class="rate-cell">
+        <span class="rate-bar"><span class="rate-fill" style="width:74.2%;background:linear-gradient(90deg,#38bdf8,#0ea5e9)"></span></span>
+        <span class="rate-text" style="color:#38bdf8">74.2%</span>
+    </td>
+    <td class="num" style="text-align:center">27</td>
+</tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 年度未回款排名 + 7月业务组明细 -->
+    <div class="receivable-section">
+        <div class="two-col">
+            <div>
+                <div class="section-title">年度未回款排名（按业务组）</div>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>排名</th>
+                                <th>业务组</th>
+                                <th style="text-align:right">未回款金额</th>
+                                <th>占比</th>
+                                <th style="text-align:right">已回款</th>
+                                <th style="text-align:right">回款率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+    <tr>
+        <td style="font-weight:700;color:#7dd3fc">#1</td>
+        <td style="font-weight:600"><span class="group-dot" style="background:#34d399"></span>B组</td>
+        <td class="num" style="color:#7dd3fc;font-weight:700;font-size:14px">1,000,678.25</td>
+        <td class="rate-cell">
+            <span class="rate-bar" style="width:140px"><span class="rate-fill" style="width:46.4144972411485%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
+            <span class="rate-text" style="color:#34d399">46.4%</span>
+        </td>
+        <td class="num" style="color:#6ee7b7">2,589,345.89</td>
+        <td class="num">72.1%</td>
+    </tr>
+    <tr>
+        <td style="font-weight:700;color:#7dd3fc">#2</td>
+        <td style="font-weight:600"><span class="group-dot" style="background:#38bdf8"></span>A组</td>
+        <td class="num" style="color:#7dd3fc;font-weight:700;font-size:14px">984,196.89</td>
+        <td class="rate-cell">
+            <span class="rate-bar" style="width:140px"><span class="rate-fill" style="width:45.65004169487239%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
+            <span class="rate-text" style="color:#38bdf8">45.7%</span>
+        </td>
+        <td class="num" style="color:#6ee7b7">2,486,697.95</td>
+        <td class="num">71.6%</td>
+    </tr>
+    <tr>
+        <td style="font-weight:700;color:#7dd3fc">#3</td>
+        <td style="font-weight:600"><span class="group-dot" style="background:#fb923c"></span>C组</td>
+        <td class="num" style="color:#7dd3fc;font-weight:700;font-size:14px">104,354.81</td>
+        <td class="rate-cell">
+            <span class="rate-bar" style="width:140px"><span class="rate-fill" style="width:4.840293112042334%;background:linear-gradient(90deg,#fb923c,#fb923cdd)"></span></span>
+            <span class="rate-text" style="color:#fb923c">4.8%</span>
+        </td>
+        <td class="num" style="color:#6ee7b7">545,570.70</td>
+        <td class="num">83.9%</td>
+    </tr>
+    <tr>
+        <td style="font-weight:700;color:#7dd3fc">#4</td>
+        <td style="font-weight:600"><span class="group-dot" style="background:#f87171"></span>私域</td>
+        <td class="num" style="color:#7dd3fc;font-weight:700;font-size:14px">56,730.60</td>
+        <td class="rate-cell">
+            <span class="rate-bar" style="width:140px"><span class="rate-fill" style="width:2.6313375724801644%;background:linear-gradient(90deg,#f87171,#f87171dd)"></span></span>
+            <span class="rate-text" style="color:#f87171">2.6%</span>
+        </td>
+        <td class="num" style="color:#6ee7b7">231,253.44</td>
+        <td class="num">80.3%</td>
+    </tr>
+    <tr>
+        <td style="font-weight:700;color:#7dd3fc">#5</td>
+        <td style="font-weight:600"><span class="group-dot" style="background:#a855f7"></span>传媒</td>
+        <td class="num" style="color:#7dd3fc;font-weight:700;font-size:14px">10,000.00</td>
+        <td class="rate-cell">
+            <span class="rate-bar" style="width:140px"><span class="rate-fill" style="width:0.4638303794566186%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
+            <span class="rate-text" style="color:#a855f7">0.5%</span>
+        </td>
+        <td class="num" style="color:#6ee7b7">251,353.73</td>
+        <td class="num">96.2%</td>
+    </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div>
+                <div class="section-title">7月各业务组回款明细</div>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>业务组</th>
+                                <th style="text-align:right">7月预估</th>
+                                <th style="text-align:right">7月回款</th>
+                                <th style="text-align:right">7月应收</th>
+                                <th>回款率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+    <tr>
+        <td style="font-weight:600"><span class="group-dot" style="background:#38bdf8"></span>A组</td>
+        <td class="num">515,165.26</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
+        <td class="num" style="color:#fb923c;font-weight:600">515,165.26</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:0.0%"></span></span>
+            <span class="rate-text">0.0%</span>
+        </td>
+    </tr>
+    <tr>
+        <td style="font-weight:600"><span class="group-dot" style="background:#34d399"></span>B组</td>
+        <td class="num">530,403.12</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
+        <td class="num" style="color:#fb923c;font-weight:600">530,403.12</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:0.0%"></span></span>
+            <span class="rate-text">0.0%</span>
+        </td>
+    </tr>
+    <tr>
+        <td style="font-weight:600"><span class="group-dot" style="background:#fb923c"></span>C组</td>
+        <td class="num">103,016.00</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
+        <td class="num" style="color:#fb923c;font-weight:600">103,016.00</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:0.0%"></span></span>
+            <span class="rate-text">0.0%</span>
+        </td>
+    </tr>
+    <tr>
+        <td style="font-weight:600"><span class="group-dot" style="background:#a855f7"></span>传媒</td>
+        <td class="num">10,000.00</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
+        <td class="num" style="color:#fb923c;font-weight:600">10,000.00</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:0.0%"></span></span>
+            <span class="rate-text">0.0%</span>
+        </td>
+    </tr>
+    <tr>
+        <td style="font-weight:600"><span class="group-dot" style="background:#f87171"></span>私域</td>
+        <td class="num">56,730.60</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
+        <td class="num" style="color:#fb923c;font-weight:600">56,730.60</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:0.0%"></span></span>
+            <span class="rate-text">0.0%</span>
+        </td>
+    </tr>
+<tr style="background:rgba(251,146,60,0.15);font-weight:700">
+    <td>合计</td>
+    <td class="num">1,215,314.98</td>
+    <td class="num" style="color:#6ee7b7">0</td>
+    <td class="num" style="color:#fb923c">1,215,314.98</td>
+    <td class="rate-cell">
+        <span class="rate-bar"><span class="rate-fill" style="width:0%"></span></span>
+        <span class="rate-text">0.0%</span>
+    </td>
+</tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 项目回款明细 -->
+    <div class="receivable-section">
+        <div class="section-title">项目回款明细（按业务组可筛选）</div>
+        <div class="filter-bar" style="margin-bottom: 12px;">
+            <div class="filter-item">
+                <label>业务组筛选</label>
+                <select id="projGroupFilter" onchange="filterProjectDetail()">
+                    <option value="all">全部业务组</option>
+                    <option value="A组">A组</option>
+                    <option value="B组">B组</option>
+                    <option value="C组">C组</option>
+                    <option value="传媒">传媒</option>
+                    <option value="私域">私域</option>
+                    <option value="聚能">聚能</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+        </div>
+        <div class="data-table-wrapper">
+            <div style="max-height: 500px; overflow-y: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>项目名称</th>
+                            <th style="text-align:right">总收入</th>
+                            <th style="text-align:right">已回款</th>
+                            <th style="text-align:right">应收款</th>
+                            <th>回款率</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectDetailBody">
+                        
+    <tr class="proj-row" data-group="A组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>阴山优麦冲饮</td>
+        <td class="num">1,817,335.56</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">1,279,936.94</td>
+        <td class="num" style="color:#fb923c;font-weight:600">537,398.62</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:70.42931246005003%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
+            <span class="rate-text" style="color:#38bdf8">70.4%</span>
+        </td>
+        <td><span class="tag warn">待跟进</span></td>
+    </tr>
+    <tr class="proj-row" data-group="A组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>阴山优麦食品</td>
+        <td class="num">637,397.10</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">562,396.36</td>
+        <td class="num" style="color:#fb923c;font-weight:600">75,000.74</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:88.23327875197424%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
+            <span class="rate-text" style="color:#38bdf8">88.2%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="A组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>抖音超市美妆</td>
+        <td class="num">707,381.47</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">513,909.70</td>
+        <td class="num" style="color:#fb923c;font-weight:600">193,471.77</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:72.64958467176133%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
+            <span class="rate-text" style="color:#38bdf8">72.6%</span>
+        </td>
+        <td><span class="tag warn">待跟进</span></td>
+    </tr>
+    <tr class="proj-row" data-group="A组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>抖超箱包</td>
+        <td class="num">8,886.58</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">8,286.58</td>
+        <td class="num" style="color:#fb923c;font-weight:600">600.00</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:93.24824623195876%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
+            <span class="rate-text" style="color:#38bdf8">93.2%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="A组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>追觅戒指</td>
+        <td class="num">183,468.64</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">41,442.88</td>
+        <td class="num" style="color:#fb923c;font-weight:600">142,025.76</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:22.588536111675545%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
+            <span class="rate-text" style="color:#38bdf8">22.6%</span>
+        </td>
+        <td><span class="tag fail">风险</span></td>
+    </tr>
+    <tr class="proj-row" data-group="A组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>美菱小家电</td>
+        <td class="num">27,095.86</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">21,395.86</td>
+        <td class="num" style="color:#fb923c;font-weight:600">5,700.00</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:78.96357598540884%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
+            <span class="rate-text" style="color:#38bdf8">79.0%</span>
+        </td>
+        <td><span class="tag warn">待跟进</span></td>
+    </tr>
+    <tr class="proj-row" data-group="A组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>蓝漂</td>
+        <td class="num">89,329.63</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">59,329.63</td>
+        <td class="num" style="color:#fb923c;font-weight:600">30,000.00</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:66.41651823700602%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
+            <span class="rate-text" style="color:#38bdf8">66.4%</span>
+        </td>
+        <td><span class="tag warn">待跟进</span></td>
+    </tr>
+    <tr class="proj-row" data-group="B组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>古井店播</td>
+        <td class="num">486,751.30</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">444,344.20</td>
+        <td class="num" style="color:#fb923c;font-weight:600">42,407.10</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:91.28772742877112%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
+            <span class="rate-text" style="color:#34d399">91.3%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="B组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>桂格</td>
+        <td class="num">1,319,500.36</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">1,190,519.20</td>
+        <td class="num" style="color:#fb923c;font-weight:600">128,981.16</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:90.22500001439938%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
+            <span class="rate-text" style="color:#34d399">90.2%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="B组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>南方黑芝麻-1</td>
+        <td class="num">710,309.46</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">628,078.70</td>
+        <td class="num" style="color:#fb923c;font-weight:600">82,230.76</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:88.42324864996166%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
+            <span class="rate-text" style="color:#34d399">88.4%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="B组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>南方黑芝麻-2</td>
+        <td class="num">74,425.86</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
+        <td class="num" style="color:#fb923c;font-weight:600">74,425.86</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:0.0%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
+            <span class="rate-text" style="color:#34d399">0.0%</span>
+        </td>
+        <td><span class="tag fail">风险</span></td>
+    </tr>
+    <tr class="proj-row" data-group="B组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>旺旺</td>
+        <td class="num">274,774.39</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
+        <td class="num" style="color:#fb923c;font-weight:600">274,774.39</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:0.0%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
+            <span class="rate-text" style="color:#34d399">0.0%</span>
+        </td>
+        <td><span class="tag fail">风险</span></td>
+    </tr>
+    <tr class="proj-row" data-group="B组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>乐锦记</td>
+        <td class="num">80,241.94</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">80,241.94</td>
+        <td class="num" style="color:#fb923c;font-weight:600">0</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
+            <span class="rate-text" style="color:#34d399">100.0%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="B组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>养舒优1</td>
+        <td class="num">607,342.19</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">246,161.85</td>
+        <td class="num" style="color:#fb923c;font-weight:600">361,180.34</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:40.53099785476783%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
+            <span class="rate-text" style="color:#34d399">40.5%</span>
+        </td>
+        <td><span class="tag fail">风险</span></td>
+    </tr>
+    <tr class="proj-row" data-group="B组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>养舒优2</td>
+        <td class="num">36,678.64</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
+        <td class="num" style="color:#fb923c;font-weight:600">36,678.64</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:0.0%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
+            <span class="rate-text" style="color:#34d399">0.0%</span>
+        </td>
+        <td><span class="tag fail">风险</span></td>
+    </tr>
+    <tr class="proj-row" data-group="C组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#fb923c"></span>素颜霜</td>
+        <td class="num">97,166.69</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">97,166.69</td>
+        <td class="num" style="color:#fb923c;font-weight:600">0</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#fb923c,#fb923cdd)"></span></span>
+            <span class="rate-text" style="color:#fb923c">100.0%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="C组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#fb923c"></span>拓趣（沐浴油）</td>
+        <td class="num">149,354.81</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">90,000.00</td>
+        <td class="num" style="color:#fb923c;font-weight:600">59,354.81</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:60.25919084895893%;background:linear-gradient(90deg,#fb923c,#fb923cdd)"></span></span>
+            <span class="rate-text" style="color:#fb923c">60.3%</span>
+        </td>
+        <td><span class="tag warn">待跟进</span></td>
+    </tr>
+    <tr class="proj-row" data-group="C组">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#fb923c"></span>拓趣（护手霜）</td>
+        <td class="num">403,404.01</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">358,404.01</td>
+        <td class="num" style="color:#fb923c;font-weight:600">45,000.00</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:88.8449299252132%;background:linear-gradient(90deg,#fb923c,#fb923cdd)"></span></span>
+            <span class="rate-text" style="color:#fb923c">88.8%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="传媒">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#a855f7"></span>古井（达）</td>
+        <td class="num">198,569.94</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">188,569.94</td>
+        <td class="num" style="color:#fb923c;font-weight:600">10,000.00</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:94.96399102502625%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
+            <span class="rate-text" style="color:#a855f7">95.0%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="传媒">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#a855f7"></span>阴山优麦（达）</td>
+        <td class="num">29,687.28</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">29,687.28</td>
+        <td class="num" style="color:#fb923c;font-weight:600">0</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
+            <span class="rate-text" style="color:#a855f7">100.0%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="传媒">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#a855f7"></span>素颜霜（达）</td>
+        <td class="num">25,128.75</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">25,128.75</td>
+        <td class="num" style="color:#fb923c;font-weight:600">0</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
+            <span class="rate-text" style="color:#a855f7">100.0%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="传媒">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#a855f7"></span>南方黑芝麻（达）</td>
+        <td class="num">3,893.46</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">3,893.46</td>
+        <td class="num" style="color:#fb923c;font-weight:600">0</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
+            <span class="rate-text" style="color:#a855f7">100.0%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="传媒">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#a855f7"></span>蓝漂（达）</td>
+        <td class="num">4,074.30</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">4,074.30</td>
+        <td class="num" style="color:#fb923c;font-weight:600">0</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
+            <span class="rate-text" style="color:#a855f7">100.0%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="私域">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#f87171"></span>阴山优麦</td>
+        <td class="num">108,104.26</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">78,337.86</td>
+        <td class="num" style="color:#fb923c;font-weight:600">29,766.40</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:72.46509989523076%;background:linear-gradient(90deg,#f87171,#f87171dd)"></span></span>
+            <span class="rate-text" style="color:#f87171">72.5%</span>
+        </td>
+        <td><span class="tag warn">待跟进</span></td>
+    </tr>
+    <tr class="proj-row" data-group="私域">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#f87171"></span>南方黑芝麻（私）</td>
+        <td class="num">179,879.78</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">152,915.58</td>
+        <td class="num" style="color:#fb923c;font-weight:600">26,964.20</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:85.0098771523959%;background:linear-gradient(90deg,#f87171,#f87171dd)"></span></span>
+            <span class="rate-text" style="color:#f87171">85.0%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="聚能">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#0ea5e9"></span>DAVIDGARCE男装</td>
+        <td class="num">11,835.18</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">11,835.18</td>
+        <td class="num" style="color:#fb923c;font-weight:600">0</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#0ea5e9,#0ea5e9dd)"></span></span>
+            <span class="rate-text" style="color:#0ea5e9">100.0%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+    <tr class="proj-row" data-group="其他">
+        <td style="padding-left:14px"><span class="group-dot" style="background:#94a3b8"></span>营业外收入</td>
+        <td class="num">90,349.42</td>
+        <td class="num" style="color:#6ee7b7;font-weight:600">90,349.42</td>
+        <td class="num" style="color:#fb923c;font-weight:600">0</td>
+        <td class="rate-cell">
+            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#94a3b8,#94a3b8dd)"></span></span>
+            <span class="rate-text" style="color:#94a3b8">100.0%</span>
+        </td>
+        <td><span class="tag pass">正常</span></td>
+    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ========== 页面切换 ==========
+document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        const page = this.getAttribute('data-page');
+        document.getElementById('page-' + page).classList.add('active');
+        // 切换到仪表盘页面时重新渲染图表
+        if (page === 'dashboard') {
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+        }
+        if (page === 'receivable') {
+            setTimeout(() => {
+                initReceivableCharts();
+            }, 100);
+        }
+    });
+});
+
+// ========== 财务查询筛选 ==========
+const allDetailRows = [{"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "1月", "estimate": 282539.21, "invoice": "已回款", "received": 282539.21, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "2月", "estimate": 190298.65, "invoice": "已回款", "received": 190298.65, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "3月", "estimate": 264899.28, "invoice": "已回款", "received": 264899.28, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "4月", "estimate": 281646.52, "invoice": "已回款", "received": 281646.52, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "5月", "estimate": 260553.28, "invoice": "已回款", "received": 260553.28, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "6月", "estimate": 286059.1, "invoice": "已开票", "received": 0.0, "receivable": 286059.1}, {"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "7月", "estimate": 251339.52, "invoice": "未对账", "received": 0.0, "receivable": 251339.52}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "1月", "estimate": 120485.12, "invoice": "已回款", "received": 120485.12, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "2月", "estimate": 95087.9, "invoice": "已回款", "received": 95087.9, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "3月", "estimate": 116659.8, "invoice": "已回款", "received": 116659.8, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "4月", "estimate": 78498.58, "invoice": "已回款", "received": 78498.58, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "5月", "estimate": 76432.18, "invoice": "已回款", "received": 76432.18, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "6月", "estimate": 75232.78, "invoice": "已回款", "received": 75232.78, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "7月", "estimate": 75000.74, "invoice": "未对账", "received": 0.0, "receivable": 75000.74}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "1月", "estimate": 145293.02, "invoice": "已回款", "received": 145293.02, "receivable": 0.0}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "2月", "estimate": 64975.08, "invoice": "已回款", "received": 64975.08, "receivable": 0.0}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "3月", "estimate": 81500.48, "invoice": "已回款", "received": 81500.48, "receivable": 0.0}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "4月", "estimate": 97296.98, "invoice": "已回款", "received": 97296.98, "receivable": 0.0}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "5月", "estimate": 124844.14, "invoice": "已回款", "received": 124844.14, "receivable": 0.0}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "6月", "estimate": 72646.77, "invoice": "已开票", "received": 0.0, "receivable": 72646.77}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "7月", "estimate": 120825.0, "invoice": "未对账", "received": 0.0, "receivable": 120825.0}, {"group": "A组", "name": "抖超箱包", "code": "1004", "month": "5月", "estimate": 8286.58, "invoice": "已回款", "received": 8286.58, "receivable": 0.0}, {"group": "A组", "name": "抖超箱包", "code": "1004", "month": "6月", "estimate": 600.0, "invoice": "已开票", "received": 0.0, "receivable": 600.0}, {"group": "A组", "name": "追觅戒指", "code": "1005", "month": "5月", "estimate": 41442.88, "invoice": "已回款", "received": 41442.88, "receivable": 0.0}, {"group": "A组", "name": "追觅戒指", "code": "1005", "month": "6月", "estimate": 74025.76, "invoice": "已开票", "received": 0.0, "receivable": 74025.76}, {"group": "A组", "name": "追觅戒指", "code": "1005", "month": "7月", "estimate": 68000.0, "invoice": "未对账", "received": 0.0, "receivable": 68000.0}, {"group": "A组", "name": "美菱小家电", "code": "1006", "month": "4月", "estimate": 8760.75, "invoice": "已回款", "received": 8760.75, "receivable": 0.0}, {"group": "A组", "name": "美菱小家电", "code": "1006", "month": "5月", "estimate": 12635.11, "invoice": "已回款", "received": 12635.11, "receivable": 0.0}, {"group": "A组", "name": "美菱小家电", "code": "1006", "month": "6月", "estimate": 5700.0, "invoice": "未对账", "received": 0.0, "receivable": 5700.0}, {"group": "A组", "name": "蓝漂", "code": "1007", "month": "3月", "estimate": 29384.1, "invoice": "已回款", "received": 29384.1, "receivable": 0.0}, {"group": "A组", "name": "蓝漂", "code": "1007", "month": "4月", "estimate": 29945.53, "invoice": "已回款", "received": 29945.53, "receivable": 0.0}, {"group": "A组", "name": "蓝漂", "code": "1007", "month": "5月", "estimate": 30000.0, "invoice": "已开票", "received": 0.0, "receivable": 30000.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "1月", "estimate": 116177.28, "invoice": "已回款", "received": 116177.28, "receivable": 0.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "2月", "estimate": 97098.55, "invoice": "已回款", "received": 97098.55, "receivable": 0.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "3月", "estimate": 62658.28, "invoice": "已回款", "received": 62658.28, "receivable": 0.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "4月", "estimate": 60600.0, "invoice": "已回款", "received": 60600.0, "receivable": 0.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "5月", "estimate": 51733.06, "invoice": "已回款", "received": 51733.06, "receivable": 0.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "6月", "estimate": 56077.03, "invoice": "已回款", "received": 56077.03, "receivable": 0.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "7月", "estimate": 42407.1, "invoice": "未对账", "received": 0.0, "receivable": 42407.1}, {"group": "B组", "name": "桂格", "code": "1009", "month": "1月", "estimate": 458249.01, "invoice": "已回款", "received": 458249.01, "receivable": 0.0}, {"group": "B组", "name": "桂格", "code": "1009", "month": "2月", "estimate": 158549.72, "invoice": "已回款", "received": 158549.72, "receivable": 0.0}, {"group": "B组", "name": "桂格", "code": "1009", "month": "3月", "estimate": 149149.72, "invoice": "已回款", "received": 149149.72, "receivable": 0.0}, {"group": "B组", "name": "桂格", "code": "1009", "month": "4月", "estimate": 149557.34, "invoice": "已回款", "received": 149557.34, "receivable": 0.0}, {"group": "B组", "name": "桂格", "code": "1009", "month": "5月", "estimate": 143932.85, "invoice": "已回款", "received": 143932.85, "receivable": 0.0}, {"group": "B组", "name": "桂格", "code": "1009", "month": "6月", "estimate": 131080.56, "invoice": "已回款", "received": 131080.56, "receivable": 0.0}, {"group": "B组", "name": "桂格", "code": "1009", "month": "7月", "estimate": 128981.16, "invoice": "未对账", "received": 0.0, "receivable": 128981.16}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "1月", "estimate": 173791.01, "invoice": "已回款", "received": 178291.01, "receivable": -4500.0}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "2月", "estimate": 109723.08, "invoice": "已回款", "received": 109723.08, "receivable": 0.0}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "3月", "estimate": 103677.37, "invoice": "已回款", "received": 103677.37, "receivable": 0.0}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "4月", "estimate": 67116.89, "invoice": "已回款", "received": 67116.89, "receivable": 0.0}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "5月", "estimate": 77599.83, "invoice": "已回款", "received": 77599.83, "receivable": 0.0}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "6月", "estimate": 91670.52, "invoice": "已回款", "received": 91670.52, "receivable": 0.0}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "7月", "estimate": 86730.76, "invoice": "未对账", "received": 0.0, "receivable": 86730.76}, {"group": "B组", "name": "南方黑芝麻-2", "code": "1011", "month": "7月", "estimate": 74425.86, "invoice": "未对账", "received": 0.0, "receivable": 74425.86}, {"group": "B组", "name": "旺旺", "code": "1012", "month": "1月", "estimate": 73711.92, "invoice": "已开票", "received": 0.0, "receivable": 73711.92}, {"group": "B组", "name": "旺旺", "code": "1012", "month": "2月", "estimate": 40940.64, "invoice": "已开票", "received": 0.0, "receivable": 40940.64}, {"group": "B组", "name": "旺旺", "code": "1012", "month": "4月", "estimate": 14084.25, "invoice": "已开票", "received": 0.0, "receivable": 14084.25}, {"group": "B组", "name": "旺旺", "code": "1012", "month": "5月", "estimate": 70087.01, "invoice": "已开票", "received": 0.0, "receivable": 70087.01}, {"group": "B组", "name": "旺旺", "code": "1012", "month": "6月", "estimate": 75950.57, "invoice": "已开票", "received": 0.0, "receivable": 75950.57}, {"group": "B组", "name": "乐锦记", "code": "1013", "month": "4月", "estimate": 50000.0, "invoice": "已回款", "received": 50000.0, "receivable": 0.0}, {"group": "B组", "name": "乐锦记", "code": "1013", "month": "5月", "estimate": 30241.94, "invoice": "已回款", "received": 30241.94, "receivable": 0.0}, {"group": "B组", "name": "养舒优1", "code": "1014", "month": "4月", "estimate": 26129.17, "invoice": "已回款", "received": 26129.17, "receivable": 0.0}, {"group": "B组", "name": "养舒优1", "code": "1014", "month": "5月", "estimate": 217133.68, "invoice": "已回款", "received": 217133.68, "receivable": 0.0}, {"group": "B组", "name": "养舒优1", "code": "1014", "month": "6月", "estimate": 202899.74, "invoice": "已开票", "received": 2899.0, "receivable": 200000.74}, {"group": "B组", "name": "养舒优1", "code": "1014", "month": "7月", "estimate": 161179.6, "invoice": "未对账", "received": 0.0, "receivable": 161179.6}, {"group": "B组", "name": "养舒优2", "code": "1015", "month": "7月", "estimate": 36678.64, "invoice": "未对账", "received": 0.0, "receivable": 36678.64}, {"group": "C组", "name": "素颜霜", "code": "1016", "month": "1月", "estimate": 26852.02, "invoice": "已回款", "received": 26852.02, "receivable": 0.0}, {"group": "C组", "name": "素颜霜", "code": "1016", "month": "2月", "estimate": 27235.38, "invoice": "已回款", "received": 27235.38, "receivable": 0.0}, {"group": "C组", "name": "素颜霜", "code": "1016", "month": "3月", "estimate": 23929.46, "invoice": "已回款", "received": 23929.46, "receivable": 0.0}, {"group": "C组", "name": "素颜霜", "code": "1016", "month": "4月", "estimate": 17214.05, "invoice": "已回款", "received": 17214.05, "receivable": 0.0}, {"group": "C组", "name": "素颜霜", "code": "1016", "month": "6月", "estimate": 1935.78, "invoice": "已回款", "received": 1935.78, "receivable": 0.0}, {"group": "C组", "name": "拓趣（沐浴油）", "code": "1017", "month": "4月", "estimate": 31338.81, "invoice": "已回款", "received": 30000.0, "receivable": 1338.81}, {"group": "C组", "name": "拓趣（沐浴油）", "code": "1017", "month": "5月", "estimate": 30000.0, "invoice": "已回款", "received": 30000.0, "receivable": 0.0}, {"group": "C组", "name": "拓趣（沐浴油）", "code": "1017", "month": "6月", "estimate": 30000.0, "invoice": "已回款", "received": 30000.0, "receivable": 0.0}, {"group": "C组", "name": "拓趣（沐浴油）", "code": "1017", "month": "7月", "estimate": 58016.0, "invoice": "", "received": 0.0, "receivable": 58016.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "1月", "estimate": 57351.78, "invoice": "已回款", "received": 57351.78, "receivable": 0.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "2月", "estimate": 59804.09, "invoice": "已回款", "received": 59804.09, "receivable": 0.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "3月", "estimate": 62634.04, "invoice": "已回款", "received": 62634.04, "receivable": 0.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "4月", "estimate": 57734.41, "invoice": "已回款", "received": 57734.41, "receivable": 0.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "5月", "estimate": 62080.87, "invoice": "已回款", "received": 62080.87, "receivable": 0.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "6月", "estimate": 58798.82, "invoice": "已回款", "received": 58798.82, "receivable": 0.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "7月", "estimate": 45000.0, "invoice": "已开票", "received": 0.0, "receivable": 45000.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "1月", "estimate": 64300.7, "invoice": "已回款", "received": 64300.7, "receivable": 0.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "2月", "estimate": 29876.65, "invoice": "已回款", "received": 29876.65, "receivable": 0.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "3月", "estimate": 32769.34, "invoice": "已回款", "received": 32769.34, "receivable": 0.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "4月", "estimate": 13243.48, "invoice": "已回款", "received": 13243.48, "receivable": 0.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "5月", "estimate": 42447.67, "invoice": "已回款", "received": 42447.67, "receivable": 0.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "6月", "estimate": 5932.1, "invoice": "已回款", "received": 5932.1, "receivable": 0.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "7月", "estimate": 10000.0, "invoice": "未对账", "received": 0.0, "receivable": 10000.0}, {"group": "传媒", "name": "阴山优麦（达）", "code": "1020", "month": "3月", "estimate": 13117.1, "invoice": "已回款", "received": 13117.1, "receivable": 0.0}, {"group": "传媒", "name": "阴山优麦（达）", "code": "1020", "month": "4月", "estimate": 3097.15, "invoice": "已回款", "received": 3097.15, "receivable": 0.0}, {"group": "传媒", "name": "阴山优麦（达）", "code": "1020", "month": "6月", "estimate": 13473.03, "invoice": "已回款", "received": 13473.03, "receivable": 0.0}, {"group": "传媒", "name": "素颜霜（达）", "code": "1021", "month": "1月", "estimate": 8648.48, "invoice": "已回款", "received": 8648.48, "receivable": 0.0}, {"group": "传媒", "name": "素颜霜（达）", "code": "1021", "month": "2月", "estimate": 7910.02, "invoice": "已回款", "received": 7910.02, "receivable": 0.0}, {"group": "传媒", "name": "素颜霜（达）", "code": "1021", "month": "3月", "estimate": 4330.71, "invoice": "已回款", "received": 4330.71, "receivable": 0.0}, {"group": "传媒", "name": "素颜霜（达）", "code": "1021", "month": "4月", "estimate": 2303.76, "invoice": "已回款", "received": 2303.76, "receivable": 0.0}, {"group": "传媒", "name": "素颜霜（达）", "code": "1021", "month": "6月", "estimate": 1935.78, "invoice": "已回款", "received": 1935.78, "receivable": 0.0}, {"group": "传媒", "name": "南方黑芝麻（达）", "code": "1022", "month": "3月", "estimate": 3893.46, "invoice": "已回款", "received": 3893.46, "receivable": 0.0}, {"group": "传媒", "name": "蓝漂（达）", "code": "1023", "month": "4月", "estimate": 4074.3, "invoice": "已回款", "received": 4074.3, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "1月", "estimate": 8768.12, "invoice": "已回款", "received": 8768.12, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "2月", "estimate": 3214.35, "invoice": "已回款", "received": 3214.35, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "3月", "estimate": 5363.13, "invoice": "已回款", "received": 5363.13, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "4月", "estimate": 6542.9, "invoice": "已回款", "received": 6542.9, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "5月", "estimate": 19814.04, "invoice": "已回款", "received": 19814.04, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "6月", "estimate": 34635.32, "invoice": "已回款", "received": 34635.32, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "7月", "estimate": 29766.4, "invoice": "未对账", "received": 0.0, "receivable": 29766.4}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "1月", "estimate": 17525.15, "invoice": "已回款", "received": 17525.15, "receivable": 0.0}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "2月", "estimate": 23236.18, "invoice": "已回款", "received": 23236.18, "receivable": 0.0}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "3月", "estimate": 31575.59, "invoice": "已回款", "received": 31575.59, "receivable": 0.0}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "4月", "estimate": 30814.41, "invoice": "已回款", "received": 30814.41, "receivable": 0.0}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "5月", "estimate": 21962.51, "invoice": "已回款", "received": 21962.51, "receivable": 0.0}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "6月", "estimate": 27801.74, "invoice": "已回款", "received": 27801.74, "receivable": 0.0}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "7月", "estimate": 26964.2, "invoice": "未对账", "received": 0.0, "receivable": 26964.2}, {"group": "聚能", "name": "DAVIDGARCE男装", "code": "1026", "month": "3月", "estimate": 11835.18, "invoice": "已回款", "received": 11835.18, "receivable": 0.0}, {"group": "其他", "name": "营业外收入", "code": "1027", "month": "1月", "estimate": 21613.2, "invoice": "已回款", "received": 21613.2, "receivable": 0.0}, {"group": "其他", "name": "营业外收入", "code": "1027", "month": "2月", "estimate": 19029.16, "invoice": "已回款", "received": 19029.16, "receivable": 0.0}, {"group": "其他", "name": "营业外收入", "code": "1027", "month": "3月", "estimate": 18882.06, "invoice": "已回款", "received": 18882.06, "receivable": 0.0}, {"group": "其他", "name": "营业外收入", "code": "1027", "month": "4月", "estimate": 15825.0, "invoice": "已回款", "received": 15825.0, "receivable": 0.0}, {"group": "其他", "name": "营业外收入", "code": "1027", "month": "5月", "estimate": 15000.0, "invoice": "已回款", "received": 15000.0, "receivable": 0.0}];
+
+function applyFilters() {
+    const month = document.getElementById('filterMonth').value;
+    const project = document.getElementById('filterProject').value;
+    const group = document.getElementById('filterGroup').value;
+    
+    let filtered = allDetailRows.filter(row => {
+        if (month !== 'all' && row.month !== month) return false;
+        if (project !== 'all' && row.name !== project) return false;
+        if (group !== 'all' && row.group !== group) return false;
+        return true;
+    });
+    
+    // 更新汇总
+    const sumEst = filtered.reduce((s, r) => s + r.estimate, 0);
+    const sumRec = filtered.reduce((s, r) => s + r.received, 0);
+    const sumRecv = filtered.reduce((s, r) => s + r.receivable, 0);
+    
+    document.getElementById('sumEstimate').innerHTML = (sumEst/10000).toFixed(2) + '<span class="unit">万元</span>';
+    document.getElementById('sumReceived').innerHTML = (sumRec/10000).toFixed(2) + '<span class="unit">万元</span>';
+    document.getElementById('sumReceivable').innerHTML = (sumRecv/10000).toFixed(2) + '<span class="unit">万元</span>';
+    document.getElementById('recordCount').textContent = '共 ' + filtered.length + ' 条记录';
+    
+    // 更新表格
+    const tbody = document.getElementById('financeTableBody');
+    tbody.innerHTML = filtered.map(row => {
+        const inv = row.invoice || '-';
+        return '<tr>' +
+            '<td>' + row.name + '</td>' +
+            '<td>' + row.group + '</td>' +
+            '<td>' + row.month + '</td>' +
+            '<td class="num">' + row.estimate.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '</td>' +
+            '<td>' + inv + '</td>' +
+            '<td class="num" style="color:#6ee7b7">' + row.received.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '</td>' +
+            '<td class="num" style="color:#fca5a5">' + row.receivable.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '</td>' +
+        '</tr>';
+    }).join('');
+}
+
+function resetFilters() {
+    document.getElementById('filterMonth').value = 'all';
+    document.getElementById('filterProject').value = 'all';
+    document.getElementById('filterGroup').value = 'all';
+    applyFilters();
+}
+
+document.getElementById('filterMonth').addEventListener('change', applyFilters);
+document.getElementById('filterProject').addEventListener('change', applyFilters);
+document.getElementById('filterGroup').addEventListener('change', applyFilters);
+
+// ========== 项目明细筛选 ==========
+function filterProjectDetail() {
+    const group = document.getElementById('projGroupFilter').value;
+    document.querySelectorAll('.proj-row').forEach(row => {
+        if (group === 'all' || row.getAttribute('data-group') === group) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+// ========== 应收款分析图表 ==========
+let receivableChartsInitialized = false;
+function initReceivableCharts() {
+    if (receivableChartsInitialized) return;
+    receivableChartsInitialized = true;
+    
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+    
+    // 月度回款趋势图
+    new Chart(document.getElementById('chartMonthlyTrend'), {
+        type: 'bar',
+        data: {
+            labels: ['1月','2月','3月','4月','5月','6月','7月'],
+            datasets: [
+                {
+                    label: '预估收入',
+                    data: [157.53, 92.70, 101.63, 104.58, 133.62, 124.65, 121.53],
+                    backgroundColor: 'rgba(56,189,248,0.5)',
+                    borderColor: '#38bdf8',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.6
+                },
+                {
+                    label: '实际回款',
+                    data: [150.61, 88.60, 101.63, 103.04, 123.61, 53.15, 0],
+                    backgroundColor: 'rgba(52,211,153,0.6)',
+                    borderColor: '#34d399',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.6
+                },
+                {
+                    label: '目标红线',
+                    data: [135, 135, 135, 135, 135, 135, 166],
+                    type: 'line',
+                    borderColor: '#f87171',
+                    borderWidth: 2,
+                    borderDash: [6, 4],
+                    pointBackgroundColor: '#f87171',
+                    pointRadius: 4,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', labels: { usePointStyle: true, padding: 15 } },
+                tooltip: {
+                    backgroundColor: 'rgba(15,23,42,0.95)',
+                    titleColor: '#e2e8f0',
+                    bodyColor: '#cbd5e1',
+                    borderColor: 'rgba(56,189,248,0.3)',
+                    borderWidth: 1,
+                    padding: 12,
+                    callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y + '万元' }
+                }
+            },
+            scales: {
+                x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                y: {
+                    ticks: { color: '#64748b', callback: v => v + '万' },
+                    grid: { color: 'rgba(255,255,255,0.04)' }
+                }
+            }
+        }
+    });
+}
+
+// ========== 仪表盘原有脚本 ==========
+
+// ========== 数据 ==========
+const projectsByRevenue = [
+  {name:"阴山优麦冲饮",value:1817335.56},{name:"桂格",value:1319500.36},
+  {name:"南方黑芝麻-1",value:710309.46},{name:"抖音超市美妆",value:707381.47},
+  {name:"阴山优麦食品",value:637397.10},{name:"养舒优1",value:607342.19},
+  {name:"古井（季度结算）",value:486751.30},{name:"拓趣（护手霜）",value:403404.01},
+  {name:"旺旺",value:274774.39},{name:"古井（达）",value:198569.94},
+  {name:"追觅戒指",value:183468.64},{name:"南方黑芝麻（私）",value:179879.78},
+  {name:"拓趣（沐浴油）",value:149354.81},{name:"阴山优麦",value:108104.26},
+  {name:"素颜霜",value:97166.69},{name:"营业外收入",value:90349.42},
+  {name:"蓝漂",value:89329.63},{name:"乐锦记",value:80241.94},
+  {name:"南方黑芝麻-2",value:74425.86},{name:"养舒优2",value:36678.64},
+  {name:"阴山优麦（达）",value:29687.28},{name:"美菱小家电",value:27095.86},
+  {name:"素颜霜（达）",value:25128.75},{name:"DAVIDGARCE男装",value:11835.18},
+  {name:"抖超箱包",value:8886.58},{name:"蓝漂（达）",value:4074.30},
+  {name:"南方黑芝麻（达）",value:3893.46}
+];
+
+const projectsByAvg = [
+  {name:"阴山优麦冲饮",value:259619.37,months:7},{name:"桂格",value:188500.05,months:7},
+  {name:"养舒优1",value:151835.55,months:4},{name:"南方黑芝麻-1",value:101472.78,months:7},
+  {name:"抖音超市美妆",value:101054.50,months:7},{name:"阴山优麦食品",value:91056.73,months:7},
+  {name:"南方黑芝麻-2",value:74425.86,months:1},{name:"古井（季度结算）",value:69535.90,months:7},
+  {name:"追觅戒指",value:61156.21,months:3},{name:"拓趣（护手霜）",value:57629.14,months:7},
+  {name:"旺旺",value:54954.88,months:5},{name:"乐锦记",value:40120.97,months:2},
+  {name:"拓趣（沐浴油）",value:37338.70,months:4},{name:"养舒优2",value:36678.64,months:1},
+  {name:"蓝漂",value:29776.54,months:3},{name:"古井（达）",value:28367.13,months:7},
+  {name:"南方黑芝麻（私）",value:25697.11,months:7},{name:"素颜霜",value:19433.34,months:5},
+  {name:"营业外收入",value:18069.88,months:5},{name:"阴山优麦",value:15443.47,months:7},
+  {name:"DAVIDGARCE男装",value:11835.18,months:1},{name:"阴山优麦（达）",value:9895.76,months:3},
+  {name:"美菱小家电",value:9031.95,months:3},{name:"素颜霜（达）",value:5025.75,months:5},
+  {name:"抖超箱包",value:4443.29,months:2},{name:"蓝漂（达）",value:4074.30,months:1},
+  {name:"南方黑芝麻（达）",value:3893.46,months:1}
+];
+
+const projectsByReceivable = [
+  {name:"阴山优麦冲饮",value:537398.62,overdue:true},{name:"养舒优1",value:361180.34,overdue:true},
+  {name:"旺旺",value:274774.39,overdue:true},{name:"抖音超市美妆",value:193471.77,overdue:true},
+  {name:"追觅戒指",value:142025.76,overdue:true},{name:"桂格",value:128981.16,overdue:false},
+  {name:"南方黑芝麻-1",value:82230.76,overdue:false},{name:"阴山优麦食品",value:75000.74,overdue:false},
+  {name:"南方黑芝麻-2",value:74425.86,overdue:false},{name:"拓趣（沐浴油）",value:59354.81,overdue:true},
+  {name:"拓趣（护手霜）",value:45000.00,overdue:false},{name:"古井（季度结算）",value:42407.10,overdue:false},
+  {name:"养舒优2",value:36678.64,overdue:false},{name:"蓝漂",value:30000.00,overdue:true},
+  {name:"阴山优麦",value:29766.40,overdue:false},{name:"南方黑芝麻（私）",value:26964.20,overdue:false},
+  {name:"古井（达）",value:10000.00,overdue:false},{name:"美菱小家电",value:5700.00,overdue:true},
+  {name:"抖超箱包",value:600.00,overdue:true}
+];
+
+const monthlyReceivable = [
+  {month:"1月",receivable:69211.92,unpaid:[{name:"旺旺",amount:73711.92}]},
+  {month:"2月",receivable:40940.64,unpaid:[{name:"旺旺",amount:40940.64}]},
+  {month:"3月",receivable:0,unpaid:[]},
+  {month:"4月",receivable:15423.06,unpaid:[{name:"旺旺",amount:14084.25},{name:"拓趣（沐浴油）",amount:1338.81}]},
+  {month:"5月",receivable:100087.01,unpaid:[{name:"蓝漂",amount:30000},{name:"旺旺",amount:70087.01}]},
+  {month:"6月",receivable:714982.94,unpaid:[{name:"阴山优麦冲饮",amount:286059.10},{name:"养舒优1",amount:200000.74},{name:"抖音超市美妆",amount:72646.77},{name:"旺旺",amount:75950.57},{name:"追觅戒指",amount:74025.76},{name:"美菱小家电",amount:5700},{name:"抖超箱包",amount:600}]},
+  {month:"7月",receivable:1215314.98,unpaid:[{name:"阴山优麦冲饮",amount:251339.52},{name:"养舒优1",amount:161179.60},{name:"桂格",amount:128981.16},{name:"抖音超市美妆",amount:120825},{name:"南方黑芝麻-1",amount:86730.76},{name:"追觅戒指",amount:68000},{name:"拓趣（沐浴油）",amount:58016},{name:"阴山优麦食品",amount:75000.74},{name:"南方黑芝麻-2",amount:74425.86},{name:"拓趣（护手霜）",amount:45000},{name:"古井（季度结算）",amount:42407.10},{name:"养舒优2",amount:36678.64},{name:"阴山优麦",amount:29766.40},{name:"南方黑芝麻（私）",amount:26964.20},{name:"古井（达）",amount:10000}]}
+];
+
+const monthlyTrend = {
+  months: ["1月","2月","3月","4月","5月","6月","7月"],
+  revenue: [157.53, 92.70, 101.63, 104.58, 133.62, 124.65, 121.53],
+  activeCount: [14, 14, 17, 21, 19, 19, 15]
+};
+
+const projectsByActive = [
+  {name:"阴山优麦冲饮",value:7,total:1817335.56},{name:"桂格",value:7,total:1319500.36},
+  {name:"南方黑芝麻-1",value:7,total:710309.46},{name:"抖音超市美妆",value:7,total:707381.47},
+  {name:"阴山优麦食品",value:7,total:637397.10},{name:"古井（季度结算）",value:7,total:486751.30},
+  {name:"拓趣（护手霜）",value:7,total:403404.01},{name:"古井（达）",value:7,total:198569.94},
+  {name:"南方黑芝麻（私）",value:7,total:179879.78},{name:"阴山优麦",value:7,total:108104.26},
+  {name:"旺旺",value:5,total:274774.39},{name:"素颜霜",value:5,total:97166.69},
+  {name:"营业外收入",value:5,total:90349.42},{name:"素颜霜（达）",value:5,total:25128.75},
+  {name:"养舒优1",value:4,total:607342.19},{name:"拓趣（沐浴油）",value:4,total:149354.81},
+  {name:"追觅戒指",value:3,total:183468.64},{name:"蓝漂",value:3,total:89329.63},
+  {name:"阴山优麦（达）",value:3,total:29687.28},{name:"美菱小家电",value:3,total:27095.86},
+  {name:"乐锦记",value:2,total:80241.94},{name:"抖超箱包",value:2,total:8886.58},
+  {name:"南方黑芝麻-2",value:1,total:74425.86},{name:"养舒优2",value:1,total:36678.64},
+  {name:"DAVIDGARCE男装",value:1,total:11835.18},{name:"蓝漂（达）",value:1,total:4074.30},
+  {name:"南方黑芝麻（达）",value:1,total:3893.46}
+];
+
+// ========== 通用配置 ==========
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.font.family = '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+
+// 数值标签插件
+const valueLabelPlugin = {
+  id: 'valueLabel',
+  afterDatasetsDraw(chart) {
+    const { ctx, chartArea } = chart;
+    ctx.save();
+    ctx.font = '11px -apple-system, "PingFang SC", sans-serif';
+    ctx.textBaseline = 'middle';
+    chart.data.datasets.forEach((dataset, i) => {
+      const meta = chart.getDatasetMeta(i);
+      meta.data.forEach((bar, index) => {
+        const value = dataset.data[index];
+        if (value === 0) return;
+        const formatted = value >= 10000 ? (value/10000).toFixed(1) + '万' : value.toFixed(0);
+        ctx.fillStyle = '#cbd5e1';
+        // 横向柱状图：标签在柱子右侧
+        if (chart.options.indexAxis === 'y') {
+          ctx.textAlign = 'left';
+          ctx.fillText(formatted, bar.x + 6, bar.y);
+        } else {
+          ctx.textAlign = 'center';
+          ctx.fillText(formatted, bar.x, bar.y - 8);
+        }
+      });
+    });
+    ctx.restore();
+  }
+};
+
+const tooltipStyle = {
+  backgroundColor: 'rgba(15,23,42,0.95)',
+  titleColor: '#e2e8f0',
+  bodyColor: '#cbd5e1',
+  borderColor: 'rgba(56,189,248,0.3)',
+  borderWidth: 1,
+  padding: 12,
+  titleFont: { size: 13, weight: '600' },
+  bodyFont: { size: 12 }
+};
+
+// ========== 图表1：项目总收入 ==========
+new Chart(document.getElementById('chartRevenue'), {
+  type: 'bar',
+  data: {
+    labels: projectsByRevenue.map(p => p.name),
+    datasets: [{
+      data: projectsByRevenue.map(p => p.value),
+      backgroundColor: 'rgba(56,189,248,0.65)',
+      borderColor: '#38bdf8',
+      borderWidth: 1,
+      borderRadius: 4,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...tooltipStyle, callbacks: { label: c => '总收入: ¥' + c.parsed.x.toLocaleString('zh-CN', {minimumFractionDigits:2}) } }
+    },
+    scales: {
+      x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+    }
+  },
+  plugins: [valueLabelPlugin]
+});
+
+// ========== 图表2：项目月均收入 ==========
+new Chart(document.getElementById('chartAvgMonthly'), {
+  type: 'bar',
+  data: {
+    labels: projectsByAvg.map(p => p.name + ' (' + p.months + '月)'),
+    datasets: [{
+      data: projectsByAvg.map(p => p.value),
+      backgroundColor: 'rgba(52,211,153,0.65)',
+      borderColor: '#34d399',
+      borderWidth: 1,
+      borderRadius: 4,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...tooltipStyle, callbacks: { label: c => '月均收入: ¥' + c.parsed.x.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '/月' } }
+    },
+    scales: {
+      x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+    }
+  },
+  plugins: [valueLabelPlugin]
+});
+
+// ========== 图表3：项目应收款（红色预警） ==========
+new Chart(document.getElementById('chartReceivable'), {
+  type: 'bar',
+  data: {
+    labels: projectsByReceivable.map(p => p.name),
+    datasets: [{
+      data: projectsByReceivable.map(p => p.value),
+      backgroundColor: projectsByReceivable.map(p => p.overdue ? 'rgba(248,113,113,0.75)' : 'rgba(56,189,248,0.55)'),
+      borderColor: projectsByReceivable.map(p => p.overdue ? '#f87171' : '#38bdf8'),
+      borderWidth: 1,
+      borderRadius: 4,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        ...tooltipStyle,
+        callbacks: {
+          label: function(c) {
+            const p = projectsByReceivable[c.dataIndex];
+            return '应收款: ¥' + c.parsed.x.toLocaleString('zh-CN', {minimumFractionDigits:2}) + (p.overdue ? '  ⚠ 超2个月未回款' : '');
+          }
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+    }
+  },
+  plugins: [valueLabelPlugin]
+});
+
+// ========== 图表4：每月应收款（tooltip明细） ==========
+new Chart(document.getElementById('chartMonthlyReceivable'), {
+  type: 'bar',
+  data: {
+    labels: monthlyReceivable.map(m => m.month),
+    datasets: [{
+      label: '当月应收款',
+      data: monthlyReceivable.map(m => m.receivable),
+      backgroundColor: monthlyReceivable.map((m,i) => i >= 5 ? 'rgba(248,113,113,0.6)' : 'rgba(251,146,60,0.6)'),
+      borderColor: monthlyReceivable.map((m,i) => i >= 5 ? '#f87171' : '#fb923c'),
+      borderWidth: 1,
+      borderRadius: 6,
+      barPercentage: 0.55
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        ...tooltipStyle,
+        callbacks: {
+          title: function(items) { return items[0].label + ' 应收款明细'; },
+          label: function(c) {
+            const m = monthlyReceivable[c.dataIndex];
+            return '当月应收: ¥' + c.parsed.y.toLocaleString('zh-CN', {minimumFractionDigits:2});
+          },
+          afterLabel: function(c) {
+            const m = monthlyReceivable[c.dataIndex];
+            if (m.unpaid.length === 0) return '（无未回款项目）';
+            return m.unpaid.map(u => '  • ' + u.name + ': ¥' + u.amount.toLocaleString('zh-CN', {minimumFractionDigits:2})).join('\n');
+          }
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+      y: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+    }
+  }
+});
+
+// ========== 图表5：每月收入趋势 + 存续项目数 ==========
+new Chart(document.getElementById('chartTrend'), {
+  data: {
+    labels: monthlyTrend.months,
+    datasets: [
+      {
+        type: 'bar',
+        label: '月度收入（万元）',
+        data: monthlyTrend.revenue,
+        backgroundColor: 'rgba(56,189,248,0.55)',
+        borderColor: '#38bdf8',
+        borderWidth: 1,
+        borderRadius: 6,
+        barPercentage: 0.5,
+        yAxisID: 'y'
+      },
+      {
+        type: 'line',
+        label: '存续项目数',
+        data: monthlyTrend.activeCount,
+        borderColor: '#a855f7',
+        backgroundColor: 'rgba(168,85,247,0.1)',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#a855f7',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        tension: 0.3,
+        fill: false,
+        yAxisID: 'y1'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { labels: { color: '#94a3b8', usePointStyle: true, padding: 16 } },
+      tooltip: { ...tooltipStyle }
+    },
+    scales: {
+      x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+      y: {
+        position: 'left',
+        title: { display: true, text: '收入（万元）', color: '#38bdf8', font: { size: 11 } },
+        ticks: { color: '#64748b' },
+        grid: { color: 'rgba(255,255,255,0.04)' }
+      },
+      y1: {
+        position: 'right',
+        title: { display: true, text: '存续项目数', color: '#a855f7', font: { size: 11 } },
+        ticks: { color: '#64748b', stepSize: 2 },
+        grid: { drawOnChartArea: false },
+        min: 0,
+        max: 25
+      }
+    }
+  }
+});
+
+// ========== 图表6：项目月均收入排名（第四板块） ==========
+new Chart(document.getElementById('chartAvgRank'), {
+  type: 'bar',
+  data: {
+    labels: projectsByAvg.map(p => p.name),
+    datasets: [{
+      data: projectsByAvg.map(p => p.value),
+      backgroundColor: 'rgba(129,140,248,0.6)',
+      borderColor: '#818cf8',
+      borderWidth: 1,
+      borderRadius: 4,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...tooltipStyle, callbacks: { label: c => '月均: ¥' + c.parsed.x.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '/月 （存续' + projectsByAvg[c.dataIndex].months + '个月）' } }
+    },
+    scales: {
+      x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+    }
+  },
+  plugins: [valueLabelPlugin]
+});
+
+// ========== 图表7：项目存续时间排名 ==========
+new Chart(document.getElementById('chartActiveMonths'), {
+  type: 'bar',
+  data: {
+    labels: projectsByActive.map(p => p.name),
+    datasets: [{
+      data: projectsByActive.map(p => p.value),
+      backgroundColor: projectsByActive.map(p => {
+        if (p.value >= 7) return 'rgba(52,211,153,0.65)';
+        if (p.value >= 4) return 'rgba(56,189,248,0.6)';
+        if (p.value >= 2) return 'rgba(251,146,60,0.6)';
+        return 'rgba(248,113,113,0.55)';
+      }),
+      borderColor: projectsByActive.map(p => {
+        if (p.value >= 7) return '#34d399';
+        if (p.value >= 4) return '#38bdf8';
+        if (p.value >= 2) return '#fb923c';
+        return '#f87171';
+      }),
+      borderWidth: 1,
+      borderRadius: 4,
+      barPercentage: 0.7
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { ...tooltipStyle, callbacks: { label: c => '存续 ' + c.parsed.x + ' 个月，总收入 ¥' + projectsByActive[c.dataIndex].total.toLocaleString('zh-CN', {minimumFractionDigits:2}) } }
+    },
+    scales: {
+      x: { ticks: { color: '#64748b', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.04)' }, max: 8 },
+      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+    }
+  },
+  plugins: [valueLabelPlugin]
+});
+
+</script>
+</body>
+</html>
