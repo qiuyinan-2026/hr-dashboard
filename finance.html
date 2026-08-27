@@ -61,6 +61,47 @@ body {
     border-color: rgba(56, 189, 248, 0.4);
 }
 
+/* 刷新按钮 */
+.refresh-btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s;
+    margin-left: 12px;
+}
+.refresh-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+}
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+.refresh-btn .spin {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.update-time {
+    font-size: 11px;
+    color: #64748b;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+}
+
 /* ========== 页面容器 ========== */
 .page-container {
     display: none;
@@ -705,10 +746,16 @@ body {
 <!-- ========== 顶部导航 ========== -->
 <div class="top-nav">
     <div class="nav-title">聚光直播 · 2026经营数据系统</div>
-    <div class="nav-tabs">
-        <button class="nav-tab active" data-page="finance">财务收入数据查询</button>
-        <button class="nav-tab" data-page="dashboard">经营数据仪表盘</button>
-        <button class="nav-tab" data-page="receivable">应收款分析</button>
+    <div style="display:flex;align-items:center;">
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-page="finance">财务收入数据查询</button>
+            <button class="nav-tab" data-page="dashboard">经营数据仪表盘</button>
+            <button class="nav-tab" data-page="receivable">应收款分析</button>
+        </div>
+        <span class="update-time" id="updateTime">数据加载中...</span>
+        <button class="refresh-btn" id="refreshBtn" onclick="refreshData()">
+            <span id="refreshIcon">🔄</span> 刷新数据
+        </button>
     </div>
 </div>
 
@@ -1988,405 +2035,7 @@ body {
 
 <div class="footer">数据来源：飞书表格「2026账单」｜ 聚光直播经营分析 ｜ 共 27 个项目</div>
 
-<script>
-// ========== 数据 ==========
-const projectsByRevenue = [
-  {name:"阴山优麦冲饮",value:1817335.56},{name:"桂格",value:1319500.36},
-  {name:"南方黑芝麻-1",value:710309.46},{name:"抖音超市美妆",value:707381.47},
-  {name:"阴山优麦食品",value:637397.10},{name:"养舒优1",value:607342.19},
-  {name:"古井（季度结算）",value:486751.30},{name:"拓趣（护手霜）",value:403404.01},
-  {name:"旺旺",value:274774.39},{name:"古井（达）",value:198569.94},
-  {name:"追觅戒指",value:183468.64},{name:"南方黑芝麻（私）",value:179879.78},
-  {name:"拓趣（沐浴油）",value:149354.81},{name:"阴山优麦",value:108104.26},
-  {name:"素颜霜",value:97166.69},{name:"营业外收入",value:90349.42},
-  {name:"蓝漂",value:89329.63},{name:"乐锦记",value:80241.94},
-  {name:"南方黑芝麻-2",value:74425.86},{name:"养舒优2",value:36678.64},
-  {name:"阴山优麦（达）",value:29687.28},{name:"美菱小家电",value:27095.86},
-  {name:"素颜霜（达）",value:25128.75},{name:"DAVIDGARCE男装",value:11835.18},
-  {name:"抖超箱包",value:8886.58},{name:"蓝漂（达）",value:4074.30},
-  {name:"南方黑芝麻（达）",value:3893.46}
-];
 
-const projectsByAvg = [
-  {name:"阴山优麦冲饮",value:259619.37,months:7},{name:"桂格",value:188500.05,months:7},
-  {name:"养舒优1",value:151835.55,months:4},{name:"南方黑芝麻-1",value:101472.78,months:7},
-  {name:"抖音超市美妆",value:101054.50,months:7},{name:"阴山优麦食品",value:91056.73,months:7},
-  {name:"南方黑芝麻-2",value:74425.86,months:1},{name:"古井（季度结算）",value:69535.90,months:7},
-  {name:"追觅戒指",value:61156.21,months:3},{name:"拓趣（护手霜）",value:57629.14,months:7},
-  {name:"旺旺",value:54954.88,months:5},{name:"乐锦记",value:40120.97,months:2},
-  {name:"拓趣（沐浴油）",value:37338.70,months:4},{name:"养舒优2",value:36678.64,months:1},
-  {name:"蓝漂",value:29776.54,months:3},{name:"古井（达）",value:28367.13,months:7},
-  {name:"南方黑芝麻（私）",value:25697.11,months:7},{name:"素颜霜",value:19433.34,months:5},
-  {name:"营业外收入",value:18069.88,months:5},{name:"阴山优麦",value:15443.47,months:7},
-  {name:"DAVIDGARCE男装",value:11835.18,months:1},{name:"阴山优麦（达）",value:9895.76,months:3},
-  {name:"美菱小家电",value:9031.95,months:3},{name:"素颜霜（达）",value:5025.75,months:5},
-  {name:"抖超箱包",value:4443.29,months:2},{name:"蓝漂（达）",value:4074.30,months:1},
-  {name:"南方黑芝麻（达）",value:3893.46,months:1}
-];
-
-const projectsByReceivable = [
-  {name:"阴山优麦冲饮",value:537398.62,overdue:true},{name:"养舒优1",value:361180.34,overdue:true},
-  {name:"旺旺",value:274774.39,overdue:true},{name:"抖音超市美妆",value:193471.77,overdue:true},
-  {name:"追觅戒指",value:142025.76,overdue:true},{name:"桂格",value:128981.16,overdue:false},
-  {name:"南方黑芝麻-1",value:82230.76,overdue:false},{name:"阴山优麦食品",value:75000.74,overdue:false},
-  {name:"南方黑芝麻-2",value:74425.86,overdue:false},{name:"拓趣（沐浴油）",value:59354.81,overdue:true},
-  {name:"拓趣（护手霜）",value:45000.00,overdue:false},{name:"古井（季度结算）",value:42407.10,overdue:false},
-  {name:"养舒优2",value:36678.64,overdue:false},{name:"蓝漂",value:30000.00,overdue:true},
-  {name:"阴山优麦",value:29766.40,overdue:false},{name:"南方黑芝麻（私）",value:26964.20,overdue:false},
-  {name:"古井（达）",value:10000.00,overdue:false},{name:"美菱小家电",value:5700.00,overdue:true},
-  {name:"抖超箱包",value:600.00,overdue:true}
-];
-
-const monthlyReceivable = [
-  {month:"1月",receivable:69211.92,unpaid:[{name:"旺旺",amount:73711.92}]},
-  {month:"2月",receivable:40940.64,unpaid:[{name:"旺旺",amount:40940.64}]},
-  {month:"3月",receivable:0,unpaid:[]},
-  {month:"4月",receivable:15423.06,unpaid:[{name:"旺旺",amount:14084.25},{name:"拓趣（沐浴油）",amount:1338.81}]},
-  {month:"5月",receivable:100087.01,unpaid:[{name:"蓝漂",amount:30000},{name:"旺旺",amount:70087.01}]},
-  {month:"6月",receivable:714982.94,unpaid:[{name:"阴山优麦冲饮",amount:286059.10},{name:"养舒优1",amount:200000.74},{name:"抖音超市美妆",amount:72646.77},{name:"旺旺",amount:75950.57},{name:"追觅戒指",amount:74025.76},{name:"美菱小家电",amount:5700},{name:"抖超箱包",amount:600}]},
-  {month:"7月",receivable:1215314.98,unpaid:[{name:"阴山优麦冲饮",amount:251339.52},{name:"养舒优1",amount:161179.60},{name:"桂格",amount:128981.16},{name:"抖音超市美妆",amount:120825},{name:"南方黑芝麻-1",amount:86730.76},{name:"追觅戒指",amount:68000},{name:"拓趣（沐浴油）",amount:58016},{name:"阴山优麦食品",amount:75000.74},{name:"南方黑芝麻-2",amount:74425.86},{name:"拓趣（护手霜）",amount:45000},{name:"古井（季度结算）",amount:42407.10},{name:"养舒优2",amount:36678.64},{name:"阴山优麦",amount:29766.40},{name:"南方黑芝麻（私）",amount:26964.20},{name:"古井（达）",amount:10000}]}
-];
-
-const monthlyTrend = {
-  months: ["1月","2月","3月","4月","5月","6月","7月"],
-  revenue: [157.53, 92.70, 101.63, 104.58, 133.62, 124.65, 121.53],
-  activeCount: [14, 14, 17, 21, 19, 19, 15]
-};
-
-const projectsByActive = [
-  {name:"阴山优麦冲饮",value:7,total:1817335.56},{name:"桂格",value:7,total:1319500.36},
-  {name:"南方黑芝麻-1",value:7,total:710309.46},{name:"抖音超市美妆",value:7,total:707381.47},
-  {name:"阴山优麦食品",value:7,total:637397.10},{name:"古井（季度结算）",value:7,total:486751.30},
-  {name:"拓趣（护手霜）",value:7,total:403404.01},{name:"古井（达）",value:7,total:198569.94},
-  {name:"南方黑芝麻（私）",value:7,total:179879.78},{name:"阴山优麦",value:7,total:108104.26},
-  {name:"旺旺",value:5,total:274774.39},{name:"素颜霜",value:5,total:97166.69},
-  {name:"营业外收入",value:5,total:90349.42},{name:"素颜霜（达）",value:5,total:25128.75},
-  {name:"养舒优1",value:4,total:607342.19},{name:"拓趣（沐浴油）",value:4,total:149354.81},
-  {name:"追觅戒指",value:3,total:183468.64},{name:"蓝漂",value:3,total:89329.63},
-  {name:"阴山优麦（达）",value:3,total:29687.28},{name:"美菱小家电",value:3,total:27095.86},
-  {name:"乐锦记",value:2,total:80241.94},{name:"抖超箱包",value:2,total:8886.58},
-  {name:"南方黑芝麻-2",value:1,total:74425.86},{name:"养舒优2",value:1,total:36678.64},
-  {name:"DAVIDGARCE男装",value:1,total:11835.18},{name:"蓝漂（达）",value:1,total:4074.30},
-  {name:"南方黑芝麻（达）",value:1,total:3893.46}
-];
-
-// ========== 通用配置 ==========
-Chart.defaults.color = '#94a3b8';
-Chart.defaults.font.family = '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
-
-// 数值标签插件
-const valueLabelPlugin = {
-  id: 'valueLabel',
-  afterDatasetsDraw(chart) {
-    const { ctx, chartArea } = chart;
-    ctx.save();
-    ctx.font = '11px -apple-system, "PingFang SC", sans-serif';
-    ctx.textBaseline = 'middle';
-    chart.data.datasets.forEach((dataset, i) => {
-      const meta = chart.getDatasetMeta(i);
-      meta.data.forEach((bar, index) => {
-        const value = dataset.data[index];
-        if (value === 0) return;
-        const formatted = value >= 10000 ? (value/10000).toFixed(1) + '万' : value.toFixed(0);
-        ctx.fillStyle = '#cbd5e1';
-        // 横向柱状图：标签在柱子右侧
-        if (chart.options.indexAxis === 'y') {
-          ctx.textAlign = 'left';
-          ctx.fillText(formatted, bar.x + 6, bar.y);
-        } else {
-          ctx.textAlign = 'center';
-          ctx.fillText(formatted, bar.x, bar.y - 8);
-        }
-      });
-    });
-    ctx.restore();
-  }
-};
-
-const tooltipStyle = {
-  backgroundColor: 'rgba(15,23,42,0.95)',
-  titleColor: '#e2e8f0',
-  bodyColor: '#cbd5e1',
-  borderColor: 'rgba(56,189,248,0.3)',
-  borderWidth: 1,
-  padding: 12,
-  titleFont: { size: 13, weight: '600' },
-  bodyFont: { size: 12 }
-};
-
-// ========== 图表1：项目总收入 ==========
-new Chart(document.getElementById('chartRevenue'), {
-  type: 'bar',
-  data: {
-    labels: projectsByRevenue.map(p => p.name),
-    datasets: [{
-      data: projectsByRevenue.map(p => p.value),
-      backgroundColor: 'rgba(56,189,248,0.65)',
-      borderColor: '#38bdf8',
-      borderWidth: 1,
-      borderRadius: 4,
-      barPercentage: 0.7
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: { ...tooltipStyle, callbacks: { label: c => '总收入: ¥' + c.parsed.x.toLocaleString('zh-CN', {minimumFractionDigits:2}) } }
-    },
-    scales: {
-      x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
-    }
-  },
-  plugins: [valueLabelPlugin]
-});
-
-// ========== 图表2：项目月均收入 ==========
-new Chart(document.getElementById('chartAvgMonthly'), {
-  type: 'bar',
-  data: {
-    labels: projectsByAvg.map(p => p.name + ' (' + p.months + '月)'),
-    datasets: [{
-      data: projectsByAvg.map(p => p.value),
-      backgroundColor: 'rgba(52,211,153,0.65)',
-      borderColor: '#34d399',
-      borderWidth: 1,
-      borderRadius: 4,
-      barPercentage: 0.7
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: { ...tooltipStyle, callbacks: { label: c => '月均收入: ¥' + c.parsed.x.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '/月' } }
-    },
-    scales: {
-      x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
-    }
-  },
-  plugins: [valueLabelPlugin]
-});
-
-// ========== 图表3：项目应收款（红色预警） ==========
-new Chart(document.getElementById('chartReceivable'), {
-  type: 'bar',
-  data: {
-    labels: projectsByReceivable.map(p => p.name),
-    datasets: [{
-      data: projectsByReceivable.map(p => p.value),
-      backgroundColor: projectsByReceivable.map(p => p.overdue ? 'rgba(248,113,113,0.75)' : 'rgba(56,189,248,0.55)'),
-      borderColor: projectsByReceivable.map(p => p.overdue ? '#f87171' : '#38bdf8'),
-      borderWidth: 1,
-      borderRadius: 4,
-      barPercentage: 0.7
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        ...tooltipStyle,
-        callbacks: {
-          label: function(c) {
-            const p = projectsByReceivable[c.dataIndex];
-            return '应收款: ¥' + c.parsed.x.toLocaleString('zh-CN', {minimumFractionDigits:2}) + (p.overdue ? '  ⚠ 超2个月未回款' : '');
-          }
-        }
-      }
-    },
-    scales: {
-      x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
-    }
-  },
-  plugins: [valueLabelPlugin]
-});
-
-// ========== 图表4：每月应收款（tooltip明细） ==========
-new Chart(document.getElementById('chartMonthlyReceivable'), {
-  type: 'bar',
-  data: {
-    labels: monthlyReceivable.map(m => m.month),
-    datasets: [{
-      label: '当月应收款',
-      data: monthlyReceivable.map(m => m.receivable),
-      backgroundColor: monthlyReceivable.map((m,i) => i >= 5 ? 'rgba(248,113,113,0.6)' : 'rgba(251,146,60,0.6)'),
-      borderColor: monthlyReceivable.map((m,i) => i >= 5 ? '#f87171' : '#fb923c'),
-      borderWidth: 1,
-      borderRadius: 6,
-      barPercentage: 0.55
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        ...tooltipStyle,
-        callbacks: {
-          title: function(items) { return items[0].label + ' 应收款明细'; },
-          label: function(c) {
-            const m = monthlyReceivable[c.dataIndex];
-            return '当月应收: ¥' + c.parsed.y.toLocaleString('zh-CN', {minimumFractionDigits:2});
-          },
-          afterLabel: function(c) {
-            const m = monthlyReceivable[c.dataIndex];
-            if (m.unpaid.length === 0) return '（无未回款项目）';
-            return m.unpaid.map(u => '  • ' + u.name + ': ¥' + u.amount.toLocaleString('zh-CN', {minimumFractionDigits:2})).join('\n');
-          }
-        }
-      }
-    },
-    scales: {
-      x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
-      y: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } }
-    }
-  }
-});
-
-// ========== 图表5：每月收入趋势 + 存续项目数 ==========
-new Chart(document.getElementById('chartTrend'), {
-  data: {
-    labels: monthlyTrend.months,
-    datasets: [
-      {
-        type: 'bar',
-        label: '月度收入（万元）',
-        data: monthlyTrend.revenue,
-        backgroundColor: 'rgba(56,189,248,0.55)',
-        borderColor: '#38bdf8',
-        borderWidth: 1,
-        borderRadius: 6,
-        barPercentage: 0.5,
-        yAxisID: 'y'
-      },
-      {
-        type: 'line',
-        label: '存续项目数',
-        data: monthlyTrend.activeCount,
-        borderColor: '#a855f7',
-        backgroundColor: 'rgba(168,85,247,0.1)',
-        borderWidth: 2.5,
-        pointBackgroundColor: '#a855f7',
-        pointBorderColor: '#fff',
-        pointBorderWidth: 2,
-        pointRadius: 5,
-        pointHoverRadius: 7,
-        tension: 0.3,
-        fill: false,
-        yAxisID: 'y1'
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    interaction: { mode: 'index', intersect: false },
-    plugins: {
-      legend: { labels: { color: '#94a3b8', usePointStyle: true, padding: 16 } },
-      tooltip: { ...tooltipStyle }
-    },
-    scales: {
-      x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
-      y: {
-        position: 'left',
-        title: { display: true, text: '收入（万元）', color: '#38bdf8', font: { size: 11 } },
-        ticks: { color: '#64748b' },
-        grid: { color: 'rgba(255,255,255,0.04)' }
-      },
-      y1: {
-        position: 'right',
-        title: { display: true, text: '存续项目数', color: '#a855f7', font: { size: 11 } },
-        ticks: { color: '#64748b', stepSize: 2 },
-        grid: { drawOnChartArea: false },
-        min: 0,
-        max: 25
-      }
-    }
-  }
-});
-
-// ========== 图表6：项目月均收入排名（第四板块） ==========
-new Chart(document.getElementById('chartAvgRank'), {
-  type: 'bar',
-  data: {
-    labels: projectsByAvg.map(p => p.name),
-    datasets: [{
-      data: projectsByAvg.map(p => p.value),
-      backgroundColor: 'rgba(129,140,248,0.6)',
-      borderColor: '#818cf8',
-      borderWidth: 1,
-      borderRadius: 4,
-      barPercentage: 0.7
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: { ...tooltipStyle, callbacks: { label: c => '月均: ¥' + c.parsed.x.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '/月 （存续' + projectsByAvg[c.dataIndex].months + '个月）' } }
-    },
-    scales: {
-      x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
-    }
-  },
-  plugins: [valueLabelPlugin]
-});
-
-// ========== 图表7：项目存续时间排名 ==========
-new Chart(document.getElementById('chartActiveMonths'), {
-  type: 'bar',
-  data: {
-    labels: projectsByActive.map(p => p.name),
-    datasets: [{
-      data: projectsByActive.map(p => p.value),
-      backgroundColor: projectsByActive.map(p => {
-        if (p.value >= 7) return 'rgba(52,211,153,0.65)';
-        if (p.value >= 4) return 'rgba(56,189,248,0.6)';
-        if (p.value >= 2) return 'rgba(251,146,60,0.6)';
-        return 'rgba(248,113,113,0.55)';
-      }),
-      borderColor: projectsByActive.map(p => {
-        if (p.value >= 7) return '#34d399';
-        if (p.value >= 4) return '#38bdf8';
-        if (p.value >= 2) return '#fb923c';
-        return '#f87171';
-      }),
-      borderWidth: 1,
-      borderRadius: 4,
-      barPercentage: 0.7
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: { ...tooltipStyle, callbacks: { label: c => '存续 ' + c.parsed.x + ' 个月，总收入 ¥' + projectsByActive[c.dataIndex].total.toLocaleString('zh-CN', {minimumFractionDigits:2}) } }
-    },
-    scales: {
-      x: { ticks: { color: '#64748b', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.04)' }, max: 8 },
-      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
-    }
-  },
-  plugins: [valueLabelPlugin]
-});
-</script>
 
 </div>
 
@@ -3230,44 +2879,101 @@ new Chart(document.getElementById('chartActiveMonths'), {
 </div>
 
 <script>
-// ========== 页面切换 ==========
-document.querySelectorAll('.nav-tab').forEach(tab => {
-    tab.addEventListener('click', function() {
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
-        this.classList.add('active');
-        const page = this.getAttribute('data-page');
-        document.getElementById('page-' + page).classList.add('active');
-        // 切换到仪表盘页面时重新渲染图表
-        if (page === 'dashboard') {
-            setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
-            }, 100);
-        }
-        if (page === 'receivable') {
-            setTimeout(() => {
-                initReceivableCharts();
-            }, 100);
-        }
-    });
-});
+// ========== 全局数据 ==========
+let DATA = null;
+let dashboardCharts = {};
+let receivableChart = null;
+let isLoading = false;
 
-// ========== 财务查询筛选 ==========
-const allDetailRows = [{"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "1月", "estimate": 282539.21, "invoice": "已回款", "received": 282539.21, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "2月", "estimate": 190298.65, "invoice": "已回款", "received": 190298.65, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "3月", "estimate": 264899.28, "invoice": "已回款", "received": 264899.28, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "4月", "estimate": 281646.52, "invoice": "已回款", "received": 281646.52, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "5月", "estimate": 260553.28, "invoice": "已回款", "received": 260553.28, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "6月", "estimate": 286059.1, "invoice": "已开票", "received": 0.0, "receivable": 286059.1}, {"group": "A组", "name": "阴山优麦冲饮", "code": "1001", "month": "7月", "estimate": 251339.52, "invoice": "未对账", "received": 0.0, "receivable": 251339.52}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "1月", "estimate": 120485.12, "invoice": "已回款", "received": 120485.12, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "2月", "estimate": 95087.9, "invoice": "已回款", "received": 95087.9, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "3月", "estimate": 116659.8, "invoice": "已回款", "received": 116659.8, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "4月", "estimate": 78498.58, "invoice": "已回款", "received": 78498.58, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "5月", "estimate": 76432.18, "invoice": "已回款", "received": 76432.18, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "6月", "estimate": 75232.78, "invoice": "已回款", "received": 75232.78, "receivable": 0.0}, {"group": "A组", "name": "阴山优麦食品", "code": "1002", "month": "7月", "estimate": 75000.74, "invoice": "未对账", "received": 0.0, "receivable": 75000.74}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "1月", "estimate": 145293.02, "invoice": "已回款", "received": 145293.02, "receivable": 0.0}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "2月", "estimate": 64975.08, "invoice": "已回款", "received": 64975.08, "receivable": 0.0}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "3月", "estimate": 81500.48, "invoice": "已回款", "received": 81500.48, "receivable": 0.0}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "4月", "estimate": 97296.98, "invoice": "已回款", "received": 97296.98, "receivable": 0.0}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "5月", "estimate": 124844.14, "invoice": "已回款", "received": 124844.14, "receivable": 0.0}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "6月", "estimate": 72646.77, "invoice": "已开票", "received": 0.0, "receivable": 72646.77}, {"group": "A组", "name": "抖音超市美妆", "code": "1003", "month": "7月", "estimate": 120825.0, "invoice": "未对账", "received": 0.0, "receivable": 120825.0}, {"group": "A组", "name": "抖超箱包", "code": "1004", "month": "5月", "estimate": 8286.58, "invoice": "已回款", "received": 8286.58, "receivable": 0.0}, {"group": "A组", "name": "抖超箱包", "code": "1004", "month": "6月", "estimate": 600.0, "invoice": "已开票", "received": 0.0, "receivable": 600.0}, {"group": "A组", "name": "追觅戒指", "code": "1005", "month": "5月", "estimate": 41442.88, "invoice": "已回款", "received": 41442.88, "receivable": 0.0}, {"group": "A组", "name": "追觅戒指", "code": "1005", "month": "6月", "estimate": 74025.76, "invoice": "已开票", "received": 0.0, "receivable": 74025.76}, {"group": "A组", "name": "追觅戒指", "code": "1005", "month": "7月", "estimate": 68000.0, "invoice": "未对账", "received": 0.0, "receivable": 68000.0}, {"group": "A组", "name": "美菱小家电", "code": "1006", "month": "4月", "estimate": 8760.75, "invoice": "已回款", "received": 8760.75, "receivable": 0.0}, {"group": "A组", "name": "美菱小家电", "code": "1006", "month": "5月", "estimate": 12635.11, "invoice": "已回款", "received": 12635.11, "receivable": 0.0}, {"group": "A组", "name": "美菱小家电", "code": "1006", "month": "6月", "estimate": 5700.0, "invoice": "未对账", "received": 0.0, "receivable": 5700.0}, {"group": "A组", "name": "蓝漂", "code": "1007", "month": "3月", "estimate": 29384.1, "invoice": "已回款", "received": 29384.1, "receivable": 0.0}, {"group": "A组", "name": "蓝漂", "code": "1007", "month": "4月", "estimate": 29945.53, "invoice": "已回款", "received": 29945.53, "receivable": 0.0}, {"group": "A组", "name": "蓝漂", "code": "1007", "month": "5月", "estimate": 30000.0, "invoice": "已开票", "received": 0.0, "receivable": 30000.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "1月", "estimate": 116177.28, "invoice": "已回款", "received": 116177.28, "receivable": 0.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "2月", "estimate": 97098.55, "invoice": "已回款", "received": 97098.55, "receivable": 0.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "3月", "estimate": 62658.28, "invoice": "已回款", "received": 62658.28, "receivable": 0.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "4月", "estimate": 60600.0, "invoice": "已回款", "received": 60600.0, "receivable": 0.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "5月", "estimate": 51733.06, "invoice": "已回款", "received": 51733.06, "receivable": 0.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "6月", "estimate": 56077.03, "invoice": "已回款", "received": 56077.03, "receivable": 0.0}, {"group": "B组", "name": "古井店播", "code": "1008", "month": "7月", "estimate": 42407.1, "invoice": "未对账", "received": 0.0, "receivable": 42407.1}, {"group": "B组", "name": "桂格", "code": "1009", "month": "1月", "estimate": 458249.01, "invoice": "已回款", "received": 458249.01, "receivable": 0.0}, {"group": "B组", "name": "桂格", "code": "1009", "month": "2月", "estimate": 158549.72, "invoice": "已回款", "received": 158549.72, "receivable": 0.0}, {"group": "B组", "name": "桂格", "code": "1009", "month": "3月", "estimate": 149149.72, "invoice": "已回款", "received": 149149.72, "receivable": 0.0}, {"group": "B组", "name": "桂格", "code": "1009", "month": "4月", "estimate": 149557.34, "invoice": "已回款", "received": 149557.34, "receivable": 0.0}, {"group": "B组", "name": "桂格", "code": "1009", "month": "5月", "estimate": 143932.85, "invoice": "已回款", "received": 143932.85, "receivable": 0.0}, {"group": "B组", "name": "桂格", "code": "1009", "month": "6月", "estimate": 131080.56, "invoice": "已回款", "received": 131080.56, "receivable": 0.0}, {"group": "B组", "name": "桂格", "code": "1009", "month": "7月", "estimate": 128981.16, "invoice": "未对账", "received": 0.0, "receivable": 128981.16}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "1月", "estimate": 173791.01, "invoice": "已回款", "received": 178291.01, "receivable": -4500.0}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "2月", "estimate": 109723.08, "invoice": "已回款", "received": 109723.08, "receivable": 0.0}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "3月", "estimate": 103677.37, "invoice": "已回款", "received": 103677.37, "receivable": 0.0}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "4月", "estimate": 67116.89, "invoice": "已回款", "received": 67116.89, "receivable": 0.0}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "5月", "estimate": 77599.83, "invoice": "已回款", "received": 77599.83, "receivable": 0.0}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "6月", "estimate": 91670.52, "invoice": "已回款", "received": 91670.52, "receivable": 0.0}, {"group": "B组", "name": "南方黑芝麻-1", "code": "1010", "month": "7月", "estimate": 86730.76, "invoice": "未对账", "received": 0.0, "receivable": 86730.76}, {"group": "B组", "name": "南方黑芝麻-2", "code": "1011", "month": "7月", "estimate": 74425.86, "invoice": "未对账", "received": 0.0, "receivable": 74425.86}, {"group": "B组", "name": "旺旺", "code": "1012", "month": "1月", "estimate": 73711.92, "invoice": "已开票", "received": 0.0, "receivable": 73711.92}, {"group": "B组", "name": "旺旺", "code": "1012", "month": "2月", "estimate": 40940.64, "invoice": "已开票", "received": 0.0, "receivable": 40940.64}, {"group": "B组", "name": "旺旺", "code": "1012", "month": "4月", "estimate": 14084.25, "invoice": "已开票", "received": 0.0, "receivable": 14084.25}, {"group": "B组", "name": "旺旺", "code": "1012", "month": "5月", "estimate": 70087.01, "invoice": "已开票", "received": 0.0, "receivable": 70087.01}, {"group": "B组", "name": "旺旺", "code": "1012", "month": "6月", "estimate": 75950.57, "invoice": "已开票", "received": 0.0, "receivable": 75950.57}, {"group": "B组", "name": "乐锦记", "code": "1013", "month": "4月", "estimate": 50000.0, "invoice": "已回款", "received": 50000.0, "receivable": 0.0}, {"group": "B组", "name": "乐锦记", "code": "1013", "month": "5月", "estimate": 30241.94, "invoice": "已回款", "received": 30241.94, "receivable": 0.0}, {"group": "B组", "name": "养舒优1", "code": "1014", "month": "4月", "estimate": 26129.17, "invoice": "已回款", "received": 26129.17, "receivable": 0.0}, {"group": "B组", "name": "养舒优1", "code": "1014", "month": "5月", "estimate": 217133.68, "invoice": "已回款", "received": 217133.68, "receivable": 0.0}, {"group": "B组", "name": "养舒优1", "code": "1014", "month": "6月", "estimate": 202899.74, "invoice": "已开票", "received": 2899.0, "receivable": 200000.74}, {"group": "B组", "name": "养舒优1", "code": "1014", "month": "7月", "estimate": 161179.6, "invoice": "未对账", "received": 0.0, "receivable": 161179.6}, {"group": "B组", "name": "养舒优2", "code": "1015", "month": "7月", "estimate": 36678.64, "invoice": "未对账", "received": 0.0, "receivable": 36678.64}, {"group": "C组", "name": "素颜霜", "code": "1016", "month": "1月", "estimate": 26852.02, "invoice": "已回款", "received": 26852.02, "receivable": 0.0}, {"group": "C组", "name": "素颜霜", "code": "1016", "month": "2月", "estimate": 27235.38, "invoice": "已回款", "received": 27235.38, "receivable": 0.0}, {"group": "C组", "name": "素颜霜", "code": "1016", "month": "3月", "estimate": 23929.46, "invoice": "已回款", "received": 23929.46, "receivable": 0.0}, {"group": "C组", "name": "素颜霜", "code": "1016", "month": "4月", "estimate": 17214.05, "invoice": "已回款", "received": 17214.05, "receivable": 0.0}, {"group": "C组", "name": "素颜霜", "code": "1016", "month": "6月", "estimate": 1935.78, "invoice": "已回款", "received": 1935.78, "receivable": 0.0}, {"group": "C组", "name": "拓趣（沐浴油）", "code": "1017", "month": "4月", "estimate": 31338.81, "invoice": "已回款", "received": 30000.0, "receivable": 1338.81}, {"group": "C组", "name": "拓趣（沐浴油）", "code": "1017", "month": "5月", "estimate": 30000.0, "invoice": "已回款", "received": 30000.0, "receivable": 0.0}, {"group": "C组", "name": "拓趣（沐浴油）", "code": "1017", "month": "6月", "estimate": 30000.0, "invoice": "已回款", "received": 30000.0, "receivable": 0.0}, {"group": "C组", "name": "拓趣（沐浴油）", "code": "1017", "month": "7月", "estimate": 58016.0, "invoice": "", "received": 0.0, "receivable": 58016.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "1月", "estimate": 57351.78, "invoice": "已回款", "received": 57351.78, "receivable": 0.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "2月", "estimate": 59804.09, "invoice": "已回款", "received": 59804.09, "receivable": 0.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "3月", "estimate": 62634.04, "invoice": "已回款", "received": 62634.04, "receivable": 0.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "4月", "estimate": 57734.41, "invoice": "已回款", "received": 57734.41, "receivable": 0.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "5月", "estimate": 62080.87, "invoice": "已回款", "received": 62080.87, "receivable": 0.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "6月", "estimate": 58798.82, "invoice": "已回款", "received": 58798.82, "receivable": 0.0}, {"group": "C组", "name": "拓趣（护手霜）", "code": "1018", "month": "7月", "estimate": 45000.0, "invoice": "已开票", "received": 0.0, "receivable": 45000.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "1月", "estimate": 64300.7, "invoice": "已回款", "received": 64300.7, "receivable": 0.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "2月", "estimate": 29876.65, "invoice": "已回款", "received": 29876.65, "receivable": 0.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "3月", "estimate": 32769.34, "invoice": "已回款", "received": 32769.34, "receivable": 0.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "4月", "estimate": 13243.48, "invoice": "已回款", "received": 13243.48, "receivable": 0.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "5月", "estimate": 42447.67, "invoice": "已回款", "received": 42447.67, "receivable": 0.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "6月", "estimate": 5932.1, "invoice": "已回款", "received": 5932.1, "receivable": 0.0}, {"group": "传媒", "name": "古井（达）", "code": "1019", "month": "7月", "estimate": 10000.0, "invoice": "未对账", "received": 0.0, "receivable": 10000.0}, {"group": "传媒", "name": "阴山优麦（达）", "code": "1020", "month": "3月", "estimate": 13117.1, "invoice": "已回款", "received": 13117.1, "receivable": 0.0}, {"group": "传媒", "name": "阴山优麦（达）", "code": "1020", "month": "4月", "estimate": 3097.15, "invoice": "已回款", "received": 3097.15, "receivable": 0.0}, {"group": "传媒", "name": "阴山优麦（达）", "code": "1020", "month": "6月", "estimate": 13473.03, "invoice": "已回款", "received": 13473.03, "receivable": 0.0}, {"group": "传媒", "name": "素颜霜（达）", "code": "1021", "month": "1月", "estimate": 8648.48, "invoice": "已回款", "received": 8648.48, "receivable": 0.0}, {"group": "传媒", "name": "素颜霜（达）", "code": "1021", "month": "2月", "estimate": 7910.02, "invoice": "已回款", "received": 7910.02, "receivable": 0.0}, {"group": "传媒", "name": "素颜霜（达）", "code": "1021", "month": "3月", "estimate": 4330.71, "invoice": "已回款", "received": 4330.71, "receivable": 0.0}, {"group": "传媒", "name": "素颜霜（达）", "code": "1021", "month": "4月", "estimate": 2303.76, "invoice": "已回款", "received": 2303.76, "receivable": 0.0}, {"group": "传媒", "name": "素颜霜（达）", "code": "1021", "month": "6月", "estimate": 1935.78, "invoice": "已回款", "received": 1935.78, "receivable": 0.0}, {"group": "传媒", "name": "南方黑芝麻（达）", "code": "1022", "month": "3月", "estimate": 3893.46, "invoice": "已回款", "received": 3893.46, "receivable": 0.0}, {"group": "传媒", "name": "蓝漂（达）", "code": "1023", "month": "4月", "estimate": 4074.3, "invoice": "已回款", "received": 4074.3, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "1月", "estimate": 8768.12, "invoice": "已回款", "received": 8768.12, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "2月", "estimate": 3214.35, "invoice": "已回款", "received": 3214.35, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "3月", "estimate": 5363.13, "invoice": "已回款", "received": 5363.13, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "4月", "estimate": 6542.9, "invoice": "已回款", "received": 6542.9, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "5月", "estimate": 19814.04, "invoice": "已回款", "received": 19814.04, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "6月", "estimate": 34635.32, "invoice": "已回款", "received": 34635.32, "receivable": 0.0}, {"group": "私域", "name": "阴山优麦", "code": "1024", "month": "7月", "estimate": 29766.4, "invoice": "未对账", "received": 0.0, "receivable": 29766.4}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "1月", "estimate": 17525.15, "invoice": "已回款", "received": 17525.15, "receivable": 0.0}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "2月", "estimate": 23236.18, "invoice": "已回款", "received": 23236.18, "receivable": 0.0}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "3月", "estimate": 31575.59, "invoice": "已回款", "received": 31575.59, "receivable": 0.0}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "4月", "estimate": 30814.41, "invoice": "已回款", "received": 30814.41, "receivable": 0.0}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "5月", "estimate": 21962.51, "invoice": "已回款", "received": 21962.51, "receivable": 0.0}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "6月", "estimate": 27801.74, "invoice": "已回款", "received": 27801.74, "receivable": 0.0}, {"group": "私域", "name": "南方黑芝麻（私）", "code": "1025", "month": "7月", "estimate": 26964.2, "invoice": "未对账", "received": 0.0, "receivable": 26964.2}, {"group": "聚能", "name": "DAVIDGARCE男装", "code": "1026", "month": "3月", "estimate": 11835.18, "invoice": "已回款", "received": 11835.18, "receivable": 0.0}, {"group": "其他", "name": "营业外收入", "code": "1027", "month": "1月", "estimate": 21613.2, "invoice": "已回款", "received": 21613.2, "receivable": 0.0}, {"group": "其他", "name": "营业外收入", "code": "1027", "month": "2月", "estimate": 19029.16, "invoice": "已回款", "received": 19029.16, "receivable": 0.0}, {"group": "其他", "name": "营业外收入", "code": "1027", "month": "3月", "estimate": 18882.06, "invoice": "已回款", "received": 18882.06, "receivable": 0.0}, {"group": "其他", "name": "营业外收入", "code": "1027", "month": "4月", "estimate": 15825.0, "invoice": "已回款", "received": 15825.0, "receivable": 0.0}, {"group": "其他", "name": "营业外收入", "code": "1027", "month": "5月", "estimate": 15000.0, "invoice": "已回款", "received": 15000.0, "receivable": 0.0}];
+// 通用tooltip样式
+const tooltipStyle = {
+    backgroundColor: 'rgba(15,23,42,0.95)',
+    titleColor: '#e2e8f0',
+    bodyColor: '#cbd5e1',
+    borderColor: 'rgba(56,189,248,0.3)',
+    borderWidth: 1,
+    padding: 12
+};
 
+// 数值标签插件
+const valueLabelPlugin = {
+    id: 'valueLabel',
+    afterDatasetsDraw(chart) {
+        const { ctx, data, chartArea: { top, bottom } } = chart;
+        if (!data.datasets[0].horizontal) {
+            data.datasets.forEach((dataset, i) => {
+                const meta = chart.getDatasetMeta(i);
+                meta.data.forEach((bar, index) => {
+                    const val = dataset.data[index];
+                    if (val > 0) {
+                        ctx.save();
+                        ctx.fillStyle = '#94a3b8';
+                        ctx.font = '10px sans-serif';
+                        ctx.textAlign = 'center';
+                        const label = val >= 10000 ? (val/10000).toFixed(1) + '万' : val.toLocaleString();
+                        ctx.fillText(label, bar.x, Math.max(top + 12, bar.y - 5));
+                        ctx.restore();
+                    }
+                });
+            });
+        }
+    }
+};
+
+// ========== 加载数据 ==========
+async function loadData() {
+    try {
+        const resp = await fetch('finance_data.json?t=' + Date.now());
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        DATA = await resp.json();
+        document.getElementById('updateTime').textContent = '更新于 ' + DATA.updateTime;
+        return true;
+    } catch (e) {
+        document.getElementById('updateTime').textContent = '数据加载失败';
+        console.error('加载数据失败:', e);
+        alert('数据加载失败：' + e.message + '\n请确认 finance_data.json 已上传到GitHub');
+        return false;
+    }
+}
+
+// ========== 渲染财务查询页面 ==========
+function renderFinance() {
+    if (!DATA) return;
+    
+    // 填充筛选器选项
+    const monthSel = document.getElementById('filterMonth');
+    const projSel = document.getElementById('filterProject');
+    const groupSel = document.getElementById('filterGroup');
+    
+    // 月份
+    monthSel.innerHTML = '<option value="all">全部月份</option>' +
+        DATA.filterOptions.months.map(m => `<option value="${m}">${m}</option>`).join('');
+    
+    // 项目
+    projSel.innerHTML = '<option value="all">全部项目</option>' +
+        DATA.filterOptions.projects.map(p => `<option value="${p}">${p}</option>`).join('');
+    
+    // 部门
+    groupSel.innerHTML = '<option value="all">全部部门</option>' +
+        DATA.filterOptions.groups.map(g => `<option value="${g}">${g}</option>`).join('');
+    
+    applyFilters();
+}
+
+// ========== 筛选逻辑 ==========
 function applyFilters() {
+    if (!DATA) return;
     const month = document.getElementById('filterMonth').value;
     const project = document.getElementById('filterProject').value;
     const group = document.getElementById('filterGroup').value;
     
-    let filtered = allDetailRows.filter(row => {
+    let filtered = DATA.detailRows.filter(row => {
         if (month !== 'all' && row.month !== month) return false;
         if (project !== 'all' && row.name !== project) return false;
         if (group !== 'all' && row.group !== group) return false;
         return true;
     });
     
-    // 更新汇总
     const sumEst = filtered.reduce((s, r) => s + r.estimate, 0);
     const sumRec = filtered.reduce((s, r) => s + r.received, 0);
     const sumRecv = filtered.reduce((s, r) => s + r.receivable, 0);
@@ -3277,7 +2983,6 @@ function applyFilters() {
     document.getElementById('sumReceivable').innerHTML = (sumRecv/10000).toFixed(2) + '<span class="unit">万元</span>';
     document.getElementById('recordCount').textContent = '共 ' + filtered.length + ' 条记录';
     
-    // 更新表格
     const tbody = document.getElementById('financeTableBody');
     tbody.innerHTML = filtered.map(row => {
         const inv = row.invoice || '-';
@@ -3300,40 +3005,338 @@ function resetFilters() {
     applyFilters();
 }
 
-document.getElementById('filterMonth').addEventListener('change', applyFilters);
-document.getElementById('filterProject').addEventListener('change', applyFilters);
-document.getElementById('filterGroup').addEventListener('change', applyFilters);
-
-// ========== 项目明细筛选 ==========
-function filterProjectDetail() {
-    const group = document.getElementById('projGroupFilter').value;
-    document.querySelectorAll('.proj-row').forEach(row => {
-        if (group === 'all' || row.getAttribute('data-group') === group) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-}
-
-// ========== 应收款分析图表 ==========
-let receivableChartsInitialized = false;
-function initReceivableCharts() {
-    if (receivableChartsInitialized) return;
-    receivableChartsInitialized = true;
+// ========== 渲染仪表盘 ==========
+function renderDashboard() {
+    if (!DATA) return;
+    
+    // 销毁旧图表
+    Object.values(dashboardCharts).forEach(c => { if (c) c.destroy(); });
+    dashboardCharts = {};
     
     Chart.defaults.color = '#94a3b8';
     Chart.defaults.font.family = '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
     
-    // 月度回款趋势图
-    new Chart(document.getElementById('chartMonthlyTrend'), {
+    const s = DATA.summary;
+    
+    // 更新仪表盘汇总卡片
+    const cards = document.querySelectorAll('#page-dashboard .card');
+    if (cards.length >= 4) {
+        // 业务总收入
+        cards[0].querySelector('.card-value').innerHTML = s.totalEstimateWan + '<span class="card-unit">万元</span>';
+        cards[0].querySelector('.card-sub').innerHTML = '累计收入小计 <strong>¥' + s.totalEstimate.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</strong>';
+        cards[0].querySelector('.progress-label').innerHTML = '<span>年度目标 2,000 万</span><span>' + s.targetProgress + '%</span>';
+        cards[0].querySelector('.progress-fill').style.width = s.targetProgress + '%';
+        // 回款总计
+        cards[1].querySelector('.card-value').innerHTML = s.totalReceivedWan + '<span class="card-unit">万元</span>';
+        cards[1].querySelector('.card-sub').innerHTML = '累计回款小计 <strong>¥' + s.totalReceived.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</strong>';
+        cards[1].querySelector('.progress-label').innerHTML = '<span>占业务收入比</span><span>' + s.receivedRatio + '%</span>';
+        cards[1].querySelector('.progress-fill').style.width = s.receivedRatio + '%';
+        // 应收款总计
+        cards[2].querySelector('.card-value').innerHTML = s.totalReceivableWan + '<span class="card-unit">万元</span>';
+        cards[2].querySelector('.card-sub').innerHTML = '业务收入 − 回款总计 = <strong>¥' + s.totalReceivable.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</strong>';
+        cards[2].querySelector('.progress-label').innerHTML = '<span>未回款占比</span><span>' + s.receivableRatio + '%</span>';
+        cards[2].querySelector('.progress-fill').style.width = s.receivableRatio + '%';
+        // 月均目标
+        cards[3].querySelector('.card-value').innerHTML = s.monthlyTargetWan + '<span class="card-unit">万元/月</span>';
+        cards[3].querySelector('.card-sub').innerHTML = '剩余 <strong>' + s.remainingMonths + ' 个月</strong>（8-12月）需完成 <strong>' + s.remainingTargetWan + ' 万</strong>';
+        cards[3].querySelector('.progress-label').innerHTML = '<span>距年度目标缺口</span><span>' + s.targetGap + '%</span>';
+        cards[3].querySelector('.progress-fill').style.width = s.targetGap + '%';
+    }
+    
+    // 第三板块卡片
+    const cards3 = document.querySelectorAll('#page-dashboard .cards-grid-3 .card');
+    if (cards3.length >= 3) {
+        cards3[0].querySelector('.card-value').innerHTML = s.totalReceivableWan + '<span class="card-unit">万元</span>';
+        cards3[0].querySelector('.card-sub').innerHTML = '各项目（预估收入 − 实际回款）汇总 <strong>¥' + s.totalReceivable.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</strong>';
+        cards3[1].querySelector('.card-value').innerHTML = s.overdueTotalWan + '<span class="card-unit">万元</span>';
+        cards3[1].querySelector('.card-sub').innerHTML = '1-5月到期未回款部分 <strong>¥' + s.overdueTotal.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</strong><br>占2026应收款 <strong>' + s.overdueRatio + '%</strong>';
+        cards3[2].querySelector('.card-value').innerHTML = s.totalWithHistoryWan + '<span class="card-unit">万元</span>';
+        cards3[2].querySelector('.year-breakdown').innerHTML =
+            '<span class="year-item">2024: ¥' + s.year2024Receivable.toLocaleString() + '</span>' +
+            '<span class="year-item">2025: ¥' + s.year2025Receivable + '</span>' +
+            '<span class="year-item">2026: ¥' + s.totalReceivable.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</span>';
+    }
+    
+    // 更新页脚
+    const footer = document.querySelector('#page-dashboard .footer');
+    if (footer) footer.textContent = '数据来源：飞书表格「2026账单」｜ 聚光直播经营分析 ｜ 共 ' + DATA.projectCount + ' 个项目';
+    
+    // 图表1：项目总收入降序
+    dashboardCharts.revenue = new Chart(document.getElementById('chartRevenue'), {
         type: 'bar',
         data: {
-            labels: ['1月','2月','3月','4月','5月','6月','7月'],
+            labels: DATA.projectsByRevenue.map(p => p.name),
+            datasets: [{
+                data: DATA.projectsByRevenue.map(p => p.value),
+                backgroundColor: 'rgba(56,189,248,0.6)',
+                borderColor: '#38bdf8',
+                borderWidth: 1,
+                borderRadius: 4,
+                barPercentage: 0.6
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { ...tooltipStyle, callbacks: { label: c => '¥' + c.parsed.x.toLocaleString('zh-CN',{minimumFractionDigits:2}) } }
+            },
+            scales: {
+                x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
+            }
+        }
+    });
+    
+    // 图表2：项目月均收入
+    dashboardCharts.avgMonthly = new Chart(document.getElementById('chartAvgMonthly'), {
+        type: 'bar',
+        data: {
+            labels: DATA.projectsByAvg.slice(0, 15).map(p => p.name),
+            datasets: [{
+                data: DATA.projectsByAvg.slice(0, 15).map(p => p.value),
+                backgroundColor: 'rgba(129,140,248,0.6)',
+                borderColor: '#818cf8',
+                borderWidth: 1,
+                borderRadius: 4,
+                barPercentage: 0.6
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { ...tooltipStyle, callbacks: { label: c => '月均 ¥' + c.parsed.x.toLocaleString('zh-CN',{minimumFractionDigits:2}) } }
+            },
+            scales: {
+                x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
+            }
+        }
+    });
+    
+    // 图表3：项目应收款降序（超2个月红色）
+    dashboardCharts.receivable = new Chart(document.getElementById('chartReceivable'), {
+        type: 'bar',
+        data: {
+            labels: DATA.projectsByReceivable.map(p => p.name),
+            datasets: [{
+                data: DATA.projectsByReceivable.map(p => p.value),
+                backgroundColor: DATA.projectsByReceivable.map(p => p.overdue ? 'rgba(248,113,113,0.7)' : 'rgba(56,189,248,0.6)'),
+                borderColor: DATA.projectsByReceivable.map(p => p.overdue ? '#f87171' : '#38bdf8'),
+                borderWidth: 1,
+                borderRadius: 4,
+                barPercentage: 0.6
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { ...tooltipStyle, callbacks: { label: c => '应收 ¥' + c.parsed.x.toLocaleString('zh-CN',{minimumFractionDigits:2}) } }
+            },
+            scales: {
+                x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
+            }
+        }
+    });
+    
+    // 图表4：每月应收款（tooltip显示明细）
+    dashboardCharts.monthlyReceivable = new Chart(document.getElementById('chartMonthlyReceivable'), {
+        type: 'bar',
+        data: {
+            labels: DATA.monthlyReceivable.map(m => m.month),
+            datasets: [{
+                label: '应收款',
+                data: DATA.monthlyReceivable.map(m => m.receivable),
+                backgroundColor: 'rgba(251,146,60,0.6)',
+                borderColor: '#fb923c',
+                borderWidth: 1,
+                borderRadius: 6,
+                barPercentage: 0.5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    ...tooltipStyle,
+                    callbacks: {
+                        label: c => {
+                            const m = DATA.monthlyReceivable[c.dataIndex];
+                            let lines = ['应收款: ¥' + m.receivable.toLocaleString('zh-CN',{minimumFractionDigits:2})];
+                            m.unpaid.forEach(u => lines.push('  ' + u.name + ': ¥' + u.amount.toLocaleString('zh-CN',{minimumFractionDigits:2})));
+                            return lines;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                y: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+            }
+        }
+    });
+    
+    // 图表5：每月收入趋势 + 存续项目数
+    dashboardCharts.trend = new Chart(document.getElementById('chartTrend'), {
+        data: {
+            labels: DATA.monthlyTrend.months,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: '月度收入（万元）',
+                    data: DATA.monthlyTrend.revenue,
+                    backgroundColor: 'rgba(56,189,248,0.55)',
+                    borderColor: '#38bdf8',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    barPercentage: 0.5,
+                    yAxisID: 'y'
+                },
+                {
+                    type: 'line',
+                    label: '存续项目数',
+                    data: DATA.monthlyTrend.activeCount,
+                    borderColor: '#a855f7',
+                    backgroundColor: 'rgba(168,85,247,0.1)',
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#a855f7',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    tension: 0.3,
+                    fill: false,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { labels: { color: '#94a3b8', usePointStyle: true, padding: 16 } },
+                tooltip: { ...tooltipStyle }
+            },
+            scales: {
+                x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                y: {
+                    position: 'left',
+                    title: { display: true, text: '收入（万元）', color: '#38bdf8', font: { size: 11 } },
+                    ticks: { color: '#64748b' },
+                    grid: { color: 'rgba(255,255,255,0.04)' }
+                },
+                y1: {
+                    position: 'right',
+                    title: { display: true, text: '存续项目数', color: '#a855f7', font: { size: 11 } },
+                    ticks: { color: '#64748b', stepSize: 2 },
+                    grid: { drawOnChartArea: false },
+                    min: 0,
+                    max: 35
+                }
+            }
+        }
+    });
+    
+    // 图表6：项目月均收入排名
+    dashboardCharts.avgRank = new Chart(document.getElementById('chartAvgRank'), {
+        type: 'bar',
+        data: {
+            labels: DATA.projectsByAvg.map(p => p.name),
+            datasets: [{
+                data: DATA.projectsByAvg.map(p => p.value),
+                backgroundColor: 'rgba(129,140,248,0.6)',
+                borderColor: '#818cf8',
+                borderWidth: 1,
+                borderRadius: 4,
+                barPercentage: 0.7
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { ...tooltipStyle, callbacks: { label: c => '月均 ¥' + c.parsed.x.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '（' + DATA.projectsByAvg[c.dataIndex].months + '个月）' } }
+            },
+            scales: {
+                x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
+            }
+        },
+        plugins: [valueLabelPlugin]
+    });
+    
+    // 图表7：项目存续时间排名
+    dashboardCharts.activeMonths = new Chart(document.getElementById('chartActiveMonths'), {
+        type: 'bar',
+        data: {
+            labels: DATA.projectsByActive.map(p => p.name),
+            datasets: [{
+                data: DATA.projectsByActive.map(p => p.value),
+                backgroundColor: DATA.projectsByActive.map(p => {
+                    if (p.value >= 7) return 'rgba(52,211,153,0.6)';
+                    if (p.value >= 4) return 'rgba(56,189,248,0.6)';
+                    if (p.value >= 2) return 'rgba(251,146,60,0.6)';
+                    return 'rgba(248,113,113,0.6)';
+                }),
+                borderColor: DATA.projectsByActive.map(p => {
+                    if (p.value >= 7) return '#34d399';
+                    if (p.value >= 4) return '#38bdf8';
+                    if (p.value >= 2) return '#fb923c';
+                    return '#f87171';
+                }),
+                borderWidth: 1,
+                borderRadius: 4,
+                barPercentage: 0.7
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { ...tooltipStyle, callbacks: { label: c => '存续 ' + c.parsed.x + ' 个月，总收入 ¥' + DATA.projectsByActive[c.dataIndex].total.toLocaleString('zh-CN',{minimumFractionDigits:2}) } }
+            },
+            scales: {
+                x: { ticks: { color: '#64748b', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.04)' }, max: 8 },
+                y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+            }
+        },
+        plugins: [valueLabelPlugin]
+    });
+}
+
+// ========== 渲染应收款分析 ==========
+function renderReceivable() {
+    if (!DATA) return;
+    if (receivableChart) { receivableChart.destroy(); receivableChart = null; }
+    
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+    
+    const mp = DATA.monthlyPayment;
+    receivableChart = new Chart(document.getElementById('chartMonthlyTrend'), {
+        type: 'bar',
+        data: {
+            labels: mp.labels,
             datasets: [
                 {
                     label: '预估收入',
-                    data: [157.53, 92.70, 101.63, 104.58, 133.62, 124.65, 121.53],
+                    data: mp.estimates,
                     backgroundColor: 'rgba(56,189,248,0.5)',
                     borderColor: '#38bdf8',
                     borderWidth: 1,
@@ -3342,7 +3345,7 @@ function initReceivableCharts() {
                 },
                 {
                     label: '实际回款',
-                    data: [150.61, 88.60, 101.63, 103.04, 123.61, 53.15, 0],
+                    data: mp.receiveds,
                     backgroundColor: 'rgba(52,211,153,0.6)',
                     borderColor: '#34d399',
                     borderWidth: 1,
@@ -3351,7 +3354,7 @@ function initReceivableCharts() {
                 },
                 {
                     label: '目标红线',
-                    data: [135, 135, 135, 135, 135, 135, 166],
+                    data: mp.targets,
                     type: 'line',
                     borderColor: '#f87171',
                     borderWidth: 2,
@@ -3379,18 +3382,68 @@ function initReceivableCharts() {
             },
             scales: {
                 x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
-                y: {
-                    ticks: { color: '#64748b', callback: v => v + '万' },
-                    grid: { color: 'rgba(255,255,255,0.04)' }
-                }
+                y: { ticks: { color: '#64748b', callback: v => v + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } }
             }
         }
     });
 }
 
-// ========== 页面初始化 ==========
-applyFilters();
+// ========== 刷新数据 ==========
+async function refreshData() {
+    if (isLoading) return;
+    isLoading = true;
+    const btn = document.getElementById('refreshBtn');
+    const icon = document.getElementById('refreshIcon');
+    btn.disabled = true;
+    icon.classList.add('spin');
+    btn.querySelector('.refresh-btn').textContent = '刷新中...';
+    
+    const ok = await loadData();
+    if (ok) {
+        renderFinance();
+        // 如果当前在dashboard或receivable页面，重新渲染
+        const activePage = document.querySelector('.page-container.active').id;
+        if (activePage === 'page-dashboard') renderDashboard();
+        if (activePage === 'page-receivable') renderReceivable();
+    }
+    
+    icon.classList.remove('spin');
+    btn.disabled = false;
+    btn.innerHTML = '<span id="refreshIcon">🔄</span> 刷新数据';
+    isLoading = false;
+}
 
+// ========== 页面切换 ==========
+document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        const page = this.getAttribute('data-page');
+        document.getElementById('page-' + page).classList.add('active');
+        if (page === 'dashboard') {
+            setTimeout(() => { renderDashboard(); window.dispatchEvent(new Event('resize')); }, 100);
+        }
+        if (page === 'receivable') {
+            setTimeout(() => { renderReceivable(); }, 100);
+        }
+    });
+});
+
+// 筛选器事件
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('filterMonth').addEventListener('change', applyFilters);
+    document.getElementById('filterProject').addEventListener('change', applyFilters);
+    document.getElementById('filterGroup').addEventListener('change', applyFilters);
+});
+
+// ========== 初始化 ==========
+(async function init() {
+    const ok = await loadData();
+    if (ok) {
+        renderFinance();
+    }
+})();
 </script>
 </body>
 </html>
