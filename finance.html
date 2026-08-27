@@ -3325,6 +3325,61 @@ function renderReceivable() {
     if (!DATA) return;
     if (receivableChart) { receivableChart.destroy(); receivableChart = null; }
     
+    const s = DATA.summary;
+    const curMonth = DATA.monthlyPayment.estimates.length - 1;
+    const curEst = DATA.monthlyPayment.estimates[curMonth];
+    const curRec = DATA.monthlyPayment.receiveds[curMonth];
+    const curRecv = Math.max(0, curEst - curRec);
+    const curRate = curEst > 0 ? (curRec / curEst * 100).toFixed(1) : '0';
+    
+    // 更新年度目标卡片（第一组target-cards）
+    const targetCards = document.querySelectorAll('#page-receivable .target-cards');
+    if (targetCards.length >= 2) {
+        // 第一组：年度目标
+        const tc1 = targetCards[0].querySelectorAll('.target-card');
+        if (tc1.length >= 4) {
+            tc1[1].querySelector('.tc-value').innerHTML = s.totalReceivedWan + '<span style="font-size:14px">万元</span>';
+            tc1[1].querySelector('.tc-sub').textContent = '完成率 ' + (s.totalReceived / s.annualTarget * 100).toFixed(1) + '%';
+            const remain = (s.annualTarget - s.totalReceived) / 10000;
+            tc1[2].querySelector('.tc-value').innerHTML = remain.toFixed(2) + '<span style="font-size:14px">万元</span>';
+            tc1[2].querySelector('.tc-sub').textContent = '还需完成 ' + (remain / (s.annualTarget/10000) * 100).toFixed(1) + '%';
+            const monthly = remain / s.remainingMonths;
+            tc1[3].querySelector('.tc-value').innerHTML = monthly.toFixed(2) + '<span style="font-size:14px">万元/月</span>';
+            tc1[3].querySelector('.tc-sub').textContent = '剩余' + s.remainingMonths + '个月需完成';
+        }
+        // 第二组：实际经营数据
+        const tc2 = targetCards[1].querySelectorAll('.target-card');
+        if (tc2.length >= 4) {
+            tc2[0].querySelector('.tc-value').innerHTML = s.totalEstimateWan + '<span style="font-size:14px">万元</span>';
+            tc2[0].querySelector('.tc-sub').textContent = DATA.projectCount + '个项目累计';
+            tc2[1].querySelector('.tc-value').innerHTML = s.totalReceivedWan + '<span style="font-size:14px">万元</span>';
+            tc2[1].querySelector('.tc-sub').textContent = '回款率 ' + s.receivedRatio + '%';
+            tc2[2].querySelector('.tc-value').innerHTML = s.totalReceivableWan + '<span style="font-size:14px">万元</span>';
+            tc2[2].querySelector('.tc-sub').textContent = '占收入 ' + s.receivableRatio + '%';
+            tc2[3].querySelector('.tc-value').innerHTML = s.overdueTotalWan + '<span style="font-size:14px">万元</span>';
+            tc2[3].querySelector('.tc-sub').textContent = '需重点跟进';
+        }
+    }
+    
+    // 更新当前月回款数据
+    const cmStats = document.querySelectorAll('#page-receivable .cm-stat .cm-value');
+    if (cmStats.length >= 4) {
+        cmStats[0].textContent = curEst + '万';
+        cmStats[1].textContent = curRec + '万';
+        cmStats[2].textContent = curRecv.toFixed(2) + '万';
+        cmStats[3].textContent = DATA.monthlyPayment.targets[curMonth] + '万';
+    }
+    const cmBadge = document.querySelector('#page-receivable .cm-badge');
+    if (cmBadge) {
+        cmBadge.textContent = '回款率 ' + curRate + '%' + (parseFloat(curRate) < 50 ? ' - 待跟进' : ' - 正常');
+    }
+    
+    // 更新页面标题中的更新时间
+    const recvHeader = document.querySelector('#page-receivable .page-header p');
+    if (recvHeader) {
+        recvHeader.textContent = '多维度回款分析与应收款监控 · 数据周期：' + DATA.dataPeriod + ' · 更新时间：' + DATA.updateTime.split(' ')[0];
+    }
+    
     Chart.defaults.color = '#94a3b8';
     Chart.defaults.font.family = '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
     
