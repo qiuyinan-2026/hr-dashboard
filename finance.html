@@ -1980,7 +1980,7 @@ body {
 <div class="section-title">第一板块 · 核心指标概览 <span class="badge">数据卡片</span></div>
 <div class="cards-grid">
   <div class="card blue">
-    <div class="card-label"><span class="dot"></span>业务总收入（1-7月）</div>
+    <div class="card-label"><span class="dot"></span>业务总收入<span id="cardRevenuePeriod">（1-8月）</span></div>
     <div class="card-value">836.24<span class="card-unit">万元</span></div>
     <div class="card-sub">累计收入小计 <strong>¥8,362,366.85</strong></div>
     <div class="progress-wrap">
@@ -1989,7 +1989,7 @@ body {
     </div>
   </div>
   <div class="card green">
-    <div class="card-label"><span class="dot"></span>回款总计（1-7月）</div>
+    <div class="card-label"><span class="dot"></span>回款总计<span id="cardReceivedPeriod">（1-8月）</span></div>
     <div class="card-value">620.64<span class="card-unit">万元</span></div>
     <div class="card-sub">累计回款小计 <strong>¥6,206,406.31</strong></div>
     <div class="progress-wrap">
@@ -3091,6 +3091,10 @@ function renderDashboard() {
     if (dashPeriod) dashPeriod.textContent = DATA.dataPeriod;
     const dashUpdate = document.getElementById('dashUpdate');
     if (dashUpdate) dashUpdate.textContent = DATA.updateTime.split(' ')[0];
+    const crp = document.getElementById('cardRevenuePeriod');
+    if (crp) crp.textContent = '（1-' + DATA.currentMonth + '月）';
+    const crcp = document.getElementById('cardReceivedPeriod');
+    if (crcp) crcp.textContent = '（1-' + DATA.currentMonth + '月）';
     
     // 更新仪表盘汇总卡片
     const cards = document.querySelectorAll('#page-dashboard .card');
@@ -3112,7 +3116,7 @@ function renderDashboard() {
         cards[2].querySelector('.progress-fill').style.width = s.receivableRatio + '%';
         // 月均目标
         cards[3].querySelector('.card-value').innerHTML = s.monthlyTargetWan + '<span class="card-unit">万元/月</span>';
-        cards[3].querySelector('.card-sub').innerHTML = '剩余 <strong>' + s.remainingMonths + ' 个月</strong>（8-12月）需完成 <strong>' + s.remainingTargetWan + ' 万</strong>';
+        cards[3].querySelector('.card-sub').innerHTML = '剩余 <strong>' + s.remainingMonths + ' 个月</strong>（' + (parseInt(DATA.currentMonth)+1) + '-12月）需完成 <strong>' + s.remainingTargetWan + ' 万</strong>';
         cards[3].querySelector('.progress-label').innerHTML = '<span>距年度目标缺口</span><span>' + s.targetGap + '%</span>';
         cards[3].querySelector('.progress-fill').style.width = s.targetGap + '%';
     }
