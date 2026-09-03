@@ -1,32 +1,32 @@
 {
-  "updateTime": "2026-08-27 13:05:26",
-  "dataPeriod": "2026年1月 — 7月",
-  "currentMonth": 7,
+  "updateTime": "2026-09-03 16:42:16",
+  "dataPeriod": "2026年1月 — 8月",
+  "currentMonth": 8,
   "summary": {
-    "totalEstimate": 8324921.29,
-    "totalEstimateWan": 832.49,
-    "totalReceived": 6907817.34,
-    "totalReceivedWan": 690.78,
-    "totalReceivable": 1417103.95,
-    "totalReceivableWan": 141.71,
-    "receivedRatio": 82.98,
-    "receivableRatio": 17.02,
+    "totalEstimate": 9664249.3,
+    "totalEstimateWan": 966.42,
+    "totalReceived": 7056022.01,
+    "totalReceivedWan": 705.6,
+    "totalReceivable": 2608227.29,
+    "totalReceivableWan": 260.82,
+    "receivedRatio": 73.01,
+    "receivableRatio": 26.99,
     "annualTarget": 20000000,
     "annualTargetWan": 2000.0,
-    "targetProgress": 41.62,
-    "remainingMonths": 5,
-    "remainingTarget": 11675078.71,
-    "remainingTargetWan": 1167.51,
-    "monthlyTarget": 2335015.74,
-    "monthlyTargetWan": 233.5,
-    "targetGap": 58.38,
-    "overdueTotal": 230162.63,
-    "overdueTotalWan": 23.02,
-    "overdueRatio": 16.24,
+    "targetProgress": 48.32,
+    "remainingMonths": 4,
+    "remainingTarget": 10335750.7,
+    "remainingTargetWan": 1033.58,
+    "monthlyTarget": 2583937.68,
+    "monthlyTargetWan": 258.39,
+    "targetGap": 51.68,
+    "overdueTotal": 483638.7,
+    "overdueTotalWan": 48.36,
+    "overdueRatio": 18.54,
     "year2024Receivable": 314680,
     "year2025Receivable": 0,
-    "totalWithHistory": 1731783.95,
-    "totalWithHistoryWan": 173.18
+    "totalWithHistory": 2922907.29,
+    "totalWithHistoryWan": 292.29
   },
   "detailRows": [
     {
@@ -101,6 +101,16 @@
     },
     {
       "group": "A组",
+      "name": "阴山优麦冲饮",
+      "code": "1001",
+      "month": "8月",
+      "estimate": 298395.0,
+      "invoice": "未对账",
+      "received": 0.0,
+      "receivable": 298395.0
+    },
+    {
+      "group": "A组",
       "name": "阴山优麦食品",
       "code": "1002",
       "month": "1月",
@@ -171,6 +181,16 @@
     },
     {
       "group": "A组",
+      "name": "阴山优麦食品",
+      "code": "1002",
+      "month": "8月",
+      "estimate": 83118.0,
+      "invoice": "未对账",
+      "received": 0.0,
+      "receivable": 83118.0
+    },
+    {
+      "group": "A组",
       "name": "抖音超市美妆",
       "code": "1003",
       "month": "1月",
@@ -224,20 +244,30 @@
       "name": "抖音超市美妆",
       "code": "1003",
       "month": "6月",
-      "estimate": 72646.77,
-      "invoice": "已开票",
-      "received": 27899.07,
-      "receivable": 44747.7
+      "estimate": 70408.72,
+      "invoice": "已回款",
+      "received": 70408.72,
+      "receivable": 0.0
     },
     {
       "group": "A组",
       "name": "抖音超市美妆",
       "code": "1003",
       "month": "7月",
-      "estimate": 120825.0,
+      "estimate": 125375.0,
+      "invoice": "已开票",
+      "received": 0.0,
+      "receivable": 125375.0
+    },
+    {
+      "group": "A组",
+      "name": "抖音超市美妆",
+      "code": "1003",
+      "month": "8月",
+      "estimate": 127661.0,
       "invoice": "未对账",
       "received": 0.0,
-      "receivable": 120825.0
+      "receivable": 127661.0
     },
     {
       "group": "A组",
@@ -291,6 +321,16 @@
     },
     {
       "group": "A组",
+      "name": "追觅戒指",
+      "code": "1005",
+      "month": "8月",
+      "estimate": 11001.2,
+      "invoice": "已开票",
+      "received": 0.0,
+      "receivable": 11001.2
+    },
+    {
+      "group": "A组",
       "name": "美菱小家电",
       "code": "1006",
       "month": "4月",
@@ -308,6 +348,16 @@
       "invoice": "已回款",
       "received": 12635.11,
       "receivable": 0.0
+    },
+    {
+      "group": "A组",
+      "name": "追觅吸尘器",
+      "code": "1029",
+      "month": "8月",
+      "estimate": 20000.0,
+      "invoice": "未对账",
+      "received": 0.0,
+      "receivable": 20000.0
     },
     {
       "group": "A组",
@@ -334,10 +384,20 @@
       "name": "蓝漂",
       "code": "1007",
       "month": "5月",
-      "estimate": 30000.0,
-      "invoice": "已开票",
+      "estimate": 31742.26,
+      "invoice": "已回款",
+      "received": 31742.26,
+      "receivable": 0.0
+    },
+    {
+      "group": "A组",
+      "name": "追觅投影仪",
+      "code": "1030",
+      "month": "8月",
+      "estimate": 59600.0,
+      "invoice": "未对账",
       "received": 0.0,
-      "receivable": 30000.0
+      "receivable": 59600.0
     },
     {
       "group": "B组",
@@ -411,6 +471,16 @@
     },
     {
       "group": "B组",
+      "name": "古井店播",
+      "code": "1008",
+      "month": "8月",
+      "estimate": 48000.0,
+      "invoice": "未对账",
+      "received": 0.0,
+      "receivable": 48000.0
+    },
+    {
+      "group": "B组",
       "name": "桂格",
       "code": "1009",
       "month": "1月",
@@ -478,6 +548,16 @@
       "invoice": "已回款",
       "received": 131682.09,
       "receivable": 0.0
+    },
+    {
+      "group": "B组",
+      "name": "桂格",
+      "code": "1009",
+      "month": "8月",
+      "estimate": 142000.0,
+      "invoice": "未对账",
+      "received": 0.0,
+      "receivable": 142000.0
     },
     {
       "group": "B组",
@@ -551,6 +631,16 @@
     },
     {
       "group": "B组",
+      "name": "南方黑芝麻-1",
+      "code": "1010",
+      "month": "8月",
+      "estimate": 122500.0,
+      "invoice": "未对账",
+      "received": 0.0,
+      "receivable": 122500.0
+    },
+    {
+      "group": "B组",
       "name": "南方黑芝麻-2",
       "code": "1011",
       "month": "7月",
@@ -558,6 +648,16 @@
       "invoice": "已回款",
       "received": 75615.68,
       "receivable": 0.0
+    },
+    {
+      "group": "B组",
+      "name": "南方黑芝麻-2",
+      "code": "1011",
+      "month": "8月",
+      "estimate": 66000.0,
+      "invoice": "未对账",
+      "received": 0.0,
+      "receivable": 66000.0
     },
     {
       "group": "B组",
@@ -671,6 +771,16 @@
     },
     {
       "group": "B组",
+      "name": "养舒优1",
+      "code": "1014",
+      "month": "8月",
+      "estimate": 170000.0,
+      "invoice": "未对账",
+      "received": 0.0,
+      "receivable": 170000.0
+    },
+    {
+      "group": "B组",
       "name": "养舒优2",
       "code": "1015",
       "month": "7月",
@@ -678,6 +788,16 @@
       "invoice": "已开票",
       "received": 0.0,
       "receivable": 38184.38
+    },
+    {
+      "group": "B组",
+      "name": "养舒优2",
+      "code": "1015",
+      "month": "8月",
+      "estimate": 21300.0,
+      "invoice": "未对账",
+      "received": 0.0,
+      "receivable": 21300.0
     },
     {
       "group": "C组",
@@ -835,9 +955,19 @@
       "code": "1018",
       "month": "7月",
       "estimate": 48816.74,
-      "invoice": "已开票",
+      "invoice": "已回款",
+      "received": 48816.74,
+      "receivable": 0.0
+    },
+    {
+      "group": "C组",
+      "name": "拓趣（护手霜）",
+      "code": "1018",
+      "month": "8月",
+      "estimate": 59000.0,
+      "invoice": "未对账",
       "received": 0.0,
-      "receivable": 48816.74
+      "receivable": 59000.0
     },
     {
       "group": "传媒",
@@ -911,6 +1041,16 @@
     },
     {
       "group": "传媒",
+      "name": "古井（达）",
+      "code": "1019",
+      "month": "8月",
+      "estimate": 57400.0,
+      "invoice": "未对账",
+      "received": 0.0,
+      "receivable": 57400.0
+    },
+    {
+      "group": "传媒",
       "name": "阴山优麦（达）",
       "code": "1020",
       "month": "3月",
@@ -955,9 +1095,9 @@
       "code": "1020",
       "month": "7月",
       "estimate": 5392.42,
-      "invoice": "已开票",
-      "received": 0.0,
-      "receivable": 5392.42
+      "invoice": "已回款",
+      "received": 5392.42,
+      "receivable": 0.0
     },
     {
       "group": "传媒",
@@ -1024,10 +1164,10 @@
       "name": "素颜霜（达）",
       "code": "1021",
       "month": "7月",
-      "estimate": 0.0,
-      "invoice": "未对账",
+      "estimate": 745.56,
+      "invoice": "已开票",
       "received": 0.0,
-      "receivable": 0.0
+      "receivable": 745.56
     },
     {
       "group": "传媒",
@@ -1144,10 +1284,20 @@
       "name": "阴山优麦",
       "code": "1024",
       "month": "7月",
-      "estimate": 29766.4,
+      "estimate": 19775.84,
+      "invoice": "已开票",
+      "received": 0.0,
+      "receivable": 19775.84
+    },
+    {
+      "group": "私域",
+      "name": "阴山优麦",
+      "code": "1024",
+      "month": "8月",
+      "estimate": 19400.0,
       "invoice": "未对账",
       "received": 0.0,
-      "receivable": 29766.4
+      "receivable": 19400.0
     },
     {
       "group": "私域",
@@ -1218,6 +1368,16 @@
       "invoice": "已回款",
       "received": 23560.52,
       "receivable": 0.0
+    },
+    {
+      "group": "私域",
+      "name": "南方黑芝麻（私）",
+      "code": "1025",
+      "month": "8月",
+      "estimate": 19400.0,
+      "invoice": "未对账",
+      "received": 0.0,
+      "receivable": 19400.0
     },
     {
       "group": "聚能",
@@ -1308,40 +1468,50 @@
       "invoice": "已回款",
       "received": 15000.0,
       "receivable": 0.0
+    },
+    {
+      "group": "其他",
+      "name": "营业外收入",
+      "code": "1027",
+      "month": "8月",
+      "estimate": 19743.6,
+      "invoice": "",
+      "received": 19743.6,
+      "receivable": 0.0
     }
   ],
   "projectsByRevenue": [
     {
       "name": "阴山优麦冲饮",
-      "value": 1816065.41
+      "value": 2114460.41
     },
     {
       "name": "桂格",
-      "value": 1322201.29
-    },
-    {
-      "name": "南方黑芝麻-1",
-      "value": 713072.27
+      "value": 1464201.29
     },
     {
       "name": "抖音超市美妆",
-      "value": 707381.47
+      "value": 837354.42
     },
     {
-      "name": "阴山优麦食品",
-      "value": 642226.41
+      "name": "南方黑芝麻-1",
+      "value": 835572.27
     },
     {
       "name": "养舒优1",
-      "value": 608447.68
+      "value": 778447.68
+    },
+    {
+      "name": "阴山优麦食品",
+      "value": 725344.41
     },
     {
       "name": "古井店播",
-      "value": 486751.3
+      "value": 534751.3
     },
     {
       "name": "拓趣（护手霜）",
-      "value": 407220.75
+      "value": 466220.75
     },
     {
       "name": "旺旺",
@@ -1349,19 +1519,27 @@
     },
     {
       "name": "古井（达）",
-      "value": 198569.94
+      "value": 255969.94
     },
     {
       "name": "追觅戒指",
-      "value": 191109.64
+      "value": 202110.84
     },
     {
       "name": "南方黑芝麻（私）",
-      "value": 176476.1
+      "value": 195876.1
+    },
+    {
+      "name": "南方黑芝麻-2",
+      "value": 141615.68
     },
     {
       "name": "阴山优麦",
-      "value": 108104.26
+      "value": 117513.7
+    },
+    {
+      "name": "营业外收入",
+      "value": 110093.02
     },
     {
       "name": "素颜霜",
@@ -1372,24 +1550,20 @@
       "value": 91338.81
     },
     {
-      "name": "营业外收入",
-      "value": 90349.42
-    },
-    {
       "name": "蓝漂",
-      "value": 89329.63
+      "value": 91071.89
     },
     {
       "name": "乐锦记",
       "value": 80241.94
     },
     {
-      "name": "南方黑芝麻-2",
-      "value": 75615.68
+      "name": "追觅投影仪",
+      "value": 59600.0
     },
     {
       "name": "养舒优2",
-      "value": 38184.38
+      "value": 59484.38
     },
     {
       "name": "阴山优麦（达）",
@@ -1397,11 +1571,15 @@
     },
     {
       "name": "素颜霜（达）",
-      "value": 25128.75
+      "value": 25874.31
     },
     {
       "name": "美菱小家电",
       "value": 21395.86
+    },
+    {
+      "name": "追觅吸尘器",
+      "value": 20000.0
     },
     {
       "name": "DAVIDGARCE男装",
@@ -1423,53 +1601,53 @@
   "projectsByAvg": [
     {
       "name": "阴山优麦冲饮",
-      "value": 259437.92,
-      "months": 7
+      "value": 264307.55,
+      "months": 8
     },
     {
       "name": "桂格",
-      "value": 188885.9,
-      "months": 7
+      "value": 183025.16,
+      "months": 8
     },
     {
       "name": "养舒优1",
-      "value": 152111.92,
-      "months": 4
-    },
-    {
-      "name": "南方黑芝麻-1",
-      "value": 101867.47,
-      "months": 7
+      "value": 155689.54,
+      "months": 5
     },
     {
       "name": "抖音超市美妆",
-      "value": 101054.5,
-      "months": 7
+      "value": 104669.3,
+      "months": 8
+    },
+    {
+      "name": "南方黑芝麻-1",
+      "value": 104446.53,
+      "months": 8
     },
     {
       "name": "阴山优麦食品",
-      "value": 91746.63,
-      "months": 7
+      "value": 90668.05,
+      "months": 8
     },
     {
       "name": "南方黑芝麻-2",
-      "value": 75615.68,
-      "months": 1
+      "value": 70807.84,
+      "months": 2
     },
     {
       "name": "古井店播",
-      "value": 69535.9,
-      "months": 7
+      "value": 66843.91,
+      "months": 8
     },
     {
-      "name": "追觅戒指",
-      "value": 63703.21,
-      "months": 3
+      "name": "追觅投影仪",
+      "value": 59600.0,
+      "months": 1
     },
     {
       "name": "拓趣（护手霜）",
-      "value": 58174.39,
-      "months": 7
+      "value": 58277.59,
+      "months": 8
     },
     {
       "name": "旺旺",
@@ -1477,14 +1655,19 @@
       "months": 5
     },
     {
+      "name": "追觅戒指",
+      "value": 50527.71,
+      "months": 4
+    },
+    {
       "name": "乐锦记",
       "value": 40120.97,
       "months": 2
     },
     {
-      "name": "养舒优2",
-      "value": 38184.38,
-      "months": 1
+      "name": "古井（达）",
+      "value": 31996.24,
+      "months": 8
     },
     {
       "name": "拓趣（沐浴油）",
@@ -1493,18 +1676,23 @@
     },
     {
       "name": "蓝漂",
-      "value": 29776.54,
+      "value": 30357.3,
       "months": 3
     },
     {
-      "name": "古井（达）",
-      "value": 28367.13,
-      "months": 7
+      "name": "养舒优2",
+      "value": 29742.19,
+      "months": 2
     },
     {
       "name": "南方黑芝麻（私）",
-      "value": 25210.87,
-      "months": 7
+      "value": 24484.51,
+      "months": 8
+    },
+    {
+      "name": "追觅吸尘器",
+      "value": 20000.0,
+      "months": 1
     },
     {
       "name": "素颜霜",
@@ -1513,13 +1701,13 @@
     },
     {
       "name": "营业外收入",
-      "value": 18069.88,
-      "months": 5
+      "value": 18348.84,
+      "months": 6
     },
     {
       "name": "阴山优麦",
-      "value": 15443.47,
-      "months": 7
+      "value": 14689.21,
+      "months": 8
     },
     {
       "name": "DAVIDGARCE男装",
@@ -1537,14 +1725,14 @@
       "months": 4
     },
     {
-      "name": "素颜霜（达）",
-      "value": 5025.75,
-      "months": 5
-    },
-    {
       "name": "抖超箱包",
       "value": 4443.29,
       "months": 2
+    },
+    {
+      "name": "素颜霜（达）",
+      "value": 4312.39,
+      "months": 6
     },
     {
       "name": "蓝漂（达）",
@@ -1559,9 +1747,14 @@
   ],
   "projectsByReceivable": [
     {
-      "name": "养舒优1",
-      "value": 295184.83,
+      "name": "阴山优麦冲饮",
+      "value": 548464.37,
       "overdue": false
+    },
+    {
+      "name": "养舒优1",
+      "value": 465184.83,
+      "overdue": true
     },
     {
       "name": "旺旺",
@@ -1569,58 +1762,73 @@
       "overdue": true
     },
     {
-      "name": "阴山优麦冲饮",
-      "value": 250069.37,
-      "overdue": false
-    },
-    {
       "name": "抖音超市美妆",
-      "value": 165572.7,
-      "overdue": false
-    },
-    {
-      "name": "追觅戒指",
-      "value": 149666.76,
+      "value": 253036.0,
       "overdue": false
     },
     {
       "name": "阴山优麦食品",
-      "value": 79830.05,
+      "value": 162948.05,
       "overdue": false
     },
     {
-      "name": "拓趣（护手霜）",
-      "value": 48816.74,
+      "name": "追觅戒指",
+      "value": 160667.96,
+      "overdue": true
+    },
+    {
+      "name": "桂格",
+      "value": 142000.0,
+      "overdue": false
+    },
+    {
+      "name": "南方黑芝麻-1",
+      "value": 118000.0,
       "overdue": false
     },
     {
       "name": "古井店播",
-      "value": 42407.1,
-      "overdue": false
-    },
-    {
-      "name": "养舒优2",
-      "value": 38184.38,
-      "overdue": false
-    },
-    {
-      "name": "蓝漂",
-      "value": 30000.0,
-      "overdue": true
-    },
-    {
-      "name": "阴山优麦",
-      "value": 29766.4,
+      "value": 90407.1,
       "overdue": false
     },
     {
       "name": "古井（达）",
-      "value": 10000.0,
+      "value": 67400.0,
       "overdue": false
     },
     {
-      "name": "阴山优麦（达）",
-      "value": 5392.42,
+      "name": "南方黑芝麻-2",
+      "value": 66000.0,
+      "overdue": false
+    },
+    {
+      "name": "追觅投影仪",
+      "value": 59600.0,
+      "overdue": false
+    },
+    {
+      "name": "养舒优2",
+      "value": 59484.38,
+      "overdue": false
+    },
+    {
+      "name": "拓趣（护手霜）",
+      "value": 59000.0,
+      "overdue": false
+    },
+    {
+      "name": "阴山优麦",
+      "value": 39175.84,
+      "overdue": false
+    },
+    {
+      "name": "追觅吸尘器",
+      "value": 20000.0,
+      "overdue": false
+    },
+    {
+      "name": "南方黑芝麻（私）",
+      "value": 19400.0,
       "overdue": false
     },
     {
@@ -1629,9 +1837,14 @@
       "overdue": true
     },
     {
+      "name": "素颜霜（达）",
+      "value": 745.56,
+      "overdue": false
+    },
+    {
       "name": "抖超箱包",
       "value": 600.0,
-      "overdue": false
+      "overdue": true
     }
   ],
   "monthlyReceivable": [
@@ -1676,12 +1889,8 @@
     },
     {
       "month": "5月",
-      "receivable": 100087.01,
+      "receivable": 70087.01,
       "unpaid": [
-        {
-          "name": "蓝漂",
-          "amount": 30000.0
-        },
         {
           "name": "旺旺",
           "amount": 70087.01
@@ -1690,12 +1899,8 @@
     },
     {
       "month": "6月",
-      "receivable": 328223.77,
+      "receivable": 283476.07,
       "unpaid": [
-        {
-          "name": "抖音超市美妆",
-          "amount": 44747.7
-        },
         {
           "name": "抖超箱包",
           "amount": 600.0
@@ -1716,7 +1921,7 @@
     },
     {
       "month": "7月",
-      "receivable": 863217.55,
+      "receivable": 804313.39,
       "unpaid": [
         {
           "name": "阴山优麦冲饮",
@@ -1728,7 +1933,7 @@
         },
         {
           "name": "抖音超市美妆",
-          "amount": 120825.0
+          "amount": 125375.0
         },
         {
           "name": "追觅戒指",
@@ -1747,20 +1952,86 @@
           "amount": 38184.38
         },
         {
-          "name": "拓趣（护手霜）",
-          "amount": 48816.74
-        },
-        {
           "name": "古井（达）",
           "amount": 10000.0
         },
         {
-          "name": "阴山优麦（达）",
-          "amount": 5392.42
+          "name": "素颜霜（达）",
+          "amount": 745.56
         },
         {
           "name": "阴山优麦",
-          "amount": 29766.4
+          "amount": 19775.84
+        }
+      ]
+    },
+    {
+      "month": "8月",
+      "receivable": 1324775.2,
+      "unpaid": [
+        {
+          "name": "阴山优麦冲饮",
+          "amount": 298395.0
+        },
+        {
+          "name": "阴山优麦食品",
+          "amount": 83118.0
+        },
+        {
+          "name": "抖音超市美妆",
+          "amount": 127661.0
+        },
+        {
+          "name": "追觅戒指",
+          "amount": 11001.2
+        },
+        {
+          "name": "追觅吸尘器",
+          "amount": 20000.0
+        },
+        {
+          "name": "追觅投影仪",
+          "amount": 59600.0
+        },
+        {
+          "name": "古井店播",
+          "amount": 48000.0
+        },
+        {
+          "name": "桂格",
+          "amount": 142000.0
+        },
+        {
+          "name": "南方黑芝麻-1",
+          "amount": 122500.0
+        },
+        {
+          "name": "南方黑芝麻-2",
+          "amount": 66000.0
+        },
+        {
+          "name": "养舒优1",
+          "amount": 170000.0
+        },
+        {
+          "name": "养舒优2",
+          "amount": 21300.0
+        },
+        {
+          "name": "拓趣（护手霜）",
+          "amount": 59000.0
+        },
+        {
+          "name": "古井（达）",
+          "amount": 57400.0
+        },
+        {
+          "name": "阴山优麦",
+          "amount": 19400.0
+        },
+        {
+          "name": "南方黑芝麻（私）",
+          "amount": 19400.0
         }
       ]
     }
@@ -1773,16 +2044,18 @@
       "4月",
       "5月",
       "6月",
-      "7月"
+      "7月",
+      "8月"
     ],
     "revenue": [
       157.53,
       92.7,
       101.63,
       104.58,
-      133.62,
-      124.08,
-      118.36
+      133.8,
+      123.85,
+      117.89,
+      134.45
     ],
     "activeCount": [
       14,
@@ -1791,59 +2064,75 @@
       21,
       19,
       18,
-      15
+      16,
+      17
     ]
   },
   "projectsByActive": [
     {
       "name": "阴山优麦冲饮",
-      "value": 7,
-      "total": 1816065.41
+      "value": 8,
+      "total": 2114460.41
     },
     {
       "name": "桂格",
-      "value": 7,
-      "total": 1322201.29
-    },
-    {
-      "name": "南方黑芝麻-1",
-      "value": 7,
-      "total": 713072.27
+      "value": 8,
+      "total": 1464201.29
     },
     {
       "name": "抖音超市美妆",
-      "value": 7,
-      "total": 707381.47
+      "value": 8,
+      "total": 837354.42
+    },
+    {
+      "name": "南方黑芝麻-1",
+      "value": 8,
+      "total": 835572.27
     },
     {
       "name": "阴山优麦食品",
-      "value": 7,
-      "total": 642226.41
+      "value": 8,
+      "total": 725344.41
     },
     {
       "name": "古井店播",
-      "value": 7,
-      "total": 486751.3
+      "value": 8,
+      "total": 534751.3
     },
     {
       "name": "拓趣（护手霜）",
-      "value": 7,
-      "total": 407220.75
+      "value": 8,
+      "total": 466220.75
     },
     {
       "name": "古井（达）",
-      "value": 7,
-      "total": 198569.94
+      "value": 8,
+      "total": 255969.94
     },
     {
       "name": "南方黑芝麻（私）",
-      "value": 7,
-      "total": 176476.1
+      "value": 8,
+      "total": 195876.1
     },
     {
       "name": "阴山优麦",
-      "value": 7,
-      "total": 108104.26
+      "value": 8,
+      "total": 117513.7
+    },
+    {
+      "name": "营业外收入",
+      "value": 6,
+      "total": 110093.02
+    },
+    {
+      "name": "素颜霜（达）",
+      "value": 6,
+      "total": 25874.31
+    },
+    {
+      "name": "养舒优1",
+      "value": 5,
+      "total": 778447.68
     },
     {
       "name": "旺旺",
@@ -1856,29 +2145,14 @@
       "total": 97166.69
     },
     {
-      "name": "营业外收入",
-      "value": 5,
-      "total": 90349.42
-    },
-    {
-      "name": "素颜霜（达）",
-      "value": 5,
-      "total": 25128.75
-    },
-    {
-      "name": "养舒优1",
+      "name": "追觅戒指",
       "value": 4,
-      "total": 608447.68
+      "total": 202110.84
     },
     {
       "name": "阴山优麦（达）",
       "value": 4,
       "total": 35079.7
-    },
-    {
-      "name": "追觅戒指",
-      "value": 3,
-      "total": 191109.64
     },
     {
       "name": "拓趣（沐浴油）",
@@ -1888,12 +2162,22 @@
     {
       "name": "蓝漂",
       "value": 3,
-      "total": 89329.63
+      "total": 91071.89
+    },
+    {
+      "name": "南方黑芝麻-2",
+      "value": 2,
+      "total": 141615.68
     },
     {
       "name": "乐锦记",
       "value": 2,
       "total": 80241.94
+    },
+    {
+      "name": "养舒优2",
+      "value": 2,
+      "total": 59484.38
     },
     {
       "name": "美菱小家电",
@@ -1906,14 +2190,14 @@
       "total": 8886.58
     },
     {
-      "name": "南方黑芝麻-2",
+      "name": "追觅投影仪",
       "value": 1,
-      "total": 75615.68
+      "total": 59600.0
     },
     {
-      "name": "养舒优2",
+      "name": "追觅吸尘器",
       "value": 1,
-      "total": 38184.38
+      "total": 20000.0
     },
     {
       "name": "DAVIDGARCE男装",
@@ -1939,25 +2223,28 @@
       "4月",
       "5月",
       "6月",
-      "7月"
+      "7月",
+      "8月"
     ],
     "estimates": [
       157.53,
       92.7,
       101.63,
       104.58,
-      133.62,
-      124.08,
-      118.36
+      133.8,
+      123.85,
+      117.89,
+      134.45
     ],
     "receiveds": [
       150.61,
       88.6,
       101.63,
       103.04,
-      123.61,
-      91.25,
-      32.04
+      126.79,
+      95.5,
+      37.46,
+      1.97
     ],
     "targets": [
       135,
@@ -1966,10 +2253,11 @@
       135,
       135,
       135,
+      166,
       166
     ]
   },
-  "projectCount": 31,
+  "projectCount": 32,
   "filterOptions": {
     "months": [
       "1月",
@@ -1978,10 +2266,12 @@
       "4月",
       "5月",
       "6月",
-      "7月"
+      "7月",
+      "8月"
     ],
     "projects": [
       "DAVIDGARCE男装",
+      "上海赢内 （KOC）",
       "乐锦记",
       "养舒优1",
       "养舒优2",
