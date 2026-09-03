@@ -101,6 +101,59 @@ body {
     display: flex;
     align-items: center;
 }
+/* 刷新进度条 */
+.refresh-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(56, 189, 248, 0.1);
+    z-index: 9999;
+    display: none;
+}
+.refresh-overlay.active { display: block; }
+.refresh-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #38bdf8, #818cf8, #a855f7);
+    width: 0%;
+    transition: width 0.4s ease;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+}
+.refresh-status {
+    position: fixed;
+    top: 12px;
+    right: 20px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 10px;
+    padding: 12px 18px;
+    z-index: 9998;
+    display: none;
+    min-width: 260px;
+    backdrop-filter: blur(10px);
+}
+.refresh-status.active { display: block; }
+.refresh-status .rs-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #38bdf8;
+    margin-bottom: 8px;
+}
+.refresh-status .rs-step {
+    font-size: 12px;
+    color: #475569;
+    padding: 3px 0;
+}
+.refresh-status .rs-step.done { color: #34d399; }
+.refresh-status .rs-step.current { color: #e2e8f0; }
+.refresh-status .rs-percent {
+    font-size: 11px;
+    color: #94a3b8;
+    text-align: right;
+    margin-top: 6px;
+}
+
 
 /* ========== 页面容器 ========== */
 .page-container {
@@ -742,6 +795,17 @@ body {
 </style>
 </head>
 <body>
+
+<!-- 刷新进度条 -->
+<div class="refresh-overlay" id="refreshOverlay"><div class="refresh-bar" id="refreshBar"></div></div>
+<div class="refresh-status" id="refreshStatus">
+    <div class="rs-title">🔄 正在刷新数据</div>
+    <div class="rs-step" id="rs-step1">○ 连接数据服务器</div>
+    <div class="rs-step" id="rs-step2">○ 读取最新经营数据</div>
+    <div class="rs-step" id="rs-step3">○ 计算汇总指标</div>
+    <div class="rs-step" id="rs-step4">○ 更新页面数据</div>
+    <div class="rs-percent" id="rsPercent">0%</div>
+</div>
 
 <!-- ========== 顶部导航 ========== -->
 <div class="top-nav">
@@ -1909,7 +1973,7 @@ body {
 
 <div class="header">
   <h1>聚光直播 · 2026 经营数据仪表盘</h1>
-  <div class="meta">数据周期：<span>2026年1月 — 7月</span> ｜ 更新时间：<span>2026-08-12</span></div>
+  <div class="meta">数据周期：<span id="dashPeriod">2026年1月 — 8月</span> ｜ 更新时间：<span id="dashUpdate">2026-09-03</span></div>
 </div>
 
 <!-- 第一板块 -->
@@ -2104,20 +2168,20 @@ body {
     <div class="receivable-section">
         <div class="current-month-box">
             <div class="cm-header">
-                <div class="cm-title">📊 当前月（7月）回款数据</div>
+                <div class="cm-title" id="cmTitle">📊 当前月回款数据</div>
                 <div class="cm-badge">⚠ 回款率 0% - 待跟进</div>
             </div>
             <div class="cm-stats">
                 <div class="cm-stat">
-                    <div class="cm-label">7月预估收入</div>
+                    <div class="cm-label" id="cmLabelEst">当月预估收入</div>
                     <div class="cm-value" style="color:#38bdf8">121.53万</div>
                 </div>
                 <div class="cm-stat">
-                    <div class="cm-label">7月已回款</div>
+                    <div class="cm-label" id="cmLabelRec">当月已回款</div>
                     <div class="cm-value" style="color:#34d399">0万</div>
                 </div>
                 <div class="cm-stat">
-                    <div class="cm-label">7月应收款</div>
+                    <div class="cm-label" id="cmLabelRecv">当月应收款</div>
                     <div class="cm-value" style="color:#fb923c">121.53万</div>
                 </div>
                 <div class="cm-stat">
@@ -2940,6 +3004,10 @@ async function loadData() {
 function renderFinance() {
     if (!DATA) return;
     
+    // 更新页面标题数据周期
+    const finHeader = document.querySelector('#page-finance .page-header p');
+    if (finHeader) finHeader.textContent = '支持按月份、项目名称、部门名称多维度筛选查询 · 数据周期：' + DATA.dataPeriod;
+    
     // 填充筛选器选项
     const monthSel = document.getElementById('filterMonth');
     const projSel = document.getElementById('filterProject');
@@ -3017,6 +3085,12 @@ function renderDashboard() {
     Chart.defaults.font.family = '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
     
     const s = DATA.summary;
+    
+    // 更新仪表盘标题周期和更新时间
+    const dashPeriod = document.getElementById('dashPeriod');
+    if (dashPeriod) dashPeriod.textContent = DATA.dataPeriod;
+    const dashUpdate = document.getElementById('dashUpdate');
+    if (dashUpdate) dashUpdate.textContent = DATA.updateTime.split(' ')[0];
     
     // 更新仪表盘汇总卡片
     const cards = document.querySelectorAll('#page-dashboard .card');
@@ -3361,6 +3435,10 @@ function renderReceivable() {
         }
     }
     
+    // 更新当前月标题
+    const cmTitle = document.getElementById('cmTitle');
+    if (cmTitle) cmTitle.textContent = '📊 当前月（' + DATA.currentMonth + '月）回款数据';
+    
     // 更新当前月回款数据
     const cmStats = document.querySelectorAll('#page-receivable .cm-stat .cm-value');
     if (cmStats.length >= 4) {
@@ -3444,25 +3522,86 @@ function renderReceivable() {
 }
 
 // ========== 刷新数据 ==========
+// 进度条控制
+function setProgress(percent, stepNum) {
+    document.getElementById('refreshBar').style.width = percent + '%';
+    document.getElementById('rsPercent').textContent = percent + '%';
+    for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById('rs-step' + i);
+        if (i < stepNum) { el.className = 'rs-step done'; el.textContent = '✓ ' + el.textContent.substring(2); }
+        else if (i === stepNum) { el.className = 'rs-step current'; }
+        else { el.className = 'rs-step'; }
+    }
+}
+function showRefreshUI() {
+    document.getElementById('refreshOverlay').classList.add('active');
+    document.getElementById('refreshStatus').classList.add('active');
+    setProgress(0, 1);
+}
+function hideRefreshUI() {
+    setTimeout(() => {
+        document.getElementById('refreshOverlay').classList.remove('active');
+        document.getElementById('refreshStatus').classList.remove('active');
+        document.getElementById('refreshBar').style.width = '0%';
+    }, 800);
+}
+
 async function refreshData() {
     if (isLoading) return;
     isLoading = true;
     const btn = document.getElementById('refreshBtn');
-    const icon = document.getElementById('refreshIcon');
     btn.disabled = true;
-    icon.classList.add('spin');
-    btn.querySelector('.refresh-btn').textContent = '刷新中...';
+    btn.innerHTML = '<span class="spin">🔄</span> 刷新中...';
     
-    const ok = await loadData();
-    if (ok) {
+    const oldTime = DATA ? DATA.updateTime : '';
+    showRefreshUI();
+    
+    try {
+        // 步骤1：连接服务器 (0-20%)
+        setProgress(15, 1);
+        await new Promise(r => setTimeout(r, 400));
+        
+        // 步骤2：读取最新数据 (20-55%)
+        setProgress(40, 2);
+        const resp = await fetch('finance_data.json?t=' + Date.now());
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const newData = await resp.json();
+        await new Promise(r => setTimeout(r, 300));
+        
+        // 步骤3：计算指标 (55-80%)
+        setProgress(65, 3);
+        DATA = newData;
+        document.getElementById('updateTime').textContent = '更新于 ' + DATA.updateTime;
+        await new Promise(r => setTimeout(r, 300));
+        
+        // 步骤4：更新页面 (80-100%)
+        setProgress(85, 4);
         renderFinance();
-        // 如果当前在dashboard或receivable页面，重新渲染
         const activePage = document.querySelector('.page-container.active').id;
         if (activePage === 'page-dashboard') renderDashboard();
         if (activePage === 'page-receivable') renderReceivable();
+        await new Promise(r => setTimeout(r, 300));
+        
+        setProgress(100, 4);
+        
+        // 提示是否有更新
+        const hasUpdate = oldTime !== DATA.updateTime;
+        const statusEl = document.querySelector('.refresh-status .rs-title');
+        if (hasUpdate) {
+            statusEl.innerHTML = '✅ 数据已更新（' + DATA.dataPeriod + '）';
+            statusEl.style.color = '#34d399';
+        } else {
+            statusEl.innerHTML = 'ℹ️ 数据已是最新';
+            statusEl.style.color = '#fbbf24';
+        }
+        
+    } catch (e) {
+        console.error('刷新失败:', e);
+        document.querySelector('.refresh-status .rs-title').innerHTML = '❌ 刷新失败：' + e.message;
+        document.querySelector('.refresh-status .rs-title').style.color = '#f87171';
     }
     
-    icon.classList.remove('spin');
+    hideRefreshUI();
     btn.disabled = false;
     btn.innerHTML = '<span id="refreshIcon">🔄</span> 刷新数据';
     isLoading = false;
