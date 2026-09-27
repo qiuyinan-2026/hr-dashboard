@@ -2210,7 +2210,6 @@ function renderAnalysis() {
   
   // 显示管理费用明细
   document.getElementById('mgmt-breakdown').style.display = 'block';
-  renderMgmtBreakdown(months);
   
   // 汇总
   const totalIncome = rows.reduce((s, r) => s + r.income, 0);
@@ -2266,6 +2265,8 @@ function renderAnalysis() {
   
   // 图表
   renderAnalysisCharts(rows, months, totalDirect, totalContent, totalMgmt, totalManager, totalMainBiz, totalQianchuan, totalMgmtFee);
+  // 管理费用明细饼图（在主图表之后创建，避免被销毁）
+  renderMgmtBreakdown(months);
 }
 
 function renderSectorAnalysis(sector, months) {
