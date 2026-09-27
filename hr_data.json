@@ -24078,10 +24078,10 @@
         "labor_total": 142564.12,
         "main_business_cost": 101459.0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4396.25,
-        "total_cost": 248419.37,
-        "profit": 34119.84,
-        "cost_ratio": 87.92
+        "mgmt_fee_alloc": 27347.48,
+        "total_cost": 271370.6,
+        "profit": 11168.61,
+        "cost_ratio": 96.05
       },
       "1010": {
         "project_id": "1010",
@@ -24097,10 +24097,10 @@
         "labor_total": 141034.7,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4396.25,
-        "total_cost": 145430.95,
-        "profit": 32860.06,
-        "cost_ratio": 81.57
+        "mgmt_fee_alloc": 27347.48,
+        "total_cost": 168382.18,
+        "profit": 9908.83,
+        "cost_ratio": 94.44
       },
       "1009": {
         "project_id": "1009",
@@ -24116,10 +24116,10 @@
         "labor_total": 145841.32,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4396.25,
-        "total_cost": 150237.57,
-        "profit": 308011.44,
-        "cost_ratio": 32.79
+        "mgmt_fee_alloc": 27347.48,
+        "total_cost": 173188.8,
+        "profit": 285060.21,
+        "cost_ratio": 37.79
       },
       "1002": {
         "project_id": "1002",
@@ -24135,10 +24135,10 @@
         "labor_total": 65773.75,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4396.25,
-        "total_cost": 70170.0,
-        "profit": 50315.12,
-        "cost_ratio": 58.24
+        "mgmt_fee_alloc": 27347.48,
+        "total_cost": 93121.23,
+        "profit": 27363.89,
+        "cost_ratio": 77.29
       },
       "1017": {
         "project_id": "1017",
@@ -24154,9 +24154,9 @@
         "labor_total": 42001.35,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4396.25,
-        "total_cost": 46397.6,
-        "profit": -46397.6,
+        "mgmt_fee_alloc": 27347.48,
+        "total_cost": 69348.83,
+        "profit": -69348.83,
         "cost_ratio": 0
       },
       "1008": {
@@ -24173,10 +24173,10 @@
         "labor_total": 65707.0,
         "main_business_cost": 0,
         "qianchuan_cost": 25302.63,
-        "mgmt_fee_alloc": 4396.25,
-        "total_cost": 95405.89,
-        "profit": 20771.39,
-        "cost_ratio": 82.12
+        "mgmt_fee_alloc": 27347.48,
+        "total_cost": 118357.11,
+        "profit": -2179.83,
+        "cost_ratio": 101.88
       },
       "1003": {
         "project_id": "1003",
@@ -24192,10 +24192,10 @@
         "labor_total": 108438.45,
         "main_business_cost": 0,
         "qianchuan_cost": 67396.48,
-        "mgmt_fee_alloc": 4396.25,
-        "total_cost": 180231.18,
-        "profit": -34938.16,
-        "cost_ratio": 124.05
+        "mgmt_fee_alloc": 27347.48,
+        "total_cost": 203182.41,
+        "profit": -57889.39,
+        "cost_ratio": 139.84
       },
       "1012": {
         "project_id": "1012",
@@ -24211,10 +24211,10 @@
         "labor_total": 14734.44,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4396.25,
-        "total_cost": 19130.69,
-        "profit": 54581.23,
-        "cost_ratio": 25.95
+        "mgmt_fee_alloc": 27347.48,
+        "total_cost": 42081.92,
+        "profit": 31630.0,
+        "cost_ratio": 57.09
       },
       "1016": {
         "project_id": "1016",
@@ -24230,10 +24230,10 @@
         "labor_total": 27176.44,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4396.25,
-        "total_cost": 31572.7,
-        "profit": -4720.68,
-        "cost_ratio": 117.58
+        "mgmt_fee_alloc": 27347.48,
+        "total_cost": 54523.92,
+        "profit": -27671.9,
+        "cost_ratio": 203.05
       },
       "1019": {
         "project_id": "1019",
@@ -24249,10 +24249,10 @@
         "labor_total": 38051.98,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4396.25,
-        "total_cost": 42448.23,
-        "profit": 21852.47,
-        "cost_ratio": 66.02
+        "mgmt_fee_alloc": 0,
+        "total_cost": 38051.98,
+        "profit": 26248.72,
+        "cost_ratio": 59.18
       },
       "1020": {
         "project_id": "1020",
@@ -24268,9 +24268,9 @@
         "labor_total": 50404.97,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4396.25,
-        "total_cost": 54801.22,
-        "profit": -54801.22,
+        "mgmt_fee_alloc": 0,
+        "total_cost": 50404.97,
+        "profit": -50404.97,
         "cost_ratio": 0
       }
     },
@@ -24289,10 +24289,10 @@
         "labor_total": 101834.4,
         "main_business_cost": 49550.0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6557.37,
-        "total_cost": 157941.77,
-        "profit": 32356.88,
-        "cost_ratio": 83.0
+        "mgmt_fee_alloc": 21774.98,
+        "total_cost": 173159.38,
+        "profit": 17139.27,
+        "cost_ratio": 90.99
       },
       "1010": {
         "project_id": "1010",
@@ -24308,10 +24308,10 @@
         "labor_total": 92771.71,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6557.37,
-        "total_cost": 99329.08,
-        "profit": 10394.0,
-        "cost_ratio": 90.53
+        "mgmt_fee_alloc": 21774.98,
+        "total_cost": 114546.69,
+        "profit": -4823.61,
+        "cost_ratio": 104.4
       },
       "1009": {
         "project_id": "1009",
@@ -24327,10 +24327,10 @@
         "labor_total": 73966.1,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6557.37,
-        "total_cost": 80523.46,
-        "profit": 78026.26,
-        "cost_ratio": 50.79
+        "mgmt_fee_alloc": 21774.98,
+        "total_cost": 95741.07,
+        "profit": 62808.65,
+        "cost_ratio": 60.39
       },
       "1002": {
         "project_id": "1002",
@@ -24346,10 +24346,10 @@
         "labor_total": 74616.67,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6557.37,
-        "total_cost": 81174.04,
-        "profit": 13913.86,
-        "cost_ratio": 85.37
+        "mgmt_fee_alloc": 21774.98,
+        "total_cost": 96391.65,
+        "profit": -1303.75,
+        "cost_ratio": 101.37
       },
       "1017": {
         "project_id": "1017",
@@ -24365,9 +24365,9 @@
         "labor_total": 28213.69,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6557.37,
-        "total_cost": 34771.05,
-        "profit": -34771.05,
+        "mgmt_fee_alloc": 21774.98,
+        "total_cost": 49988.66,
+        "profit": -49988.66,
         "cost_ratio": 0
       },
       "1008": {
@@ -24384,10 +24384,10 @@
         "labor_total": 55166.99,
         "main_business_cost": 0,
         "qianchuan_cost": 11498.59,
-        "mgmt_fee_alloc": 6557.37,
-        "total_cost": 73222.94,
-        "profit": 23875.61,
-        "cost_ratio": 75.41
+        "mgmt_fee_alloc": 21774.98,
+        "total_cost": 88440.56,
+        "profit": 8657.99,
+        "cost_ratio": 91.08
       },
       "1016": {
         "project_id": "1016",
@@ -24403,10 +24403,10 @@
         "labor_total": 38176.81,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6557.37,
-        "total_cost": 44734.18,
-        "profit": -17498.8,
-        "cost_ratio": 164.25
+        "mgmt_fee_alloc": 21774.98,
+        "total_cost": 59951.79,
+        "profit": -32716.41,
+        "cost_ratio": 220.12
       },
       "1003": {
         "project_id": "1003",
@@ -24422,10 +24422,10 @@
         "labor_total": 101726.91,
         "main_business_cost": 0,
         "qianchuan_cost": 25703.26,
-        "mgmt_fee_alloc": 6557.37,
-        "total_cost": 133987.54,
-        "profit": -69012.46,
-        "cost_ratio": 206.21
+        "mgmt_fee_alloc": 21774.98,
+        "total_cost": 149205.15,
+        "profit": -84230.07,
+        "cost_ratio": 229.63
       },
       "1012": {
         "project_id": "1012",
@@ -24441,10 +24441,10 @@
         "labor_total": 9172.75,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6557.37,
-        "total_cost": 15730.12,
-        "profit": 25210.52,
-        "cost_ratio": 38.42
+        "mgmt_fee_alloc": 21774.98,
+        "total_cost": 30947.73,
+        "profit": 9992.91,
+        "cost_ratio": 75.59
       },
       "1019": {
         "project_id": "1019",
@@ -24460,10 +24460,10 @@
         "labor_total": 45605.26,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6557.37,
-        "total_cost": 52162.63,
-        "profit": -22285.98,
-        "cost_ratio": 174.59
+        "mgmt_fee_alloc": 0,
+        "total_cost": 45605.26,
+        "profit": -15728.61,
+        "cost_ratio": 152.65
       },
       "1020": {
         "project_id": "1020",
@@ -24479,9 +24479,9 @@
         "labor_total": 61225.01,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6557.37,
-        "total_cost": 67782.38,
-        "profit": -67782.38,
+        "mgmt_fee_alloc": 0,
+        "total_cost": 61225.01,
+        "profit": -61225.01,
         "cost_ratio": 0
       }
     },
@@ -24500,10 +24500,10 @@
         "labor_total": 127721.14,
         "main_business_cost": 66190.0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 198101.03,
-        "profit": 66798.25,
-        "cost_ratio": 74.78
+        "mgmt_fee_alloc": 17825.42,
+        "total_cost": 211736.56,
+        "profit": 53162.72,
+        "cost_ratio": 79.93
       },
       "1010": {
         "project_id": "1010",
@@ -24519,10 +24519,10 @@
         "labor_total": 83463.12,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 87653.01,
-        "profit": 16024.36,
-        "cost_ratio": 84.54
+        "mgmt_fee_alloc": 17825.42,
+        "total_cost": 101288.54,
+        "profit": 2388.83,
+        "cost_ratio": 97.7
       },
       "1009": {
         "project_id": "1009",
@@ -24538,10 +24538,10 @@
         "labor_total": 68177.04,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 72366.93,
-        "profit": 76782.79,
-        "cost_ratio": 48.52
+        "mgmt_fee_alloc": 17825.42,
+        "total_cost": 86002.46,
+        "profit": 63147.26,
+        "cost_ratio": 57.66
       },
       "1002": {
         "project_id": "1002",
@@ -24557,10 +24557,10 @@
         "labor_total": 75305.58,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 79495.47,
-        "profit": 37164.33,
-        "cost_ratio": 68.14
+        "mgmt_fee_alloc": 17825.42,
+        "total_cost": 93131.0,
+        "profit": 23528.8,
+        "cost_ratio": 79.83
       },
       "1017": {
         "project_id": "1017",
@@ -24576,9 +24576,9 @@
         "labor_total": 30082.57,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 34272.46,
-        "profit": -34272.46,
+        "mgmt_fee_alloc": 17825.42,
+        "total_cost": 47907.99,
+        "profit": -47907.99,
         "cost_ratio": 0
       },
       "1007": {
@@ -24595,10 +24595,10 @@
         "labor_total": 42786.43,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 46976.31,
-        "profit": -17592.21,
-        "cost_ratio": 159.87
+        "mgmt_fee_alloc": 17825.42,
+        "total_cost": 60611.84,
+        "profit": -31227.74,
+        "cost_ratio": 206.27
       },
       "1016": {
         "project_id": "1016",
@@ -24614,10 +24614,10 @@
         "labor_total": 42590.7,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 46780.59,
-        "profit": -22851.13,
-        "cost_ratio": 195.49
+        "mgmt_fee_alloc": 17825.42,
+        "total_cost": 60416.12,
+        "profit": -36486.66,
+        "cost_ratio": 252.48
       },
       "1003": {
         "project_id": "1003",
@@ -24633,10 +24633,10 @@
         "labor_total": 103637.27,
         "main_business_cost": 0,
         "qianchuan_cost": 29324.36,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 137151.52,
-        "profit": -55651.04,
-        "cost_ratio": 168.28
+        "mgmt_fee_alloc": 17825.42,
+        "total_cost": 150787.05,
+        "profit": -69286.57,
+        "cost_ratio": 185.01
       },
       "1008": {
         "project_id": "1008",
@@ -24652,10 +24652,10 @@
         "labor_total": 43245.19,
         "main_business_cost": 0,
         "qianchuan_cost": 15229.23,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 62664.3,
-        "profit": -6.02,
-        "cost_ratio": 100.01
+        "mgmt_fee_alloc": 17825.42,
+        "total_cost": 76299.83,
+        "profit": -13641.55,
+        "cost_ratio": 121.77
       },
       "1012": {
         "project_id": "1012",
@@ -24671,9 +24671,9 @@
         "labor_total": 7674.27,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 11864.15,
-        "profit": -11864.15,
+        "mgmt_fee_alloc": 17825.42,
+        "total_cost": 25499.68,
+        "profit": -25499.68,
         "cost_ratio": 0
       },
       "1018": {
@@ -24690,10 +24690,10 @@
         "labor_total": 3017.29,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 7207.17,
-        "profit": 55426.87,
-        "cost_ratio": 11.51
+        "mgmt_fee_alloc": 17825.42,
+        "total_cost": 20842.7,
+        "profit": 41791.34,
+        "cost_ratio": 33.28
       },
       "1021": {
         "project_id": "1021",
@@ -24709,10 +24709,10 @@
         "labor_total": 7118.68,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 11308.56,
-        "profit": -6977.85,
-        "cost_ratio": 261.12
+        "mgmt_fee_alloc": 0,
+        "total_cost": 7118.68,
+        "profit": -2787.97,
+        "cost_ratio": 164.38
       },
       "1013": {
         "project_id": "1013",
@@ -24728,9 +24728,9 @@
         "labor_total": 700.44,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 4890.33,
-        "profit": -4890.33,
+        "mgmt_fee_alloc": 17825.42,
+        "total_cost": 18525.86,
+        "profit": -18525.86,
         "cost_ratio": 0
       },
       "1019": {
@@ -24747,10 +24747,10 @@
         "labor_total": 72526.85,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 76716.74,
-        "profit": -43947.4,
-        "cost_ratio": 234.11
+        "mgmt_fee_alloc": 0,
+        "total_cost": 72526.85,
+        "profit": -39757.51,
+        "cost_ratio": 221.33
       },
       "1020": {
         "project_id": "1020",
@@ -24766,10 +24766,10 @@
         "labor_total": 68704.22,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4189.89,
-        "total_cost": 72894.11,
-        "profit": -59777.01,
-        "cost_ratio": 555.72
+        "mgmt_fee_alloc": 0,
+        "total_cost": 68704.22,
+        "profit": -55587.12,
+        "cost_ratio": 523.78
       }
     },
     "4月": {
@@ -24787,10 +24787,10 @@
         "labor_total": 132039.41,
         "main_business_cost": 60560.0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 196589.66,
-        "profit": 85056.86,
-        "cost_ratio": 69.8
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 207279.24,
+        "profit": 74367.28,
+        "cost_ratio": 73.6
       },
       "1010": {
         "project_id": "1010",
@@ -24806,10 +24806,10 @@
         "labor_total": 95147.67,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 99137.91,
-        "profit": -32021.02,
-        "cost_ratio": 147.71
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 109827.5,
+        "profit": -42710.61,
+        "cost_ratio": 163.64
       },
       "1009": {
         "project_id": "1009",
@@ -24825,10 +24825,10 @@
         "labor_total": 72340.24,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 76330.49,
-        "profit": 73226.85,
-        "cost_ratio": 51.04
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 87020.07,
+        "profit": 62537.27,
+        "cost_ratio": 58.19
       },
       "1002": {
         "project_id": "1002",
@@ -24844,10 +24844,10 @@
         "labor_total": 65503.93,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 69494.18,
-        "profit": 9004.4,
-        "cost_ratio": 88.53
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 80183.76,
+        "profit": -1685.18,
+        "cost_ratio": 102.15
       },
       "1008": {
         "project_id": "1008",
@@ -24863,10 +24863,10 @@
         "labor_total": 50521.58,
         "main_business_cost": 0,
         "qianchuan_cost": 10000.0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 64511.83,
-        "profit": -3911.83,
-        "cost_ratio": 106.46
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 75201.41,
+        "profit": -14601.41,
+        "cost_ratio": 124.09
       },
       "1016": {
         "project_id": "1016",
@@ -24882,10 +24882,10 @@
         "labor_total": 33340.22,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 37330.47,
-        "profit": -20116.42,
-        "cost_ratio": 216.86
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 48020.05,
+        "profit": -30806.0,
+        "cost_ratio": 278.96
       },
       "1003": {
         "project_id": "1003",
@@ -24901,10 +24901,10 @@
         "labor_total": 99885.07,
         "main_business_cost": 0,
         "qianchuan_cost": 30822.13,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 134697.45,
-        "profit": -37400.47,
-        "cost_ratio": 138.44
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 145387.03,
+        "profit": -48090.05,
+        "cost_ratio": 149.43
       },
       "1012": {
         "project_id": "1012",
@@ -24920,10 +24920,10 @@
         "labor_total": 13195.21,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 17185.45,
-        "profit": -3101.2,
-        "cost_ratio": 122.02
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 27875.04,
+        "profit": -13790.79,
+        "cost_ratio": 197.92
       },
       "1017": {
         "project_id": "1017",
@@ -24939,10 +24939,10 @@
         "labor_total": 18087.62,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 22077.86,
-        "profit": 9260.95,
-        "cost_ratio": 70.45
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 32767.45,
+        "profit": -1428.64,
+        "cost_ratio": 104.56
       },
       "1007": {
         "project_id": "1007",
@@ -24958,10 +24958,10 @@
         "labor_total": 19094.01,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 23084.25,
-        "profit": 6861.28,
-        "cost_ratio": 77.09
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 33773.84,
+        "profit": -3828.31,
+        "cost_ratio": 112.78
       },
       "1013": {
         "project_id": "1013",
@@ -24977,10 +24977,10 @@
         "labor_total": 36840.41,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 40830.66,
-        "profit": 9169.34,
-        "cost_ratio": 81.66
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 51520.24,
+        "profit": -1520.24,
+        "cost_ratio": 103.04
       },
       "1018": {
         "project_id": "1018",
@@ -24996,10 +24996,10 @@
         "labor_total": 11590.08,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 15580.32,
-        "profit": 42154.09,
-        "cost_ratio": 26.99
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 26269.91,
+        "profit": 31464.5,
+        "cost_ratio": 45.5
       },
       "1021": {
         "project_id": "1021",
@@ -25015,10 +25015,10 @@
         "labor_total": 15796.56,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 19786.81,
-        "profit": -17483.05,
-        "cost_ratio": 858.89
+        "mgmt_fee_alloc": 0,
+        "total_cost": 15796.56,
+        "profit": -13492.8,
+        "cost_ratio": 685.69
       },
       "1014": {
         "project_id": "1014",
@@ -25034,10 +25034,10 @@
         "labor_total": 8831.6,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 12821.84,
-        "profit": 13307.33,
-        "cost_ratio": 49.07
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 23511.43,
+        "profit": 2617.74,
+        "cost_ratio": 89.98
       },
       "1005": {
         "project_id": "1005",
@@ -25053,9 +25053,9 @@
         "labor_total": 3588.67,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 7578.92,
-        "profit": -7578.92,
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 18268.5,
+        "profit": -18268.5,
         "cost_ratio": 0
       },
       "1019": {
@@ -25072,10 +25072,10 @@
         "labor_total": 76961.66,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 80951.91,
-        "profit": -67708.43,
-        "cost_ratio": 611.26
+        "mgmt_fee_alloc": 0,
+        "total_cost": 76961.66,
+        "profit": -63718.18,
+        "cost_ratio": 581.13
       },
       "1020": {
         "project_id": "1020",
@@ -25091,10 +25091,10 @@
         "labor_total": 68870.63,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 3990.24,
-        "total_cost": 72860.87,
-        "profit": -69763.72,
-        "cost_ratio": 2352.51
+        "mgmt_fee_alloc": 0,
+        "total_cost": 68870.63,
+        "profit": -65773.48,
+        "cost_ratio": 2223.68
       }
     },
     "5月": {
@@ -25112,10 +25112,10 @@
         "labor_total": 124320.99,
         "main_business_cost": 57770.0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 187023.1,
-        "profit": 73530.18,
-        "cost_ratio": 71.78
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 197387.49,
+        "profit": 63165.79,
+        "cost_ratio": 75.76
       },
       "1010": {
         "project_id": "1010",
@@ -25131,10 +25131,10 @@
         "labor_total": 81753.99,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 86686.1,
-        "profit": -9086.27,
-        "cost_ratio": 111.71
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 97050.5,
+        "profit": -19450.67,
+        "cost_ratio": 125.07
       },
       "1009": {
         "project_id": "1009",
@@ -25150,10 +25150,10 @@
         "labor_total": 80551.0,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 85483.11,
-        "profit": 58449.74,
-        "cost_ratio": 59.39
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 95847.5,
+        "profit": 48085.35,
+        "cost_ratio": 66.59
       },
       "1002": {
         "project_id": "1002",
@@ -25169,10 +25169,10 @@
         "labor_total": 76622.78,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 81554.89,
-        "profit": -5122.71,
-        "cost_ratio": 106.7
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 91919.29,
+        "profit": -15487.11,
+        "cost_ratio": 120.26
       },
       "1007": {
         "project_id": "1007",
@@ -25188,10 +25188,10 @@
         "labor_total": 31398.92,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 36331.03,
-        "profit": -4588.77,
-        "cost_ratio": 114.46
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 46695.42,
+        "profit": -14953.16,
+        "cost_ratio": 147.11
       },
       "1003": {
         "project_id": "1003",
@@ -25207,10 +25207,10 @@
         "labor_total": 132195.85,
         "main_business_cost": 0,
         "qianchuan_cost": 33520.54,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 170648.5,
-        "profit": -45804.36,
-        "cost_ratio": 136.69
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 181012.9,
+        "profit": -56168.76,
+        "cost_ratio": 144.99
       },
       "1008": {
         "project_id": "1008",
@@ -25226,10 +25226,10 @@
         "labor_total": 37009.56,
         "main_business_cost": 0,
         "qianchuan_cost": 10000.0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 51941.67,
-        "profit": -208.61,
-        "cost_ratio": 100.4
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 62306.06,
+        "profit": -10573.0,
+        "cost_ratio": 120.44
       },
       "1017": {
         "project_id": "1017",
@@ -25245,10 +25245,10 @@
         "labor_total": 25837.2,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 30769.31,
-        "profit": -769.31,
-        "cost_ratio": 102.56
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 41133.71,
+        "profit": -11133.71,
+        "cost_ratio": 137.11
       },
       "1016": {
         "project_id": "1016",
@@ -25264,9 +25264,9 @@
         "labor_total": 18777.68,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 23709.8,
-        "profit": -23709.8,
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 34074.19,
+        "profit": -34074.19,
         "cost_ratio": 0
       },
       "1013": {
@@ -25283,10 +25283,10 @@
         "labor_total": 39504.92,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 44437.03,
-        "profit": -14195.09,
-        "cost_ratio": 146.94
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 54801.42,
+        "profit": -24559.48,
+        "cost_ratio": 181.21
       },
       "1018": {
         "project_id": "1018",
@@ -25302,10 +25302,10 @@
         "labor_total": 24852.51,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 29784.62,
-        "profit": 32296.25,
-        "cost_ratio": 47.98
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 40149.01,
+        "profit": 21931.86,
+        "cost_ratio": 64.67
       },
       "1021": {
         "project_id": "1021",
@@ -25321,9 +25321,9 @@
         "labor_total": 16399.48,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 21331.59,
-        "profit": -21331.59,
+        "mgmt_fee_alloc": 0,
+        "total_cost": 16399.48,
+        "profit": -16399.48,
         "cost_ratio": 0
       },
       "1005": {
@@ -25340,10 +25340,10 @@
         "labor_total": 41596.99,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 46529.1,
-        "profit": -5086.22,
-        "cost_ratio": 112.27
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 56893.5,
+        "profit": -15450.62,
+        "cost_ratio": 137.28
       },
       "1014": {
         "project_id": "1014",
@@ -25359,10 +25359,10 @@
         "labor_total": 29961.81,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 34893.92,
-        "profit": 182239.76,
-        "cost_ratio": 16.07
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 45258.32,
+        "profit": 171875.36,
+        "cost_ratio": 20.84
       },
       "1012": {
         "project_id": "1012",
@@ -25378,10 +25378,10 @@
         "labor_total": 26033.0,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 30965.11,
-        "profit": 39121.9,
-        "cost_ratio": 44.18
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 41329.51,
+        "profit": 28757.5,
+        "cost_ratio": 58.97
       },
       "1004": {
         "project_id": "1004",
@@ -25397,10 +25397,10 @@
         "labor_total": 33682.35,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 38614.46,
-        "profit": -30327.88,
-        "cost_ratio": 465.99
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 48978.85,
+        "profit": -40692.27,
+        "cost_ratio": 591.06
       },
       "1019": {
         "project_id": "1019",
@@ -25416,10 +25416,10 @@
         "labor_total": 52593.28,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 57525.39,
-        "profit": -15077.72,
-        "cost_ratio": 135.52
+        "mgmt_fee_alloc": 0,
+        "total_cost": 52593.28,
+        "profit": -10145.61,
+        "cost_ratio": 123.9
       },
       "1020": {
         "project_id": "1020",
@@ -25435,9 +25435,9 @@
         "labor_total": 64399.82,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4932.11,
-        "total_cost": 69331.94,
-        "profit": -69331.94,
+        "mgmt_fee_alloc": 0,
+        "total_cost": 64399.82,
+        "profit": -64399.82,
         "cost_ratio": 0
       }
     },
@@ -25456,10 +25456,10 @@
         "labor_total": 112701.35,
         "main_business_cost": 61980.0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 180386.63,
-        "profit": 105672.47,
-        "cost_ratio": 63.06
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 188187.66,
+        "profit": 97871.44,
+        "cost_ratio": 65.79
       },
       "1010": {
         "project_id": "1010",
@@ -25475,10 +25475,10 @@
         "labor_total": 93691.6,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 99396.87,
-        "profit": -7726.35,
-        "cost_ratio": 108.43
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 107197.9,
+        "profit": -15527.38,
+        "cost_ratio": 116.94
       },
       "1009": {
         "project_id": "1009",
@@ -25494,10 +25494,10 @@
         "labor_total": 80190.24,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 85895.51,
-        "profit": 45185.05,
-        "cost_ratio": 65.53
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 93696.54,
+        "profit": 37384.02,
+        "cost_ratio": 71.48
       },
       "1002": {
         "project_id": "1002",
@@ -25513,10 +25513,10 @@
         "labor_total": 74487.09,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 80192.36,
-        "profit": -4959.58,
-        "cost_ratio": 106.59
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 87993.4,
+        "profit": -12760.62,
+        "cost_ratio": 116.96
       },
       "1003": {
         "project_id": "1003",
@@ -25532,10 +25532,10 @@
         "labor_total": 90242.5,
         "main_business_cost": 0,
         "qianchuan_cost": 18720.86,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 114668.63,
-        "profit": -44259.91,
-        "cost_ratio": 162.86
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 122469.66,
+        "profit": -52060.94,
+        "cost_ratio": 173.94
       },
       "1008": {
         "project_id": "1008",
@@ -25551,10 +25551,10 @@
         "labor_total": 18258.6,
         "main_business_cost": 0,
         "qianchuan_cost": 10000.0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 33963.88,
-        "profit": 22113.15,
-        "cost_ratio": 60.57
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 41764.91,
+        "profit": 14312.12,
+        "cost_ratio": 74.48
       },
       "1017": {
         "project_id": "1017",
@@ -25570,10 +25570,10 @@
         "labor_total": 77174.32,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 82879.59,
-        "profit": -52879.59,
-        "cost_ratio": 276.27
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 90680.62,
+        "profit": -60680.62,
+        "cost_ratio": 302.27
       },
       "1014": {
         "project_id": "1014",
@@ -25589,10 +25589,10 @@
         "labor_total": 61339.92,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 67045.19,
-        "profit": 135854.55,
-        "cost_ratio": 33.04
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 74846.22,
+        "profit": 128053.52,
+        "cost_ratio": 36.89
       },
       "1021": {
         "project_id": "1021",
@@ -25608,10 +25608,10 @@
         "labor_total": 18058.43,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 23763.71,
-        "profit": -21827.93,
-        "cost_ratio": 1227.6
+        "mgmt_fee_alloc": 0,
+        "total_cost": 18058.43,
+        "profit": -16122.65,
+        "cost_ratio": 932.88
       },
       "1005": {
         "project_id": "1005",
@@ -25627,10 +25627,10 @@
         "labor_total": 63414.21,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 69119.49,
-        "profit": 4906.27,
-        "cost_ratio": 93.37
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 76920.52,
+        "profit": -2894.76,
+        "cost_ratio": 103.91
       },
       "1012": {
         "project_id": "1012",
@@ -25646,10 +25646,10 @@
         "labor_total": 31959.61,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 37664.88,
-        "profit": 38285.69,
-        "cost_ratio": 49.59
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 45465.91,
+        "profit": 30484.66,
+        "cost_ratio": 59.86
       },
       "1004": {
         "project_id": "1004",
@@ -25665,10 +25665,10 @@
         "labor_total": 18694.33,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 24399.6,
-        "profit": -23799.6,
-        "cost_ratio": 4066.6
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 32200.63,
+        "profit": -31600.63,
+        "cost_ratio": 5366.77
       },
       "1024": {
         "project_id": "1024",
@@ -25684,10 +25684,10 @@
         "labor_total": 15005.91,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 20711.19,
-        "profit": 13924.13,
-        "cost_ratio": 59.8
+        "mgmt_fee_alloc": 0,
+        "total_cost": 15005.91,
+        "profit": 19629.41,
+        "cost_ratio": 43.33
       },
       "1013": {
         "project_id": "1013",
@@ -25703,9 +25703,9 @@
         "labor_total": 10010.58,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 15715.85,
-        "profit": -15715.85,
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 23516.88,
+        "profit": -23516.88,
         "cost_ratio": 0
       },
       "1019": {
@@ -25722,10 +25722,10 @@
         "labor_total": 57592.95,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 63298.23,
-        "profit": -57366.13,
-        "cost_ratio": 1067.05
+        "mgmt_fee_alloc": 0,
+        "total_cost": 57592.95,
+        "profit": -51660.85,
+        "cost_ratio": 970.87
       },
       "1020": {
         "project_id": "1020",
@@ -25741,10 +25741,10 @@
         "labor_total": 69064.66,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 5705.27,
-        "total_cost": 74769.93,
-        "profit": -61296.9,
-        "cost_ratio": 554.96
+        "mgmt_fee_alloc": 0,
+        "total_cost": 69064.66,
+        "profit": -55591.63,
+        "cost_ratio": 512.61
       }
     },
     "7月": {
@@ -25762,10 +25762,10 @@
         "labor_total": 126414.34,
         "main_business_cost": 57390.0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 190075.87,
-        "profit": 59993.5,
-        "cost_ratio": 76.01
+        "mgmt_fee_alloc": 19669.27,
+        "total_cost": 203473.61,
+        "profit": 46595.76,
+        "cost_ratio": 81.37
       },
       "1010": {
         "project_id": "1010",
@@ -25781,10 +25781,10 @@
         "labor_total": 78963.92,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 85235.44,
-        "profit": 4258.13,
-        "cost_ratio": 95.24
+        "mgmt_fee_alloc": 19669.27,
+        "total_cost": 98633.19,
+        "profit": -9139.62,
+        "cost_ratio": 110.21
       },
       "1009": {
         "project_id": "1009",
@@ -25800,10 +25800,10 @@
         "labor_total": 80017.57,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 86289.09,
-        "profit": 45393.0,
-        "cost_ratio": 65.53
+        "mgmt_fee_alloc": 19669.27,
+        "total_cost": 99686.84,
+        "profit": 31995.25,
+        "cost_ratio": 75.7
       },
       "1002": {
         "project_id": "1002",
@@ -25819,10 +25819,10 @@
         "labor_total": 71951.28,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 78222.81,
-        "profit": 1607.24,
-        "cost_ratio": 97.99
+        "mgmt_fee_alloc": 19669.27,
+        "total_cost": 91620.55,
+        "profit": -11790.5,
+        "cost_ratio": 114.77
       },
       "1003": {
         "project_id": "1003",
@@ -25838,10 +25838,10 @@
         "labor_total": 115310.76,
         "main_business_cost": 0,
         "qianchuan_cost": 38858.1,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 160440.38,
-        "profit": -35082.88,
-        "cost_ratio": 127.99
+        "mgmt_fee_alloc": 19669.27,
+        "total_cost": 173838.12,
+        "profit": -48480.62,
+        "cost_ratio": 138.67
       },
       "1008": {
         "project_id": "1008",
@@ -25857,10 +25857,10 @@
         "labor_total": 40747.96,
         "main_business_cost": 0,
         "qianchuan_cost": 3794.0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 50813.49,
-        "profit": -8406.39,
-        "cost_ratio": 119.82
+        "mgmt_fee_alloc": 19669.27,
+        "total_cost": 64211.23,
+        "profit": -21804.13,
+        "cost_ratio": 151.42
       },
       "1017": {
         "project_id": "1017",
@@ -25876,9 +25876,9 @@
         "labor_total": 57168.28,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 63439.8,
-        "profit": -63439.8,
+        "mgmt_fee_alloc": 19669.27,
+        "total_cost": 76837.54,
+        "profit": -76837.54,
         "cost_ratio": 0
       },
       "1014": {
@@ -25895,10 +25895,10 @@
         "labor_total": 61246.0,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 67517.53,
-        "profit": 94767.56,
-        "cost_ratio": 41.6
+        "mgmt_fee_alloc": 19669.27,
+        "total_cost": 80915.27,
+        "profit": 81369.82,
+        "cost_ratio": 49.86
       },
       "1022": {
         "project_id": "1022",
@@ -25914,9 +25914,9 @@
         "labor_total": 13246.5,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 19518.02,
-        "profit": -19518.02,
+        "mgmt_fee_alloc": 0,
+        "total_cost": 13246.5,
+        "profit": -13246.5,
         "cost_ratio": 0
       },
       "1021": {
@@ -25933,10 +25933,10 @@
         "labor_total": 7381.74,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 13653.26,
-        "profit": -12907.7,
-        "cost_ratio": 1831.28
+        "mgmt_fee_alloc": 0,
+        "total_cost": 7381.74,
+        "profit": -6636.18,
+        "cost_ratio": 990.09
       },
       "1011": {
         "project_id": "1011",
@@ -25952,10 +25952,10 @@
         "labor_total": 32579.34,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 38850.86,
-        "profit": 36764.82,
-        "cost_ratio": 51.38
+        "mgmt_fee_alloc": 19669.27,
+        "total_cost": 52248.61,
+        "profit": 23367.07,
+        "cost_ratio": 69.1
       },
       "1005": {
         "project_id": "1005",
@@ -25971,10 +25971,10 @@
         "labor_total": 74243.89,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 80515.41,
-        "profit": -4874.41,
-        "cost_ratio": 106.44
+        "mgmt_fee_alloc": 19669.27,
+        "total_cost": 93913.16,
+        "profit": -18272.16,
+        "cost_ratio": 124.16
       },
       "1019": {
         "project_id": "1019",
@@ -25990,10 +25990,10 @@
         "labor_total": 44034.62,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 50306.14,
-        "profit": -40306.14,
-        "cost_ratio": 503.06
+        "mgmt_fee_alloc": 0,
+        "total_cost": 44034.62,
+        "profit": -34034.62,
+        "cost_ratio": 440.35
       },
       "1020": {
         "project_id": "1020",
@@ -26009,10 +26009,10 @@
         "labor_total": 66906.02,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 6271.52,
-        "total_cost": 73177.54,
-        "profit": -67785.12,
-        "cost_ratio": 1357.04
+        "mgmt_fee_alloc": 0,
+        "total_cost": 66906.02,
+        "profit": -61513.6,
+        "cost_ratio": 1240.74
       }
     },
     "8月": {
@@ -26030,10 +26030,10 @@
         "labor_total": 113880.1,
         "main_business_cost": 65810.0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 184409.34,
-        "profit": 116478.3,
-        "cost_ratio": 61.29
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 196767.4,
+        "profit": 104120.24,
+        "cost_ratio": 65.4
       },
       "1010": {
         "project_id": "1010",
@@ -26049,10 +26049,10 @@
         "labor_total": 109134.24,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 113853.47,
-        "profit": 12950.08,
-        "cost_ratio": 89.79
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 126211.54,
+        "profit": 592.01,
+        "cost_ratio": 99.53
       },
       "1009": {
         "project_id": "1009",
@@ -26068,10 +26068,10 @@
         "labor_total": 72368.44,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 77087.67,
-        "profit": 66453.25,
-        "cost_ratio": 53.7
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 89445.73,
+        "profit": 54095.19,
+        "cost_ratio": 62.31
       },
       "1002": {
         "project_id": "1002",
@@ -26087,10 +26087,10 @@
         "labor_total": 73749.77,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 78469.0,
-        "profit": 5261.96,
-        "cost_ratio": 93.72
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 90827.06,
+        "profit": -7096.1,
+        "cost_ratio": 108.47
       },
       "1003": {
         "project_id": "1003",
@@ -26106,10 +26106,10 @@
         "labor_total": 113223.69,
         "main_business_cost": 0,
         "qianchuan_cost": 51856.92,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 169799.84,
-        "profit": -42138.84,
-        "cost_ratio": 133.01
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 182157.9,
+        "profit": -54496.9,
+        "cost_ratio": 142.69
       },
       "1011": {
         "project_id": "1011",
@@ -26125,10 +26125,10 @@
         "labor_total": 17333.93,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 22053.17,
-        "profit": 43933.69,
-        "cost_ratio": 33.42
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 34411.23,
+        "profit": 31575.63,
+        "cost_ratio": 52.15
       },
       "1017": {
         "project_id": "1017",
@@ -26144,9 +26144,9 @@
         "labor_total": 35587.45,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 40306.69,
-        "profit": -40306.69,
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 52664.75,
+        "profit": -52664.75,
         "cost_ratio": 0
       },
       "1022": {
@@ -26163,9 +26163,9 @@
         "labor_total": 31650.95,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 36370.18,
-        "profit": -36370.18,
+        "mgmt_fee_alloc": 0,
+        "total_cost": 31650.95,
+        "profit": -31650.95,
         "cost_ratio": 0
       },
       "1014": {
@@ -26182,10 +26182,10 @@
         "labor_total": 80317.19,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 85036.42,
-        "profit": 80305.74,
-        "cost_ratio": 51.43
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 97394.49,
+        "profit": 67947.67,
+        "cost_ratio": 58.9
       },
       "1021": {
         "project_id": "1021",
@@ -26201,10 +26201,10 @@
         "labor_total": 13985.23,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 18704.46,
-        "profit": -18004.46,
-        "cost_ratio": 2672.07
+        "mgmt_fee_alloc": 0,
+        "total_cost": 13985.23,
+        "profit": -13285.23,
+        "cost_ratio": 1997.89
       },
       "1005": {
         "project_id": "1005",
@@ -26220,10 +26220,10 @@
         "labor_total": 68796.74,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 73515.97,
-        "profit": -62514.77,
-        "cost_ratio": 668.25
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 85874.04,
+        "profit": -74872.84,
+        "cost_ratio": 780.59
       },
       "1008": {
         "project_id": "1008",
@@ -26239,10 +26239,10 @@
         "labor_total": 27163.41,
         "main_business_cost": 0,
         "qianchuan_cost": 12240.0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 44122.64,
-        "profit": 3877.36,
-        "cost_ratio": 91.92
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 56480.7,
+        "profit": -8480.7,
+        "cost_ratio": 117.67
       },
       "1019": {
         "project_id": "1019",
@@ -26258,10 +26258,10 @@
         "labor_total": 37389.79,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 42109.03,
-        "profit": 6470.97,
-        "cost_ratio": 86.68
+        "mgmt_fee_alloc": 0,
+        "total_cost": 37389.79,
+        "profit": 11190.21,
+        "cost_ratio": 76.97
       },
       "1020": {
         "project_id": "1020",
@@ -26277,10 +26277,10 @@
         "labor_total": 78257.79,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 4719.23,
-        "total_cost": 82977.02,
-        "profit": -78098.12,
-        "cost_ratio": 1700.73
+        "mgmt_fee_alloc": 0,
+        "total_cost": 78257.79,
+        "profit": -73378.89,
+        "cost_ratio": 1604.0
       }
     }
   },
@@ -26569,6 +26569,118 @@
       "7月": 142996.48,
       "8月": 158481.56
     },
+    "financial_fee": {
+      "1月": 16356.9,
+      "2月": 16478.2,
+      "3月": 15155.0,
+      "4月": 16255.75,
+      "5月": 15879.9,
+      "6月": 16604.95,
+      "7月": 15873.4,
+      "8月": 16288.05
+    },
+    "business_tax": {
+      "1月": 75523.77,
+      "2月": 50491.63,
+      "3月": 29492.06,
+      "4月": 34644.6,
+      "5月": 76337.04,
+      "6月": 27561.22,
+      "7月": 57492.07,
+      "8月": 47235.22
+    },
+    "non_operating": {
+      "1月": 0.0,
+      "2月": 0.0,
+      "3月": 0.0,
+      "4月": 30000.0,
+      "5月": 0.0,
+      "6月": 0.0,
+      "7月": 0.0,
+      "8月": 0.0
+    },
+    "mgmt_breakdown": {
+      "1月": {
+        "3.1 设备采购": 9680.0,
+        "3.2 差旅费用": 5297.22,
+        "3.3 招待费用": 22844.8,
+        "3.4 房租水电装修装修": 69043.79,
+        "3.5 福利及补贴": 28838.3,
+        "3.6 办公费": 11022.15,
+        "3.7 直播及道具采购": 2155.62,
+        "3.8 其他费用": 5364.76
+      },
+      "2月": {
+        "3.1 设备采购": 0.0,
+        "3.2 差旅费用": 0.0,
+        "3.3 招待费用": 15218.59,
+        "3.4 房租水电装修装修": 61658.45,
+        "3.5 福利及补贴": 28144.0,
+        "3.6 办公费": 18619.16,
+        "3.7 直播及道具采购": 0.0,
+        "3.8 其他费用": 5364.76
+      },
+      "3月": {
+        "3.1 设备采购": 0.0,
+        "3.2 差旅费用": 10192.28,
+        "3.3 招待费用": 6138.0,
+        "3.4 房租水电装修装修": 62046.09,
+        "3.5 福利及补贴": 4800.21,
+        "3.6 办公费": 18143.3,
+        "3.7 直播及道具采购": 4537.92,
+        "3.8 其他费用": 9923.89
+      },
+      "4月": {
+        "3.1 设备采购": 20129.0,
+        "3.2 差旅费用": 2573.55,
+        "3.3 招待费用": 3312.0,
+        "3.4 房租水电装修装修": 62789.89,
+        "3.5 福利及补贴": 7387.5,
+        "3.6 办公费": 16496.57,
+        "3.7 直播及道具采购": 3868.0,
+        "3.8 其他费用": 8060.76
+      },
+      "5月": {
+        "3.1 设备采购": 48148.0,
+        "3.2 差旅费用": 0.0,
+        "3.3 招待费用": 944.0,
+        "3.4 房租水电装修装修": 63931.39,
+        "3.5 福利及补贴": 0.0,
+        "3.6 办公费": 18842.51,
+        "3.7 直播及道具采购": 0.0,
+        "3.8 其他费用": 5364.76
+      },
+      "6月": {
+        "3.1 设备采购": 7027.9,
+        "3.2 差旅费用": 2148.36,
+        "3.3 招待费用": 7839.45,
+        "3.4 房租水电装修装修": 75546.64,
+        "3.5 福利及补贴": 8910.0,
+        "3.6 办公费": 23791.48,
+        "3.7 直播及道具采购": 787.2,
+        "3.8 其他费用": 5364.76
+      },
+      "7月": {
+        "3.1 设备采购": 3531.93,
+        "3.2 差旅费用": 10431.05,
+        "3.3 招待费用": 4739.8,
+        "3.4 房租水电装修装修": 70416.89,
+        "3.5 福利及补贴": 8747.0,
+        "3.6 办公费": 36084.45,
+        "3.7 直播及道具采购": 3680.6,
+        "3.8 其他费用": 5364.76
+      },
+      "8月": {
+        "3.1 设备采购": 34899.0,
+        "3.2 差旅费用": 7052.13,
+        "3.3 招待费用": 1554.9,
+        "3.4 房租水电装修装修": 75260.03,
+        "3.5 福利及补贴": 4080.0,
+        "3.6 办公费": 29114.18,
+        "3.7 直播及道具采购": 1156.56,
+        "3.8 其他费用": 5364.76
+      }
+    },
     "active_project_count": {
       "1月": 14,
       "2月": 14,
@@ -26579,7 +26691,198 @@
       "7月": 16,
       "8月": 20,
       "9月": 2
+    },
+    "dy_active_count": {
+      "1月": 9,
+      "2月": 9,
+      "3月": 9,
+      "4月": 14,
+      "5月": 15,
+      "6月": 13,
+      "7月": 11,
+      "8月": 13,
+      "9月": 0
+    },
+    "media_sector": {
+      "1月": {
+        "income": 72949.18,
+        "total_cost": 80929.25,
+        "main_business_cost": 31136.77,
+        "labor_cost": 41117.48,
+        "mgmt_fee": 8675.0,
+        "sales_fee": 0.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": -7980.07
+      },
+      "2月": {
+        "income": 37786.67,
+        "total_cost": 70314.59,
+        "main_business_cost": 10047.82,
+        "labor_cost": 46297.77,
+        "mgmt_fee": 13969.0,
+        "sales_fee": 0.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": -32527.92
+      },
+      "3月": {
+        "income": 54110.61,
+        "total_cost": 86952.82,
+        "main_business_cost": 13601.3,
+        "labor_cost": 61746.35,
+        "mgmt_fee": 9569.1,
+        "sales_fee": 0.0,
+        "financial_fee": 41.5,
+        "business_tax": 1994.57,
+        "net_profit": -32842.21
+      },
+      "4月": {
+        "income": 22718.69,
+        "total_cost": 55552.17,
+        "main_business_cost": 3703.15,
+        "labor_cost": 43174.02,
+        "mgmt_fee": 8675.0,
+        "sales_fee": 0.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": -32833.48
+      },
+      "5月": {
+        "income": 42447.67,
+        "total_cost": 61613.91,
+        "main_business_cost": 16538.88,
+        "labor_cost": 36400.03,
+        "mgmt_fee": 8675.0,
+        "sales_fee": 0.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": -19166.24
+      },
+      "6月": {
+        "income": 19405.13,
+        "total_cost": 50183.13,
+        "main_business_cost": 920.33,
+        "labor_cost": 39984.8,
+        "mgmt_fee": 9278.0,
+        "sales_fee": 0.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": -30778.0
+      },
+      "7月": {
+        "income": 16138.09,
+        "total_cost": 48433.01,
+        "main_business_cost": 0.0,
+        "labor_cost": 38916.11,
+        "mgmt_fee": 8675.0,
+        "sales_fee": 0.0,
+        "financial_fee": 23.5,
+        "business_tax": 818.4,
+        "net_profit": -32294.92
+      },
+      "8月": {
+        "income": 66158.89,
+        "total_cost": 44426.51,
+        "main_business_cost": 0.0,
+        "labor_cost": 35171.51,
+        "mgmt_fee": 8675.0,
+        "sales_fee": 580.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": 21732.38
+      }
+    },
+    "private_sector": {
+      "1月": {
+        "income": 26293.27,
+        "total_cost": 41946.44,
+        "main_business_cost": 0.0,
+        "labor_cost": 40677.82,
+        "mgmt_fee": 1268.62,
+        "sales_fee": 0.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": -15653.17
+      },
+      "2月": {
+        "income": 26450.53,
+        "total_cost": 40059.96,
+        "main_business_cost": 0.0,
+        "labor_cost": 39577.96,
+        "mgmt_fee": 482.0,
+        "sales_fee": 0.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": -13609.43
+      },
+      "3月": {
+        "income": 36938.72,
+        "total_cost": 42737.47,
+        "main_business_cost": 0.0,
+        "labor_cost": 42505.07,
+        "mgmt_fee": 0.0,
+        "sales_fee": 0.0,
+        "financial_fee": 232.4,
+        "business_tax": 0.0,
+        "net_profit": -5798.75
+      },
+      "4月": {
+        "income": 37357.31,
+        "total_cost": 48450.28,
+        "main_business_cost": 0.0,
+        "labor_cost": 47877.78,
+        "mgmt_fee": 372.5,
+        "sales_fee": 200.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": -11092.97
+      },
+      "5月": {
+        "income": 41776.55,
+        "total_cost": 49887.03,
+        "main_business_cost": 1122.44,
+        "labor_cost": 48764.59,
+        "mgmt_fee": 0.0,
+        "sales_fee": 0.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": -8110.48
+      },
+      "6月": {
+        "income": 57567.77,
+        "total_cost": 52344.55,
+        "main_business_cost": 1156.3,
+        "labor_cost": 50143.6,
+        "mgmt_fee": 1044.65,
+        "sales_fee": 0.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": 5223.22
+      },
+      "7月": {
+        "income": 43336.36,
+        "total_cost": 56970.51,
+        "main_business_cost": 707.5,
+        "labor_cost": 52183.01,
+        "mgmt_fee": 4080.0,
+        "sales_fee": 0.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": -13634.15
+      },
+      "8月": {
+        "income": 29043.89,
+        "total_cost": 48186.3,
+        "main_business_cost": 0.0,
+        "labor_cost": 48186.3,
+        "mgmt_fee": 0.0,
+        "sales_fee": 0.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "net_profit": -19142.41
+      }
     }
   },
-  "updateTime": "2026-09-27 11:51:01"
+  "updateTime": "2026-09-27 14:42:46"
 }
