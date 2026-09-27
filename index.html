@@ -879,8 +879,8 @@ tbody tr:hover { background:rgba(56,189,248,0.05); }
       <!-- 管理费用明细 -->
       <div class="analysis-detail" id="mgmt-breakdown" style="margin-bottom:16px;display:none">
         <h3>管理费用明细（3.1-3.8）</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-          <div><canvas id="chart-mgmt-pie" style="max-height:250px"></canvas></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;min-height:280px">
+          <div style="position:relative;height:250px"><canvas id="chart-mgmt-pie"></canvas></div>
           <div style="overflow-x:auto">
           <table id="mgmt-table">
             <thead><tr><th>费用项目</th><th class="text-right">金额</th><th class="text-right">占比</th></tr></thead>
