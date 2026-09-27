@@ -23817,8 +23817,8 @@
       "9",
       "10",
       "12",
-      "/",
-      "0"
+      "0",
+      "/"
     ],
     "emp_types": [
       "兼职",
@@ -24272,6 +24272,25 @@
         "total_cost": 50404.97,
         "profit": -50404.97,
         "cost_ratio": 0
+      },
+      "1018": {
+        "project_id": "1018",
+        "project_name": "拓趣（护手霜）",
+        "group": "C组",
+        "month": "1月",
+        "headcount": 0,
+        "income": 57351.78,
+        "direct_cost": 0,
+        "content_share": 0,
+        "mgmt_share": 0,
+        "manager_share": 0,
+        "labor_total": 0,
+        "main_business_cost": 0,
+        "qianchuan_cost": 0,
+        "mgmt_fee_alloc": 27347.48,
+        "total_cost": 27347.48,
+        "profit": 30004.3,
+        "cost_ratio": 47.68
       }
     },
     "2月": {
@@ -24483,6 +24502,25 @@
         "total_cost": 61225.01,
         "profit": -61225.01,
         "cost_ratio": 0
+      },
+      "1018": {
+        "project_id": "1018",
+        "project_name": "拓趣（护手霜）",
+        "group": "C组",
+        "month": "2月",
+        "headcount": 0,
+        "income": 59804.09,
+        "direct_cost": 0,
+        "content_share": 0,
+        "mgmt_share": 0,
+        "manager_share": 0,
+        "labor_total": 0,
+        "main_business_cost": 0,
+        "qianchuan_cost": 0,
+        "mgmt_fee_alloc": 21774.98,
+        "total_cost": 21774.98,
+        "profit": 38029.11,
+        "cost_ratio": 36.41
       }
     },
     "3月": {
@@ -25095,6 +25133,25 @@
         "total_cost": 68870.63,
         "profit": -65773.48,
         "cost_ratio": 2223.68
+      },
+      "1006": {
+        "project_id": "1006",
+        "project_name": "美菱小家电",
+        "group": "A组",
+        "month": "4月",
+        "headcount": 0,
+        "income": 8760.75,
+        "direct_cost": 0,
+        "content_share": 0,
+        "mgmt_share": 0,
+        "manager_share": 0,
+        "labor_total": 0,
+        "main_business_cost": 0,
+        "qianchuan_cost": 0,
+        "mgmt_fee_alloc": 14679.83,
+        "total_cost": 14679.83,
+        "profit": -5919.08,
+        "cost_ratio": 167.56
       }
     },
     "5月": {
@@ -25439,6 +25496,25 @@
         "total_cost": 64399.82,
         "profit": -64399.82,
         "cost_ratio": 0
+      },
+      "1006": {
+        "project_id": "1006",
+        "project_name": "美菱小家电",
+        "group": "A组",
+        "month": "5月",
+        "headcount": 0,
+        "income": 12635.11,
+        "direct_cost": 0,
+        "content_share": 0,
+        "mgmt_share": 0,
+        "manager_share": 0,
+        "labor_total": 0,
+        "main_business_cost": 0,
+        "qianchuan_cost": 0,
+        "mgmt_fee_alloc": 15296.51,
+        "total_cost": 15296.51,
+        "profit": -2661.4,
+        "cost_ratio": 121.06
       }
     },
     "6月": {
@@ -25745,6 +25821,44 @@
         "total_cost": 69064.66,
         "profit": -55591.63,
         "cost_ratio": 512.61
+      },
+      "1016": {
+        "project_id": "1016",
+        "project_name": "素颜霜",
+        "group": "C组",
+        "month": "6月",
+        "headcount": 0,
+        "income": 1935.78,
+        "direct_cost": 0,
+        "content_share": 0,
+        "mgmt_share": 0,
+        "manager_share": 0,
+        "labor_total": 0,
+        "main_business_cost": 0,
+        "qianchuan_cost": 0,
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 13506.3,
+        "profit": -11570.52,
+        "cost_ratio": 697.72
+      },
+      "1018": {
+        "project_id": "1018",
+        "project_name": "拓趣（护手霜）",
+        "group": "C组",
+        "month": "6月",
+        "headcount": 0,
+        "income": 58798.82,
+        "direct_cost": 0,
+        "content_share": 0,
+        "mgmt_share": 0,
+        "manager_share": 0,
+        "labor_total": 0,
+        "main_business_cost": 0,
+        "qianchuan_cost": 0,
+        "mgmt_fee_alloc": 13506.3,
+        "total_cost": 13506.3,
+        "profit": 45292.52,
+        "cost_ratio": 22.97
       }
     },
     "7月": {
@@ -26013,6 +26127,44 @@
         "total_cost": 66906.02,
         "profit": -61513.6,
         "cost_ratio": 1240.74
+      },
+      "1015": {
+        "project_id": "1015",
+        "project_name": "养舒优2",
+        "group": "B组",
+        "month": "7月",
+        "headcount": 0,
+        "income": 38184.38,
+        "direct_cost": 0,
+        "content_share": 0,
+        "mgmt_share": 0,
+        "manager_share": 0,
+        "labor_total": 0,
+        "main_business_cost": 0,
+        "qianchuan_cost": 0,
+        "mgmt_fee_alloc": 19669.27,
+        "total_cost": 19669.27,
+        "profit": 18515.11,
+        "cost_ratio": 51.51
+      },
+      "1018": {
+        "project_id": "1018",
+        "project_name": "拓趣（护手霜）",
+        "group": "C组",
+        "month": "7月",
+        "headcount": 0,
+        "income": 48816.74,
+        "direct_cost": 0,
+        "content_share": 0,
+        "mgmt_share": 0,
+        "manager_share": 0,
+        "labor_total": 0,
+        "main_business_cost": 0,
+        "qianchuan_cost": 0,
+        "mgmt_fee_alloc": 19669.27,
+        "total_cost": 19669.27,
+        "profit": 29147.47,
+        "cost_ratio": 40.29
       }
     },
     "8月": {
@@ -26281,6 +26433,82 @@
         "total_cost": 78257.79,
         "profit": -73378.89,
         "cost_ratio": 1604.0
+      },
+      "1029": {
+        "project_id": "1029",
+        "project_name": "燕之坊",
+        "group": "B组",
+        "month": "8月",
+        "headcount": 0,
+        "income": 20000.0,
+        "direct_cost": 0,
+        "content_share": 0,
+        "mgmt_share": 0,
+        "manager_share": 0,
+        "labor_total": 0,
+        "main_business_cost": 0,
+        "qianchuan_cost": 0,
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 17077.29,
+        "profit": 2922.71,
+        "cost_ratio": 85.39
+      },
+      "1030": {
+        "project_id": "1030",
+        "project_name": "追觅投影仪",
+        "group": "A组",
+        "month": "8月",
+        "headcount": 0,
+        "income": 56403.32,
+        "direct_cost": 0,
+        "content_share": 0,
+        "mgmt_share": 0,
+        "manager_share": 0,
+        "labor_total": 0,
+        "main_business_cost": 0,
+        "qianchuan_cost": 0,
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 17077.29,
+        "profit": 39326.03,
+        "cost_ratio": 30.28
+      },
+      "1015": {
+        "project_id": "1015",
+        "project_name": "养舒优2",
+        "group": "B组",
+        "month": "8月",
+        "headcount": 0,
+        "income": 39714.37,
+        "direct_cost": 0,
+        "content_share": 0,
+        "mgmt_share": 0,
+        "manager_share": 0,
+        "labor_total": 0,
+        "main_business_cost": 0,
+        "qianchuan_cost": 0,
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 17077.29,
+        "profit": 22637.08,
+        "cost_ratio": 43.0
+      },
+      "1018": {
+        "project_id": "1018",
+        "project_name": "拓趣（护手霜）",
+        "group": "C组",
+        "month": "8月",
+        "headcount": 0,
+        "income": 49363.91,
+        "direct_cost": 0,
+        "content_share": 0,
+        "mgmt_share": 0,
+        "manager_share": 0,
+        "labor_total": 0,
+        "main_business_cost": 0,
+        "qianchuan_cost": 0,
+        "mgmt_fee_alloc": 17077.29,
+        "total_cost": 17077.29,
+        "profit": 32286.62,
+        "cost_ratio": 34.59
       }
     }
   },
@@ -26974,5 +27202,5 @@
       }
     }
   },
-  "updateTime": "2026-09-27 15:10:24"
+  "updateTime": "2026-09-27 15:57:17"
 }
