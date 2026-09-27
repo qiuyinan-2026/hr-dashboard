@@ -23817,8 +23817,8 @@
       "9",
       "10",
       "12",
-      "0",
-      "/"
+      "/",
+      "0"
     ],
     "emp_types": [
       "兼职",
@@ -26703,6 +26703,96 @@
       "8月": 13,
       "9月": 0
     },
+    "daiyunying_sector": {
+      "1月": {
+        "income": 1476063.57,
+        "total_cost": 1278873.42,
+        "main_business_cost": 101459.0,
+        "labor_cost": 838588.0,
+        "mgmt_fee": 154246.64,
+        "sales_fee": 92699.11,
+        "financial_fee": 16356.9,
+        "business_tax": 75523.77,
+        "net_profit": 197190.15
+      },
+      "2月": {
+        "income": 862742.65,
+        "total_cost": 943063.54,
+        "main_business_cost": 49550.0,
+        "labor_cost": 660336.9,
+        "mgmt_fee": 129004.96,
+        "sales_fee": 37201.85,
+        "financial_fee": 16478.2,
+        "business_tax": 50491.63,
+        "net_profit": -80320.89
+      },
+      "3月": {
+        "income": 913374.59,
+        "total_cost": 1023022.06,
+        "main_business_cost": 66190.0,
+        "labor_cost": 751849.72,
+        "mgmt_fee": 115781.69,
+        "sales_fee": 44553.59,
+        "financial_fee": 15155.0,
+        "business_tax": 29492.06,
+        "net_profit": -109647.47
+      },
+      "4月": {
+        "income": 985752.85,
+        "total_cost": 1071681.59,
+        "main_business_cost": 60560.0,
+        "labor_cost": 794781.84,
+        "mgmt_fee": 124617.27,
+        "sales_fee": 40822.13,
+        "financial_fee": 16255.75,
+        "business_tax": 34644.6,
+        "net_profit": -85928.74
+      },
+      "5月": {
+        "income": 1247394.29,
+        "total_cost": 1303241.87,
+        "main_business_cost": 57770.0,
+        "labor_cost": 972503.73,
+        "mgmt_fee": 137230.66,
+        "sales_fee": 43520.54,
+        "financial_fee": 15879.9,
+        "business_tax": 76337.04,
+        "net_profit": -55847.58
+      },
+      "6月": {
+        "income": 1153777.08,
+        "total_cost": 1140811.87,
+        "main_business_cost": 61980.0,
+        "labor_cost": 874529.05,
+        "mgmt_fee": 131415.79,
+        "sales_fee": 28720.86,
+        "financial_fee": 16604.95,
+        "business_tax": 27561.22,
+        "net_profit": 12965.21
+      },
+      "7月": {
+        "income": 1119383.31,
+        "total_cost": 1190814.15,
+        "main_business_cost": 57390.0,
+        "labor_cost": 874410.1,
+        "mgmt_fee": 142996.48,
+        "sales_fee": 42652.1,
+        "financial_fee": 15873.4,
+        "business_tax": 57492.07,
+        "net_profit": -71430.84
+      },
+      "8月": {
+        "income": 1258179.5,
+        "total_cost": 1205875.24,
+        "main_business_cost": 65810.0,
+        "labor_cost": 853963.49,
+        "mgmt_fee": 158481.56,
+        "sales_fee": 64096.92,
+        "financial_fee": 16288.05,
+        "business_tax": 47235.22,
+        "net_profit": 52304.26
+      }
+    },
     "media_sector": {
       "1月": {
         "income": 72949.18,
@@ -26884,5 +26974,5 @@
       }
     }
   },
-  "updateTime": "2026-09-27 14:42:46"
+  "updateTime": "2026-09-27 15:10:24"
 }
