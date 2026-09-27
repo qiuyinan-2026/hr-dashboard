@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>聚光利润核算系统</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #0a1628 0%, #0f1f3d 50%, #0a1628 100%);
+    color: #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 40px;
+    background: rgba(10, 22, 40, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .topbar-left { display: flex; align-items: center; gap: 14px; }
+  .topbar-logo {
+    width: 42px; height: 42px; border-radius: 12px;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 800; color: #fff;
+  }
+  .topbar-title {
+    font-size: 22px; font-weight: 700;
+    background: linear-gradient(90deg, #f59e0b, #ef4444, #ec4899);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; letter-spacing: 2px;
+  }
+  .topbar-subtitle { font-size: 11px; color: #475569; letter-spacing: 1px; margin-top: 2px; }
+  .back-btn {
+    padding: 8px 20px; font-size: 13px; color: #94a3b8;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; cursor: pointer; text-decoration: none;
+    transition: all 0.3s;
+  }
+  .back-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+  .main {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px 20px;
+  }
+  .main-title {
+    font-size: 28px; font-weight: 700; color: #f1f5f9;
+    margin-bottom: 8px; letter-spacing: 2px;
+  }
+  .main-desc { font-size: 14px; color: #64748b; margin-bottom: 50px; }
+
+  .card-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 30px; max-width: 800px; width: 100%;
+  }
+  .sys-card {
+    background: rgba(15, 31, 61, 0.6);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 40px 30px;
+    text-align: center; cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none; color: inherit;
+    position: relative; overflow: hidden;
+  }
+  .sys-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--card-color), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .sys-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--card-color);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 30px var(--card-glow);
+  }
+  .sys-card:hover::before { opacity: 1; }
+  .card-icon {
+    width: 72px; height: 72px; border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; margin: 0 auto 20px;
+    background: var(--card-bg);
+  }
+  .card-name {
+    font-size: 20px; font-weight: 700; color: #f1f5f9;
+    margin-bottom: 8px; letter-spacing: 1px;
+  }
+  .card-desc { font-size: 13px; color: #64748b; line-height: 1.6; }
+
+  .sys-card.analysis { --card-color: #f59e0b; --card-glow: rgba(245,158,11,0.15); --card-bg: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(239,68,68,0.1)); }
+  .sys-card.liveroom { --card-color: #06b6d4; --card-glow: rgba(6,182,212,0.15); --card-bg: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(59,130,246,0.1)); }
+
+  @media (max-width: 700px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .topbar { padding: 14px 20px; }
+    .topbar-title { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">利</div>
+    <div>
+      <div class="topbar-title">聚光利润核算系统</div>
+      <div class="topbar-subtitle">PROFIT ACCOUNTING SYSTEM</div>
+    </div>
+  </div>
+  <a href="cockpit.html" class="back-btn">← 返回驾驶舱</a>
+</div>
+
+<div class="main">
+  <div class="main-title">选择功能模块</div>
+  <div class="main-desc">项目经营分析与直播间平面管理</div>
+
+  <div class="card-grid">
+    <a href="analysis.html" class="sys-card analysis">
+      <div class="card-icon">📊</div>
+      <div class="card-name">项目经营分析看板</div>
+      <div class="card-desc">项目收入、成本、利润多维分析<br>管理费用分摊与趋势可视化</div>
+    </a>
+    <a href="live_room.html" class="sys-card liveroom">
+      <div class="card-icon">🎬</div>
+      <div class="card-name">直播间平面图</div>
+      <div class="card-desc">三楼/四楼/五楼直播间布局<br>项目名称与编号关联管理</div>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>
