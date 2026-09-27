@@ -2262,6 +2262,7 @@ function renderAnalysis() {
         if (project !== 'all' && pid !== project) return;
         const g = acc[pid].group || '';
         if (!['A组','B组','C组'].includes(g)) return;
+        if ((acc[pid].income || 0) <= 0) return;
         _analysisRows.push({ ...acc[pid], pid, month: m, isSector: false });
       });
     });
@@ -2274,18 +2275,19 @@ function renderAnalysis() {
 
   // 计算板块级汇总（用于数据卡片和成本结构总览）
   const ec = DATA.extraCosts;
-  let sumIncome = 0, sumLabor = 0, sumMainBiz = 0, sumMgmt = 0, sumFinancial = 0, sumTax = 0, sumNonOp = 0;
+  let sumIncome = 0, sumLabor = 0, sumMainBiz = 0, sumMgmt = 0, sumSales = 0, sumFinancial = 0, sumTax = 0, sumNonOp = 0;
   _analysisMonths.forEach(m => {
     const sd = sectorData[m] || {};
     sumIncome += sd.income || 0;
     sumLabor += sd.labor_cost || 0;
     sumMainBiz += sd.main_business_cost || 0;
     sumMgmt += sd.mgmt_fee || 0;
+    sumSales += sd.sales_fee || 0;
     sumFinancial += sd.financial_fee || 0;
     sumTax += sd.business_tax || 0;
     sumNonOp += ec.non_operating?.[m] || 0;
   });
-  const sumTotalCost = sumLabor + sumMainBiz + sumMgmt + sumFinancial + sumTax + sumNonOp;
+  const sumTotalCost = sumLabor + sumMainBiz + sumMgmt + sumSales + sumFinancial + sumTax + sumNonOp;
   const sumProfit = sumIncome - sumTotalCost;
   const sumQianchuan = _analysisMonths.reduce((s, m) => s + (ec.qianchuan['1003']?.[m] || 0) + (ec.qianchuan['1008']?.[m] || 0), 0);
   const sumMgmtAlloc = _analysisRows.reduce((s, r) => s + (r.mgmt_fee_alloc || 0), 0);
@@ -2308,7 +2310,7 @@ function renderAnalysis() {
   renderProfitRanking(project);
 
   // 第3部分：成本结构总览
-  renderCostOverview(sumIncome, sumLabor, sumMainBiz, sumMgmt, sumFinancial, sumTax, sumNonOp, sumTotalCost, sumProfit);
+  renderCostOverview(sumIncome, sumLabor, sumMainBiz, sumMgmt, sumSales, sumFinancial, sumTax, sumNonOp, sumTotalCost, sumProfit);
 
   // 第4部分：管理费用明细
   renderMgmtDetail();
@@ -2367,13 +2369,14 @@ function renderProfitRanking(project) {
   });
 }
 
-function renderCostOverview(income, labor, mainBiz, mgmt, financial, tax, nonOp, totalCost, profit) {
+function renderCostOverview(income, labor, mainBiz, mgmt, sales, financial, tax, nonOp, totalCost, profit) {
   // 左侧表格
   const rows = [
     { label: '当月收入', value: income, isIncome: true },
     { label: '人工成本', value: labor },
     { label: '主营营业成本', value: mainBiz },
     { label: '管理费用', value: mgmt },
+    { label: '销售费用(千川投放)', value: sales },
     { label: '财务费用', value: financial },
     { label: '营业税及附加', value: tax },
     { label: '营业外支出', value: nonOp },
@@ -2394,6 +2397,7 @@ function renderCostOverview(income, labor, mainBiz, mgmt, financial, tax, nonOp,
     { label: '人工成本', value: labor, color: '#3b82f6' },
     { label: '主营营业成本', value: mainBiz, color: '#10b981' },
     { label: '管理费用', value: mgmt, color: '#f59e0b' },
+    { label: '销售费用', value: sales, color: '#ef4444' },
     { label: '财务费用', value: financial, color: '#ec4899' },
     { label: '营业税及附加', value: tax, color: '#8b5cf6' },
     { label: '营业外支出', value: nonOp, color: '#6366f1' },
