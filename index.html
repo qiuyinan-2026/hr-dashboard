@@ -2702,18 +2702,43 @@ function renderDetailTable() {
     const sumMgmtAlloc = _analysisRows.reduce((s, r) => s + (r.mgmt_fee_alloc || 0), 0);
     const sumCost = _analysisRows.reduce((s, r) => s + r.total_cost, 0);
     const sumProfit = _analysisRows.reduce((s, r) => s + r.profit, 0);
-    tfoot.innerHTML = '<tr style="font-weight:bold;border-top:2px solid #475569;background:rgba(30,41,59,0.5)"><td colspan="2">合计</td>' +
-      '<td class="text-right">¥' + fmt(sumIncome) + '</td>' +
+    // 计算项目差额（板块级数据 - 项目级汇总）
+    const sectorData = DATA.extraCosts.daiyunying_sector || {};
+    let secIncome = 0, secLabor = 0, secCost = 0, secProfit = 0;
+    _analysisMonths.forEach(function(m) {
+      const sd = sectorData[m] || {};
+      secIncome += sd.income || 0;
+      secLabor += sd.labor_cost || 0;
+      secCost += sd.total_cost || 0;
+      secProfit += sd.net_profit || 0;
+    });
+    const diffIncome = secIncome - sumIncome;
+    const diffLabor = secLabor - sumLaborTotal;
+    const diffCost = secCost - sumCost;
+    const diffProfit = secProfit - sumProfit;
+    let diffRow = '';
+    if (Math.abs(diffLabor) > 1 || Math.abs(diffIncome) > 1 || Math.abs(diffProfit) > 1) {
+      diffRow = '<tr style="background:rgba(245,158,11,0.08);color:#fbbf24"><td colspan="2">⚠ 项目差额</td>' +
+        '<td class="text-right">' + (Math.abs(diffIncome) > 1 ? '¥' + fmt(diffIncome) : '-') + '</td>' +
+        '<td class="text-right">-</td><td class="text-right">-</td><td class="text-right">-</td><td class="text-right">-</td>' +
+        '<td class="text-right">¥' + fmt(diffLabor) + '</td>' +
+        '<td class="text-right">-</td><td class="text-right">-</td><td class="text-right">-</td>' +
+        '<td class="text-right">¥' + fmt(diffCost) + '</td>' +
+        '<td class="text-right ' + (diffProfit >= 0 ? 'profit-positive' : 'profit-negative') + '">¥' + fmt(diffProfit) + '</td></tr>';
+    }
+    tfoot.innerHTML = diffRow +
+      '<tr style="font-weight:bold;border-top:2px solid #475569;background:rgba(30,41,59,0.5)"><td colspan="2">合计</td>' +
+      '<td class="text-right">¥' + fmt(sumIncome + diffIncome) + '</td>' +
       '<td class="text-right">¥' + fmt(sumDirect) + '</td>' +
       '<td class="text-right">¥' + fmt(sumContent) + '</td>' +
       '<td class="text-right">¥' + fmt(sumMgmtShare) + '</td>' +
       '<td class="text-right">¥' + fmt(sumManager) + '</td>' +
-      '<td class="text-right">¥' + fmt(sumLaborTotal) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumLaborTotal + diffLabor) + '</td>' +
       '<td class="text-right">¥' + fmt(sumMainBiz) + '</td>' +
       '<td class="text-right">¥' + fmt(sumQianchuan) + '</td>' +
       '<td class="text-right">¥' + fmt(sumMgmtAlloc) + '</td>' +
-      '<td class="text-right">¥' + fmt(sumCost) + '</td>' +
-      '<td class="text-right ' + (sumProfit >= 0 ? 'profit-positive' : 'profit-negative') + '">¥' + fmt(sumProfit) + '</td></tr>';
+      '<td class="text-right">¥' + fmt(sumCost + diffCost) + '</td>' +
+      '<td class="text-right ' + ((sumProfit + diffProfit) >= 0 ? 'profit-positive' : 'profit-negative') + '">¥' + fmt(sumProfit + diffProfit) + '</td></tr>';
   }
   document.getElementById('detail-count').textContent = _analysisRows.length;
 }
