@@ -51,6 +51,8 @@ body { background: linear-gradient(135deg, #0a1628 0%, #0f1f3d 50%, #0a1628 100%
 .tab[data-tab="personal"].active::after { background:linear-gradient(90deg,#fbbf24,#f59e0b); }
 .tab[data-tab="dashboard"].active { color:#c4b5fd; }
 .tab[data-tab="dashboard"].active::after { background:linear-gradient(90deg,#a78bfa,#8b5cf6); }
+.tab[data-tab="analysis"].active { color:#f9a8d4; }
+.tab[data-tab="analysis"].active::after { background:linear-gradient(90deg,#f472b6,#ec4899); }
 
 /* 内容区 */
 .content { flex:1; overflow:auto; padding:20px 32px; }
@@ -356,6 +358,95 @@ tbody tr:hover { background:rgba(56,189,248,0.05); }
   .chart-row { grid-template-columns: 1fr; }
 }
 
+
+/* 刷新按钮 */
+.refresh-btn {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 12px;
+  transition: all 0.2s;
+}
+.refresh-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.refresh-btn .spin { display: inline-block; animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* 刷新进度条 */
+.refresh-overlay {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: rgba(59,130,246,0.1); z-index: 9999; display: none;
+}
+.refresh-overlay.active { display: block; }
+.refresh-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #6366f1, #8b5cf6);
+  width: 0%; transition: width 0.4s ease;
+  box-shadow: 0 0 10px rgba(59,130,246,0.6);
+}
+.refresh-status {
+  position: fixed; top: 50px; right: 20px;
+  background: rgba(15,23,42,0.95); border: 1px solid rgba(59,130,246,0.3);
+  border-radius: 10px; padding: 12px 18px; z-index: 9998;
+  display: none; min-width: 240px; backdrop-filter: blur(10px);
+}
+.refresh-status.active { display: block; }
+.refresh-status .rs-title { font-size: 13px; font-weight: 600; color: #60a5fa; margin-bottom: 8px; }
+.refresh-status .rs-step { font-size: 12px; color: #475569; padding: 2px 0; }
+.refresh-status .rs-step.done { color: #34d399; }
+.refresh-status .rs-step.current { color: #e2e8f0; }
+.refresh-status .rs-percent { font-size: 11px; color: #94a3b8; text-align: right; margin-top: 6px; }
+
+/* 经营分析看板 */
+.analysis-filters {
+  display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;
+  padding: 16px 20px; background: rgba(30,41,59,0.6);
+  border-radius: 10px; margin-bottom: 16px;
+}
+.analysis-filters .filter-item { display: flex; flex-direction: column; gap: 4px; }
+.analysis-filters label { font-size: 11px; color: #94a3b8; }
+.analysis-filters select {
+  background: #1e293b; color: #e2e8f0; border: 1px solid #334155;
+  border-radius: 6px; padding: 6px 10px; font-size: 13px; min-width: 100px;
+}
+.analysis-filters .range { display: flex; align-items: center; gap: 6px; }
+.analysis-cards {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px; margin-bottom: 16px;
+}
+.analysis-card {
+  background: rgba(30,41,59,0.8); border-radius: 10px; padding: 14px;
+  border-left: 3px solid #3b82f6;
+}
+.analysis-card.income { border-left-color: #34d399; }
+.analysis-card.cost { border-left-color: #f59e0b; }
+.analysis-card.profit { border-left-color: #8b5cf6; }
+.analysis-card.profit.negative { border-left-color: #ef4444; }
+.analysis-card .ac-label { font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
+.analysis-card .ac-value { font-size: 18px; font-weight: 700; color: #f1f5f9; }
+.analysis-card .ac-sub { font-size: 10px; color: #64748b; margin-top: 2px; }
+.analysis-charts {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;
+}
+.analysis-chart-box {
+  background: rgba(30,41,59,0.6); border-radius: 10px; padding: 16px;
+  min-height: 300px;
+}
+.analysis-chart-box h3 { font-size: 14px; color: #e2e8f0; margin-bottom: 12px; }
+.analysis-chart-box canvas { max-height: 280px; }
+.analysis-detail {
+  background: rgba(30,41,59,0.6); border-radius: 10px; padding: 16px;
+}
+.analysis-detail h3 { font-size: 14px; color: #e2e8f0; margin-bottom: 12px; }
+.analysis-detail table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.analysis-detail th { background: rgba(51,65,85,0.5); padding: 8px; text-align: left; color: #94a3b8; }
+.analysis-detail td { padding: 8px; border-bottom: 1px solid rgba(51,65,85,0.3); color: #cbd5e1; }
+.analysis-detail .text-right { text-align: right; }
+
 </style>
 </head>
 <body>
@@ -373,6 +464,18 @@ tbody tr:hover { background:rgba(56,189,248,0.05); }
   </div>
 </div>
 
+
+<!-- 刷新进度条 -->
+<div class="refresh-overlay" id="refreshOverlay"><div class="refresh-bar" id="refreshBar"></div></div>
+<div class="refresh-status" id="refreshStatus">
+  <div class="rs-title" id="rsTitle">🔄 正在更新数据</div>
+  <div class="rs-step" id="rs-step1">○ 连接飞书服务器</div>
+  <div class="rs-step" id="rs-step2">○ 读取最新薪资数据</div>
+  <div class="rs-step" id="rs-step3">○ 计算项目核算</div>
+  <div class="rs-step" id="rs-step4">○ 更新页面数据</div>
+  <div class="rs-percent" id="rsPercent">0%</div>
+</div>
+
 <div class="app">
   <div class="topbar">
     <div class="topbar-left">
@@ -383,7 +486,8 @@ tbody tr:hover { background:rgba(56,189,248,0.05); }
       </div>
     </div>
     <div class="topbar-right">
-      <span class="pulse"></span>数据截止：2026年6月
+      <span class="pulse"></span><span id="data-update-time">数据加载中...</span>
+      <button class="refresh-btn" id="refreshBtn" onclick="refreshData()"><span id="refreshIcon">🔄</span> 更新数据</button>
     </div>
   </div>
 
@@ -392,6 +496,7 @@ tbody tr:hover { background:rgba(56,189,248,0.05); }
     <button class="tab" data-tab="personal">👤 个人收入查询</button>
     <button class="tab" data-tab="project">📊 项目独立核算</button>
     <button class="tab" data-tab="dashboard">📈 人力资源仪表盘</button>
+    <button class="tab" data-tab="analysis">📊 项目经营分析看板</button>
   </div>
 
   <div class="content">
@@ -500,8 +605,12 @@ tbody tr:hover { background:rgba(56,189,248,0.05); }
                 <th class="text-right">管理层分摊</th>
                 <th class="text-right">部门经理分摊</th>
                 <th class="text-right col-highlight">人工成本合计</th>
-                <th class="text-right">利润</th>
-                <th class="text-right col-highlight-green">人工成本占比</th>
+                <th class="text-right">主营业务成本</th>
+                <th class="text-right">千川投放</th>
+                <th class="text-right">管理费用分摊</th>
+                <th class="text-right col-highlight">总成本</th>
+                <th class="text-right">净利润</th>
+                <th class="text-right col-highlight-green">成本占比</th>
               </tr>
             </thead>
             <tbody id="project-tbody"></tbody>
@@ -735,6 +844,51 @@ tbody tr:hover { background:rgba(56,189,248,0.05); }
         <div class="insight-box" id="dash-efficiency-insight"></div>
       </div>
     </div>
+    <!-- 项目经营分析看板 -->
+    <div class="panel" id="panel-analysis">
+      <div class="analysis-filters">
+        <div class="filter-item">
+          <label>年份</label>
+          <select id="a-year"><option value="2026">2026年</option></select>
+        </div>
+        <div class="filter-item">
+          <label>月份范围</label>
+          <div class="range">
+            <select id="a-month-start"></select>
+            <span>~</span>
+            <select id="a-month-end"></select>
+          </div>
+        </div>
+        <div class="filter-item">
+          <label>项目</label>
+          <select id="a-project"><option value="all">全部项目</option></select>
+        </div>
+        <div class="filter-item">
+          <button class="refresh-btn" onclick="renderAnalysis()" style="margin-left:0">查询</button>
+        </div>
+      </div>
+      <div class="analysis-cards" id="analysis-cards"></div>
+      <div class="analysis-charts" id="analysis-charts">
+        <div class="analysis-chart-box"><h3 id="chart1-title">成本构成</h3><canvas id="chart-cost-pie"></canvas></div>
+        <div class="analysis-chart-box"><h3 id="chart2-title">成本明细</h3><canvas id="chart-cost-bar"></canvas></div>
+      </div>
+      <div class="analysis-detail" id="analysis-detail">
+        <h3>成本明细</h3>
+        <div style="overflow-x:auto">
+        <table id="analysis-table">
+          <thead><tr>
+            <th>项目</th><th>月份</th><th class="text-right">收入</th>
+            <th class="text-right">直接人工</th><th class="text-right">内容分摊</th>
+            <th class="text-right">管理分摊</th><th class="text-right">经理分摊</th>
+            <th class="text-right">人工合计</th><th class="text-right">主营成本</th>
+            <th class="text-right">千川投放</th><th class="text-right">管理费分摊</th>
+            <th class="text-right">总成本</th><th class="text-right">净利润</th>
+          </tr></thead>
+          <tbody id="analysis-tbody"></tbody>
+        </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -748,9 +902,16 @@ async function loadData() {
         DATA = await res.json();
         initFilters();
         initProjectFilters();
+        initAnalysisFilters();
         renderDashboard();
         renderSalaryTable();
         renderProject();
+        renderAnalysis();
+        if (DATA.updateTime) {
+            document.getElementById('data-update-time').textContent = '更新于 ' + DATA.updateTime.split(' ')[0];
+        } else if (DATA.months) {
+            document.getElementById('data-update-time').textContent = '数据截止：' + DATA.months[DATA.months.length-1];
+        }
     } catch(e) {
         document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:100px;font-size:18px;">数据加载中...<br><span style="font-size:14px;color:#94a3b8;">如长时间未显示，请刷新页面</span></div>';
         setTimeout(() => location.reload(), 3000);
@@ -795,6 +956,8 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'analysis') setTimeout(renderAnalysis, 100);
+    if (tab.dataset.tab === 'dashboard') setTimeout(renderDashboard, 100);
   });
 });
 
@@ -1021,6 +1184,10 @@ function renderProject() {
         contentShare: item.content_share,
         mgmtShare: item.mgmt_share,
         managerShare: item.manager_share,
+        laborTotal: item.labor_total || (item.direct_cost + item.content_share + item.mgmt_share + item.manager_share),
+        mainBizCost: item.main_business_cost || 0,
+        qianchuanCost: item.qianchuan_cost || 0,
+        mgmtFeeAlloc: item.mgmt_fee_alloc || 0,
         total: item.total_cost,
         profit: item.profit,
         costRatio: item.cost_ratio,
@@ -1036,8 +1203,8 @@ function renderProject() {
   document.getElementById('project-stats').innerHTML = `
     <div class="stat-card blue"><div class="stat-label">项目记录数</div><div class="stat-value">${rows.length}</div></div>
     <div class="stat-card green"><div class="stat-label">收入合计</div><div class="stat-value">¥${fmt(totalIncome)}</div></div>
-    <div class="stat-card orange"><div class="stat-label">人工成本合计</div><div class="stat-value">¥${fmt(totalCost)}</div></div>
-    <div class="stat-card ${totalProfit >= 0 ? 'green' : 'rose'}"><div class="stat-label">利润合计</div><div class="stat-value">¥${fmt(totalProfit)}</div></div>
+    <div class="stat-card orange"><div class="stat-label">总成本合计</div><div class="stat-value">¥${fmt(totalCost)}</div></div>
+    <div class="stat-card ${totalProfit >= 0 ? 'green' : 'rose'}"><div class="stat-label">净利润合计</div><div class="stat-value">¥${fmt(totalProfit)}</div></div>
     <div class="stat-card purple"><div class="stat-label">平均成本占比</div><div class="stat-value">${avgRatio.toFixed(1)}%</div></div>
   `;
   
@@ -1053,6 +1220,10 @@ function renderProject() {
       <td class="text-right">¥${fmt(r.contentShare)}</td>
       <td class="text-right">¥${fmt(r.mgmtShare)}</td>
       <td class="text-right">¥${fmt(r.managerShare)}</td>
+      <td class="text-right col-highlight">¥${fmt(r.laborTotal)}</td>
+      <td class="text-right">${r.mainBizCost > 0 ? '¥' + fmt(r.mainBizCost) : '-'}</td>
+      <td class="text-right">${r.qianchuanCost > 0 ? '¥' + fmt(r.qianchuanCost) : '-'}</td>
+      <td class="text-right">¥${fmt(r.mgmtFeeAlloc)}</td>
       <td class="text-right col-highlight">¥${fmt(r.total)}</td>
       <td class="text-right ${r.profit >= 0 ? 'profit-positive' : 'profit-negative'}">¥${fmt(r.profit)}</td>
       <td class="text-right col-highlight-green">${r.costRatio > 0 ? r.costRatio.toFixed(1) + '%' : '-'}</td>
@@ -1868,6 +2039,275 @@ function resetPersonal() {
   nameSuggestions.classList.remove('show');
   renderPersonal();
 }
+
+
+// ===== 刷新数据功能 =====
+let _isRefreshing = false;
+let _analysisCharts = {};
+
+function setRefreshProgress(percent, step) {
+  document.getElementById('refreshBar').style.width = percent + '%';
+  document.getElementById('rsPercent').textContent = percent + '%';
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('rs-step' + i);
+    if (!el) continue;
+    if (i < step) { el.className = 'rs-step done'; el.textContent = '✓ ' + el.textContent.substring(2); }
+    else if (i === step) { el.className = 'rs-step current'; }
+    else { el.className = 'rs-step'; }
+  }
+}
+
+async function refreshData() {
+  if (_isRefreshing) return;
+  _isRefreshing = true;
+  const btn = document.getElementById('refreshBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">🔄</span> 更新中...';
+  
+  document.getElementById('refreshOverlay').classList.add('active');
+  document.getElementById('refreshStatus').classList.add('active');
+  document.getElementById('rsTitle').innerHTML = '🔄 正在更新数据';
+  document.getElementById('rsTitle').style.color = '#60a5fa';
+  
+  try {
+    setRefreshProgress(15, 1);
+    await new Promise(r => setTimeout(r, 400));
+    
+    setRefreshProgress(40, 2);
+    const resp = await fetch('hr_data.json?t=' + Date.now());
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const newData = await resp.json();
+    await new Promise(r => setTimeout(r, 300));
+    
+    setRefreshProgress(65, 3);
+    DATA = newData;
+    document.getElementById('data-update-time').textContent = '更新于 ' + (DATA.updateTime || DATA.dashboardStats.monthly[DATA.months[DATA.months.length-1]] ? '最新' : '');
+    if (DATA.updateTime) {
+      document.getElementById('data-update-time').textContent = '更新于 ' + DATA.updateTime.split(' ')[0];
+    }
+    await new Promise(r => setTimeout(r, 300));
+    
+    setRefreshProgress(85, 4);
+    // 重新渲染所有页面
+    if (typeof renderSalary === 'function') renderSalary();
+    if (typeof renderProject === 'function') renderProject();
+    if (typeof renderPersonal === 'function') renderPersonal();
+    if (typeof renderDashboard === 'function') renderDashboard();
+    if (typeof renderAnalysis === 'function') renderAnalysis();
+    // 重新初始化筛选器
+    initFilters();
+    initProjectFilters();
+    initAnalysisFilters();
+    await new Promise(r => setTimeout(r, 300));
+    
+    setRefreshProgress(100, 4);
+    document.getElementById('rsTitle').innerHTML = '✅ 数据已更新（' + DATA.months[0] + '-' + DATA.months[DATA.months.length-1] + '）';
+    document.getElementById('rsTitle').style.color = '#34d399';
+  } catch (e) {
+    console.error('刷新失败:', e);
+    document.getElementById('rsTitle').innerHTML = '❌ 刷新失败：' + e.message;
+    document.getElementById('rsTitle').style.color = '#f87171';
+  }
+  
+  setTimeout(() => {
+    document.getElementById('refreshOverlay').classList.remove('active');
+    document.getElementById('refreshStatus').classList.remove('active');
+    document.getElementById('refreshBar').style.width = '0%';
+  }, 1200);
+  
+  btn.disabled = false;
+  btn.innerHTML = '<span id="refreshIcon">🔄</span> 更新数据';
+  _isRefreshing = false;
+}
+
+// ===== 项目经营分析看板 =====
+function initAnalysisFilters() {
+  const startSel = document.getElementById('a-month-start');
+  const endSel = document.getElementById('a-month-end');
+  const projSel = document.getElementById('a-project');
+  if (!startSel || !DATA) return;
+  
+  startSel.innerHTML = DATA.months.map(m => `<option value="${m}">${m}</option>`).join('');
+  endSel.innerHTML = DATA.months.map(m => `<option value="${m}">${m}</option>`).join('');
+  startSel.value = DATA.months[DATA.months.length - 1];
+  endSel.value = DATA.months[DATA.months.length - 1];
+  
+  projSel.innerHTML = '<option value="all">全部项目</option>' +
+    DATA.projectList.map(p => `<option value="${p.id}">${p.name}(${p.id})</option>`).join('');
+}
+
+function renderAnalysis() {
+  if (!DATA) return;
+  const startMonth = document.getElementById('a-month-start').value;
+  const endMonth = document.getElementById('a-month-end').value;
+  const project = document.getElementById('a-project').value;
+  
+  const startIdx = DATA.months.indexOf(startMonth);
+  const endIdx = DATA.months.indexOf(endMonth);
+  const months = DATA.months.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
+  
+  // 收集数据
+  let rows = [];
+  months.forEach(m => {
+    const acc = DATA.projectAccounting[m] || {};
+    Object.keys(acc).forEach(pid => {
+      if (project !== 'all' && pid !== project) return;
+      rows.push({ ...acc[pid], pid, month: m });
+    });
+  });
+  
+  if (rows.length === 0) {
+    document.getElementById('analysis-cards').innerHTML = '<div style="color:#64748b;padding:20px">暂无数据</div>';
+    document.getElementById('analysis-tbody').innerHTML = '';
+    return;
+  }
+  
+  // 汇总
+  const totalIncome = rows.reduce((s, r) => s + r.income, 0);
+  const totalDirect = rows.reduce((s, r) => s + r.direct_cost, 0);
+  const totalContent = rows.reduce((s, r) => s + (r.content_share || 0), 0);
+  const totalMgmt = rows.reduce((s, r) => s + (r.mgmt_share || 0), 0);
+  const totalManager = rows.reduce((s, r) => s + (r.manager_share || 0), 0);
+  const totalLabor = totalDirect + totalContent + totalMgmt + totalManager;
+  const totalMainBiz = rows.reduce((s, r) => s + (r.main_business_cost || 0), 0);
+  const totalQianchuan = rows.reduce((s, r) => s + (r.qianchuan_cost || 0), 0);
+  const totalMgmtFee = rows.reduce((s, r) => s + (r.mgmt_fee_alloc || 0), 0);
+  const totalCost = rows.reduce((s, r) => s + r.total_cost, 0);
+  const totalProfit = totalIncome - totalCost;
+  
+  // 数据卡片
+  document.getElementById('analysis-cards').innerHTML = `
+    <div class="analysis-card income"><div class="ac-label">项目收入</div><div class="ac-value">¥${fmt(totalIncome)}</div><div class="ac-sub">${months[0]}-${months[months.length-1]} ${project === 'all' ? '全部项目' : rows[0].project_name}</div></div>
+    <div class="analysis-card cost"><div class="ac-label">人工成本</div><div class="ac-value">¥${fmt(totalLabor)}</div><div class="ac-sub">直接+分摊</div></div>
+    <div class="analysis-card cost"><div class="ac-label">主营业务成本</div><div class="ac-value">¥${fmt(totalMainBiz)}</div><div class="ac-sub">仅阴山优麦1001</div></div>
+    <div class="analysis-card cost"><div class="ac-label">千川投放</div><div class="ac-value">¥${fmt(totalQianchuan)}</div><div class="ac-sub">1003+1008</div></div>
+    <div class="analysis-card cost"><div class="ac-label">管理费用分摊</div><div class="ac-value">¥${fmt(totalMgmtFee)}</div><div class="ac-sub">按存续项目数分摊</div></div>
+    <div class="analysis-card cost"><div class="ac-label">总成本</div><div class="ac-value">¥${fmt(totalCost)}</div><div class="ac-sub">人工+主营+千川+管理</div></div>
+    <div class="analysis-card profit ${totalProfit >= 0 ? '' : 'negative'}"><div class="ac-label">净利润</div><div class="ac-value">¥${fmt(totalProfit)}</div><div class="ac-sub">收入-总成本</div></div>
+    <div class="analysis-card"><div class="ac-label">成本占比</div><div class="ac-value">${totalIncome > 0 ? (totalCost/totalIncome*100).toFixed(1) : 0}%</div><div class="ac-sub">总成本/收入</div></div>
+  `;
+  
+  // 明细表
+  document.getElementById('analysis-tbody').innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.project_name}</td><td>${r.month}</td>
+      <td class="text-right">${r.income > 0 ? '¥' + fmt(r.income) : '-'}</td>
+      <td class="text-right">¥${fmt(r.direct_cost)}</td>
+      <td class="text-right">¥${fmt(r.content_share || 0)}</td>
+      <td class="text-right">¥${fmt(r.mgmt_share || 0)}</td>
+      <td class="text-right">¥${fmt(r.manager_share || 0)}</td>
+      <td class="text-right">¥${fmt(r.labor_total || (r.direct_cost + (r.content_share||0) + (r.mgmt_share||0) + (r.manager_share||0)))}</td>
+      <td class="text-right">${r.main_business_cost > 0 ? '¥' + fmt(r.main_business_cost) : '-'}</td>
+      <td class="text-right">${r.qianchuan_cost > 0 ? '¥' + fmt(r.qianchuan_cost) : '-'}</td>
+      <td class="text-right">¥${fmt(r.mgmt_fee_alloc || 0)}</td>
+      <td class="text-right">¥${fmt(r.total_cost)}</td>
+      <td class="text-right ${r.profit >= 0 ? 'profit-positive' : 'profit-negative'}">¥${fmt(r.profit)}</td>
+    </tr>
+  `).join('');
+  
+  // 图表
+  renderAnalysisCharts(rows, months, totalDirect, totalContent, totalMgmt, totalManager, totalMainBiz, totalQianchuan, totalMgmtFee);
+}
+
+function renderAnalysisCharts(rows, months, d, c, m, mg, mb, qc, mf) {
+  // 销毁旧图表
+  Object.keys(_analysisCharts).forEach(k => { if (_analysisCharts[k]) { try { _analysisCharts[k].destroy(); } catch(e){} } });
+  _analysisCharts = {};
+  
+  const isSingleMonth = months.length === 1;
+  
+  if (isSingleMonth) {
+    // 单月：饼图+柱状图
+    const pieCtx = document.getElementById('chart-cost-pie').getContext('2d');
+    const costItems = [
+      { label: '直接人工', value: d, color: '#3b82f6' },
+      { label: '内容分摊', value: c, color: '#8b5cf6' },
+      { label: '管理分摊', value: m, color: '#f59e0b' },
+      { label: '经理分摊', value: mg, color: '#ec4899' },
+      { label: '主营成本', value: mb, color: '#10b981' },
+      { label: '千川投放', value: qc, color: '#ef4444' },
+      { label: '管理费分摊', value: mf, color: '#6366f1' },
+    ].filter(i => i.value > 0);
+    
+    _analysisCharts.pie = new Chart(pieCtx, {
+      type: 'doughnut',
+      data: { labels: costItems.map(i => i.label), datasets: [{ data: costItems.map(i => i.value), backgroundColor: costItems.map(i => i.color) }] },
+      options: { responsive: true, plugins: { legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 11 } } }, tooltip: { callbacks: { label: ctx => ctx.label + ': ¥' + fmt(ctx.parsed) } } } }
+    });
+    
+    const barCtx = document.getElementById('chart-cost-bar').getContext('2d');
+    _analysisCharts.bar = new Chart(barCtx, {
+      type: 'bar',
+      data: { labels: costItems.map(i => i.label), datasets: [{ label: '成本金额', data: costItems.map(i => i.value), backgroundColor: costItems.map(i => i.color) }] },
+      options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => '¥' + fmt(ctx.parsed.y) } } }, scales: { y: { ticks: { color: '#94a3b8', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(148,163,184,0.1)' } }, x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } } } }
+    });
+  } else {
+    // 多月：趋势图（收入折线+成本堆叠柱+利润柱）
+    const monthlyData = {};
+    months.forEach(mo => { monthlyData[mo] = { income: 0, direct: 0, content: 0, mgmt: 0, manager: 0, mainBiz: 0, qianchuan: 0, mgmtFee: 0, profit: 0 }; });
+    rows.forEach(r => {
+      const md = monthlyData[r.month];
+      md.income += r.income;
+      md.direct += r.direct_cost;
+      md.content += r.content_share || 0;
+      md.mgmt += r.mgmt_share || 0;
+      md.manager += r.manager_share || 0;
+      md.mainBiz += r.main_business_cost || 0;
+      md.qianchuan += r.qianchuan_cost || 0;
+      md.mgmtFee += r.mgmt_fee_alloc || 0;
+      md.profit += r.profit;
+    });
+    
+    const labels = months;
+    const pieCtx = document.getElementById('chart-cost-pie').getContext('2d');
+    _analysisCharts.trend = new Chart(pieCtx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          { type: 'line', label: '收入', data: labels.map(l => monthlyData[l].income), borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,0.1)', yAxisID: 'y', tension: 0.3, fill: false },
+          { label: '直接人工', data: labels.map(l => monthlyData[l].direct), backgroundColor: '#3b82f6', stack: 'cost' },
+          { label: '内容分摊', data: labels.map(l => monthlyData[l].content), backgroundColor: '#8b5cf6', stack: 'cost' },
+          { label: '管理分摊', data: labels.map(l => monthlyData[l].mgmt), backgroundColor: '#f59e0b', stack: 'cost' },
+          { label: '经理分摊', data: labels.map(l => monthlyData[l].manager), backgroundColor: '#ec4899', stack: 'cost' },
+          { label: '主营成本', data: labels.map(l => monthlyData[l].mainBiz), backgroundColor: '#10b981', stack: 'cost' },
+          { label: '千川投放', data: labels.map(l => monthlyData[l].qianchuan), backgroundColor: '#ef4444', stack: 'cost' },
+          { label: '管理费分摊', data: labels.map(l => monthlyData[l].mgmtFee), backgroundColor: '#6366f1', stack: 'cost' },
+          { type: 'bar', label: '净利润', data: labels.map(l => monthlyData[l].profit), backgroundColor: labels.map(l => monthlyData[l].profit >= 0 ? 'rgba(139,92,246,0.8)' : 'rgba(239,68,68,0.8)'), yAxisID: 'y1' },
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 10 } } }, tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ¥' + fmt(ctx.parsed.y) } } },
+        scales: {
+          y: { position: 'left', ticks: { color: '#94a3b8', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(148,163,184,0.1)' }, title: { display: true, text: '收入/成本', color: '#94a3b8' } },
+          y1: { position: 'right', ticks: { color: '#94a3b8', callback: v => (v/10000).toFixed(0) + '万' }, grid: { display: false }, title: { display: true, text: '净利润', color: '#94a3b8' } },
+          x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+        }
+      }
+    });
+    
+    // 第二个图：各月利润对比
+    const barCtx = document.getElementById('chart-cost-bar').getContext('2d');
+    _analysisCharts.profit = new Chart(barCtx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          { label: '收入', data: labels.map(l => monthlyData[l].income), backgroundColor: '#34d399' },
+          { label: '总成本', data: labels.map(l => monthlyData[l].direct + monthlyData[l].content + monthlyData[l].mgmt + monthlyData[l].manager + monthlyData[l].mainBiz + monthlyData[l].qianchuan + monthlyData[l].mgmtFee), backgroundColor: '#f59e0b' },
+          { label: '净利润', data: labels.map(l => monthlyData[l].profit), backgroundColor: labels.map(l => monthlyData[l].profit >= 0 ? '#8b5cf6' : '#ef4444') },
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 11 } } }, tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ¥' + fmt(ctx.parsed.y) } } },
+        scales: { y: { ticks: { color: '#94a3b8', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(148,163,184,0.1)' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } }
+      }
+    });
+  }
+}
+
 
 // ===== 初始化（数据加载后自动执行） =====
 loadData();
