@@ -2314,7 +2314,7 @@ function renderAnalysis() {
     '<div class="analysis-card"><div class="ac-label">成本占比</div><div class="ac-value">' + costRatio.toFixed(1) + '%</div></div>';
 
   if (isSingle) {
-    renderSingleMonth(totalLabor, totalMainBiz, totalQianchuan, totalMgmtAlloc, _analysisRows);
+    renderSingleMonth(totalLabor, totalMainBiz, totalQianchuan, totalMgmtAlloc, _analysisRows, project);
   } else {
     renderMultiMonth(project, totalLabor, totalMainBiz, totalQianchuan, totalMgmtAlloc);
   }
@@ -2323,11 +2323,12 @@ function renderAnalysis() {
   renderDetailTable();
 }
 
-function renderSingleMonth(totalLabor, totalMainBiz, totalQianchuan, totalMgmtAlloc, rows) {
+function renderSingleMonth(totalLabor, totalMainBiz, totalQianchuan, totalMgmtAlloc, rows, project) {
   const month = _analysisMonths[0];
   // 成本结构数据
   const costItems = [];
-  if (_analysisSector === 'daiyunying') {
+  if (_analysisSector === 'daiyunying' && project !== 'all') {
+    // 单个项目：人工成本细分
     const totalDirect = rows.reduce((s, r) => s + (r.direct_cost || 0), 0);
     const totalContent = rows.reduce((s, r) => s + (r.content_share || 0), 0);
     const totalMgmtShare = rows.reduce((s, r) => s + (r.mgmt_share || 0), 0);
@@ -2339,6 +2340,7 @@ function renderSingleMonth(totalLabor, totalMainBiz, totalQianchuan, totalMgmtAl
       { label: '经理分摊', value: totalManager, color: '#ec4899' },
     );
   } else {
+    // 全部项目或传媒/私域：人工成本用板块汇总数据
     costItems.push({ label: '人工成本', value: totalLabor, color: '#3b82f6' });
   }
   costItems.push(
