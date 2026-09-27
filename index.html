@@ -2273,32 +2273,61 @@ function renderAnalysis() {
     return;
   }
 
-  // 计算板块级汇总（用于数据卡片和成本结构总览）
+  // 计算汇总数据
   const ec = DATA.extraCosts;
-  let sumIncome = 0, sumLabor = 0, sumMainBiz = 0, sumMgmt = 0, sumSales = 0, sumFinancial = 0, sumTax = 0, sumNonOp = 0;
-  _analysisMonths.forEach(m => {
-    const sd = sectorData[m] || {};
-    sumIncome += sd.income || 0;
-    sumLabor += sd.labor_cost || 0;
-    sumMainBiz += sd.main_business_cost || 0;
-    sumMgmt += sd.mgmt_fee || 0;
-    sumSales += sd.sales_fee || 0;
-    sumFinancial += sd.financial_fee || 0;
-    sumTax += sd.business_tax || 0;
-    sumNonOp += ec.non_operating?.[m] || 0;
-  });
-  const sumTotalCost = sumLabor + sumMainBiz + sumMgmt + sumSales + sumFinancial + sumTax + sumNonOp;
-  const sumProfit = sumIncome - sumTotalCost;
-  const sumQianchuan = _analysisMonths.reduce((s, m) => s + (ec.qianchuan['1003']?.[m] || 0) + (ec.qianchuan['1008']?.[m] || 0), 0);
-  const sumMgmtAlloc = _analysisRows.reduce((s, r) => s + (r.mgmt_fee_alloc || 0), 0);
+  const isSingleProject = (project !== 'all' && _analysisSector === 'daiyunying');
+  let sumIncome, sumLabor, sumMainBiz, sumMgmt, sumSales, sumFinancial, sumTax, sumNonOp, sumTotalCost, sumProfit, sumQianchuan, sumMgmtAlloc;
+  let projFinancialAlloc = 0, projTaxAlloc = 0, projNonOpAlloc = 0, projMgmtAllocOnly = 0;
+
+  if (isSingleProject) {
+    // 单个项目：用项目级数据
+    sumIncome = _analysisRows.reduce((s, r) => s + (r.income || 0), 0);
+    sumLabor = _analysisRows.reduce((s, r) => s + (r.labor_total || 0), 0);
+    sumMainBiz = _analysisRows.reduce((s, r) => s + (r.main_business_cost || 0), 0);
+    sumQianchuan = _analysisRows.reduce((s, r) => s + (r.qianchuan_cost || 0), 0);
+    sumMgmtAlloc = _analysisRows.reduce((s, r) => s + (r.mgmt_fee_alloc || 0), 0);
+    sumTotalCost = _analysisRows.reduce((s, r) => s + (r.total_cost || 0), 0);
+    sumProfit = _analysisRows.reduce((s, r) => s + (r.profit || 0), 0);
+    // 计算单项目各项分摊（管理费用/财务费用/营业税/营业外支出分别按存续项目数分摊）
+    _analysisMonths.forEach(m => {
+      const dyCount = ec.dy_active_count?.[m] || 1;
+      projMgmtAllocOnly += (ec.mgmt_fee[m] || 0) / dyCount;
+      projFinancialAlloc += (ec.financial_fee[m] || 0) / dyCount;
+      projTaxAlloc += (ec.business_tax[m] || 0) / dyCount;
+      projNonOpAlloc += (ec.non_operating?.[m] || 0) / dyCount;
+    });
+    sumMgmt = projMgmtAllocOnly;
+    sumSales = sumQianchuan;
+    sumFinancial = projFinancialAlloc;
+    sumTax = projTaxAlloc;
+    sumNonOp = projNonOpAlloc;
+  } else {
+    // 全部项目或传媒/私域：用板块级数据
+    sumIncome = 0; sumLabor = 0; sumMainBiz = 0; sumMgmt = 0; sumSales = 0; sumFinancial = 0; sumTax = 0; sumNonOp = 0;
+    _analysisMonths.forEach(m => {
+      const sd = sectorData[m] || {};
+      sumIncome += sd.income || 0;
+      sumLabor += sd.labor_cost || 0;
+      sumMainBiz += sd.main_business_cost || 0;
+      sumMgmt += sd.mgmt_fee || 0;
+      sumSales += sd.sales_fee || 0;
+      sumFinancial += sd.financial_fee || 0;
+      sumTax += sd.business_tax || 0;
+      sumNonOp += ec.non_operating?.[m] || 0;
+    });
+    sumTotalCost = sumLabor + sumMainBiz + sumMgmt + sumSales + sumFinancial + sumTax + sumNonOp;
+    sumProfit = sumIncome - sumTotalCost;
+    sumQianchuan = _analysisMonths.reduce((s, m) => s + (ec.qianchuan['1003']?.[m] || 0) + (ec.qianchuan['1008']?.[m] || 0), 0);
+    sumMgmtAlloc = _analysisRows.reduce((s, r) => s + (r.mgmt_fee_alloc || 0), 0);
+  }
 
   const projLabel = project === 'all' ? '全部项目' : (_analysisRows[0]?.project_name || '');
   const costRatio = sumIncome > 0 ? (sumTotalCost / sumIncome * 100) : 0;
 
   // 第1部分：数据卡片
   document.getElementById('analysis-cards').innerHTML =
-    '<div class="analysis-card income"><div class="ac-label">项目收入</div><div class="ac-value">¥' + fmt(sumIncome) + '</div><div class="ac-sub">' + _analysisMonths[0] + '-' + _analysisMonths[_analysisMonths.length-1] + ' ' + getSectorName(_analysisSector) + ' ' + projLabel + '</div></div>' +
-    '<div class="analysis-card cost"><div class="ac-label">人工成本</div><div class="ac-value">¥' + fmt(sumLabor) + '</div><div class="ac-sub">取自财务表格</div></div>' +
+    '<div class="analysis-card income"><div class="ac-label">项目收入</div><div class="ac-value">¥' + fmt(sumIncome) + '</div><div class="ac-sub">' + _analysisMonths[0] + '-' + _analysisMonths[_analysisMonths.length-1] + (isSingleProject ? ' ' + projLabel : ' ' + getSectorName(_analysisSector) + ' ' + projLabel) + '</div></div>' +
+    '<div class="analysis-card cost"><div class="ac-label">人工成本</div><div class="ac-value">¥' + fmt(sumLabor) + '</div><div class="ac-sub">' + (isSingleProject ? '直接+分摊' : '取自财务表格') + '</div></div>' +
     '<div class="analysis-card cost"><div class="ac-label">主营业务成本</div><div class="ac-value">¥' + fmt(sumMainBiz) + '</div></div>' +
     '<div class="analysis-card cost"><div class="ac-label">千川投放</div><div class="ac-value">¥' + fmt(sumQianchuan) + '</div><div class="ac-sub">1003+1008</div></div>' +
     '<div class="analysis-card cost"><div class="ac-label">管理费用分摊</div><div class="ac-value">¥' + fmt(sumMgmtAlloc) + '</div></div>' +
@@ -2310,7 +2339,7 @@ function renderAnalysis() {
   renderProfitRanking(project);
 
   // 第3部分：成本结构总览
-  renderCostOverview(sumIncome, sumLabor, sumMainBiz, sumMgmt, sumSales, sumFinancial, sumTax, sumNonOp, sumTotalCost, sumProfit);
+  renderCostOverview(sumIncome, sumLabor, sumMainBiz, sumMgmt, sumSales, sumFinancial, sumTax, sumNonOp, sumTotalCost, sumProfit, isSingleProject);
 
   // 第4部分：管理费用明细
   renderMgmtDetail();
@@ -2347,6 +2376,7 @@ function renderProfitRanking(project) {
         data: profitData.map(d => d.profit),
         backgroundColor: profitData.map(d => d.profit >= 0 ? 'rgba(139,92,246,0.8)' : 'rgba(239,68,68,0.8)'),
         borderRadius: 4,
+        maxBarThickness: _analysisSector !== 'daiyunying' ? 60 : 80,
         datalabels: {
           anchor: 'end', align: 'top',
           formatter: function(v) { return (v/10000).toFixed(1) + '万'; },
@@ -2369,17 +2399,21 @@ function renderProfitRanking(project) {
   });
 }
 
-function renderCostOverview(income, labor, mainBiz, mgmt, sales, financial, tax, nonOp, totalCost, profit) {
+function renderCostOverview(income, labor, mainBiz, mgmt, sales, financial, tax, nonOp, totalCost, profit, isSingleProject) {
   // 左侧表格
+  const mgmtLabel = isSingleProject ? '管理费用分摊' : '管理费用';
+  const finLabel = isSingleProject ? '财务费用分摊' : '财务费用';
+  const taxLabel = isSingleProject ? '营业税及附加分摊' : '营业税及附加';
+  const nonOpLabel = isSingleProject ? '营业外支出分摊' : '营业外支出';
   const rows = [
     { label: '当月收入', value: income, isIncome: true },
     { label: '人工成本', value: labor },
     { label: '主营营业成本', value: mainBiz },
-    { label: '管理费用', value: mgmt },
+    { label: mgmtLabel, value: mgmt },
     { label: '销售费用(千川投放)', value: sales },
-    { label: '财务费用', value: financial },
-    { label: '营业税及附加', value: tax },
-    { label: '营业外支出', value: nonOp },
+    { label: finLabel, value: financial },
+    { label: taxLabel, value: tax },
+    { label: nonOpLabel, value: nonOp },
     { label: '总成本小计', value: totalCost, isTotal: true },
     { label: '净利润', value: profit, isProfit: true },
   ];
@@ -2396,11 +2430,11 @@ function renderCostOverview(income, labor, mainBiz, mgmt, sales, financial, tax,
   const costItems = [
     { label: '人工成本', value: labor, color: '#3b82f6' },
     { label: '主营营业成本', value: mainBiz, color: '#10b981' },
-    { label: '管理费用', value: mgmt, color: '#f59e0b' },
+    { label: mgmtLabel, value: mgmt, color: '#f59e0b' },
     { label: '销售费用', value: sales, color: '#ef4444' },
-    { label: '财务费用', value: financial, color: '#ec4899' },
-    { label: '营业税及附加', value: tax, color: '#8b5cf6' },
-    { label: '营业外支出', value: nonOp, color: '#6366f1' },
+    { label: finLabel, value: financial, color: '#ec4899' },
+    { label: taxLabel, value: tax, color: '#8b5cf6' },
+    { label: nonOpLabel, value: nonOp, color: '#6366f1' },
   ].filter(i => i.value > 0);
 
   _analysisCharts.costOverview = new Chart(document.getElementById('chart-cost-overview').getContext('2d'), {
@@ -2424,7 +2458,56 @@ function renderMgmtDetail() {
   const ec = DATA.extraCosts;
   const isMulti = _analysisMonths.length > 1;
   const stackedBox = document.getElementById('mgmt-stacked-box');
+  const allMonths = DATA.months;
 
+  if (_analysisSector !== 'daiyunying') {
+    // 传媒/私域板块：展示该板块成本分析
+    const sectorData = getSectorData(_analysisSector);
+    const sectorName = getSectorName(_analysisSector);
+    // 表格：各月成本构成
+    document.getElementById('mgmt-detail-thead').innerHTML = '<tr><th>月份</th><th class="text-right">收入</th><th class="text-right">人工成本</th><th class="text-right">主营成本</th><th class="text-right">管理费用</th><th class="text-right">销售费用</th><th class="text-right">财务费用</th><th class="text-right">营业税</th><th class="text-right">总成本</th><th class="text-right">净利润</th></tr>';
+    let tInc=0,tLab=0,tMb=0,tMg=0,tSa=0,tFi=0,tTx=0,tCo=0,tPr=0;
+    document.getElementById('mgmt-detail-tbody').innerHTML = _analysisMonths.map(function(m) {
+      const d = sectorData[m] || {};
+      tInc+=d.income||0; tLab+=d.labor_cost||0; tMb+=d.main_business_cost||0;
+      tMg+=d.mgmt_fee||0; tSa+=d.sales_fee||0; tFi+=d.financial_fee||0;
+      tTx+=d.business_tax||0; tCo+=d.total_cost||0; tPr+=d.net_profit||0;
+      return '<tr><td>' + m + '</td><td class="text-right">¥' + fmt(d.income||0) + '</td><td class="text-right">¥' + fmt(d.labor_cost||0) + '</td><td class="text-right">¥' + fmt(d.main_business_cost||0) + '</td><td class="text-right">¥' + fmt(d.mgmt_fee||0) + '</td><td class="text-right">¥' + fmt(d.sales_fee||0) + '</td><td class="text-right">¥' + fmt(d.financial_fee||0) + '</td><td class="text-right">¥' + fmt(d.business_tax||0) + '</td><td class="text-right">¥' + fmt(d.total_cost||0) + '</td><td class="text-right ' + ((d.net_profit||0)>=0?'profit-positive':'profit-negative') + '">¥' + fmt(d.net_profit||0) + '</td></tr>';
+    }).join('') + '<tr style="font-weight:bold;border-top:2px solid #475569"><td>合计</td><td class="text-right">¥' + fmt(tInc) + '</td><td class="text-right">¥' + fmt(tLab) + '</td><td class="text-right">¥' + fmt(tMb) + '</td><td class="text-right">¥' + fmt(tMg) + '</td><td class="text-right">¥' + fmt(tSa) + '</td><td class="text-right">¥' + fmt(tFi) + '</td><td class="text-right">¥' + fmt(tTx) + '</td><td class="text-right">¥' + fmt(tCo) + '</td><td class="text-right ' + (tPr>=0?'profit-positive':'profit-negative') + '">¥' + fmt(tPr) + '</td></tr>';
+
+    // 折线图：板块成本趋势
+    const mgmtValues = allMonths.map(m => (sectorData[m]?.mgmt_fee) || 0);
+    _analysisCharts.mgmtLine = new Chart(document.getElementById('chart-mgmt-line').getContext('2d'), {
+      type: 'line',
+      data: { labels: allMonths, datasets: [
+        { label: '人工成本', data: allMonths.map(m => (sectorData[m]?.labor_cost)||0), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', tension: 0.3, fill: false },
+        { label: '管理费用', data: mgmtValues, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', tension: 0.3, fill: false },
+        { label: '净利润', data: allMonths.map(m => (sectorData[m]?.net_profit)||0), borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', tension: 0.3, fill: false },
+      ]},
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 11 } } }, tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ¥' + fmt(ctx.parsed.y); } } } },
+        scales: { y: { ticks: { color: '#94a3b8', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { color: 'rgba(148,163,184,0.1)' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } }
+      }
+    });
+
+    // 面积图：板块收入成本趋势
+    _analysisCharts.mgmtArea = new Chart(document.getElementById('chart-mgmt-area').getContext('2d'), {
+      type: 'line',
+      data: { labels: allMonths, datasets: [
+        { label: '收入', data: allMonths.map(m => (sectorData[m]?.income)||0), borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,0.2)', tension: 0.3, fill: true },
+        { label: '总成本', data: allMonths.map(m => (sectorData[m]?.total_cost)||0), borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.2)', tension: 0.3, fill: true },
+      ]},
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 11 } } }, tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ¥' + fmt(ctx.parsed.y); } } } },
+        scales: { y: { ticks: { color: '#94a3b8', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { color: 'rgba(148,163,184,0.1)' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } }
+      }
+    });
+
+    stackedBox.style.display = 'none';
+    return;
+  }
+
+  // ===== 代运营板块 =====
   if (isMulti) {
     // 多月：管理费用公示表格
     stackedBox.style.display = '';
@@ -2443,35 +2526,6 @@ function renderMgmtDetail() {
         '<td class="text-right">¥' + fmt(tax) + '</td><td class="text-right">¥' + fmt(nonOp) + '</td>' +
         '<td class="text-right">¥' + fmt(base) + '</td><td class="text-right">' + count + '</td><td class="text-right">¥' + fmt(per) + '</td></tr>';
     }).join('') + '<tr style="font-weight:bold;border-top:2px solid #475569"><td>合计</td><td class="text-right">¥' + fmt(totalMgmt) + '</td><td class="text-right">¥' + fmt(totalFin) + '</td><td class="text-right">¥' + fmt(totalTax) + '</td><td class="text-right">¥' + fmt(totalNonOp) + '</td><td class="text-right">¥' + fmt(totalBase) + '</td><td class="text-right">-</td><td class="text-right">-</td></tr>';
-
-    // 堆叠柱状图 + 总成本折线
-    const labels = _analysisMonths;
-    const sectorData = getSectorData(_analysisSector);
-    _analysisCharts.mgmtStacked = new Chart(document.getElementById('chart-mgmt-stacked').getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [
-          { label: '管理费用', data: labels.map(m => ec.mgmt_fee[m] || 0), backgroundColor: '#f59e0b', stack: 'fee' },
-          { label: '财务费用', data: labels.map(m => ec.financial_fee[m] || 0), backgroundColor: '#ec4899', stack: 'fee' },
-          { label: '营业税及附加', data: labels.map(m => ec.business_tax[m] || 0), backgroundColor: '#8b5cf6', stack: 'fee' },
-          { label: '营业外支出', data: labels.map(m => ec.non_operating?.[m] || 0), backgroundColor: '#6366f1', stack: 'fee' },
-          { type: 'line', label: '总成本', data: labels.map(m => (sectorData[m]?.total_cost) || 0), borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,0.1)', yAxisID: 'y1', tension: 0.3, fill: false, pointRadius: 5, pointBackgroundColor: '#34d399' },
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 11 } } },
-          tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ¥' + fmt(ctx.parsed.y); } } }
-        },
-        scales: {
-          y: { stacked: true, ticks: { color: '#94a3b8', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { color: 'rgba(148,163,184,0.1)' }, title: { display: true, text: '费用', color: '#94a3b8' } },
-          y1: { position: 'right', ticks: { color: '#34d399', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { display: false }, title: { display: true, text: '总成本', color: '#34d399' } },
-          x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
-        }
-      }
-    });
   } else {
     // 单月：3.1-3.8明细表格
     stackedBox.style.display = 'none';
@@ -2485,45 +2539,82 @@ function renderMgmtDetail() {
     }).join('') + (total > 0 ? '<tr style="font-weight:bold;border-top:2px solid #475569"><td>合计</td><td class="text-right">¥' + fmt(total) + '</td><td class="text-right">100%</td></tr>' : '');
   }
 
-  // 折线图：管理费用趋势（用所有月份数据，高亮选中范围）
-  const allMonths = DATA.months;
+  // 折线图：管理费用趋势
   const mgmtValues = allMonths.map(m => ec.mgmt_fee[m] || 0);
   _analysisCharts.mgmtLine = new Chart(document.getElementById('chart-mgmt-line').getContext('2d'), {
     type: 'line',
-    data: {
-      labels: allMonths,
-      datasets: [{
-        label: '管理费用', data: mgmtValues,
-        borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)',
-        tension: 0.3, fill: false, pointRadius: 5, pointBackgroundColor: '#f59e0b',
-        datalabels: { anchor: 'end', align: 'top', formatter: function(v) { return (v/10000).toFixed(1) + '万'; }, color: '#fbbf24', font: { size: 10 } }
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
+    data: { labels: allMonths, datasets: [{ label: '管理费用', data: mgmtValues, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', tension: 0.3, fill: false, pointRadius: 5, pointBackgroundColor: '#f59e0b', datalabels: { anchor: 'end', align: 'top', formatter: function(v) { return (v/10000).toFixed(1) + '万'; }, color: '#fbbf24', font: { size: 10 } } }] },
+    options: { responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return '管理费用: ¥' + fmt(ctx.parsed.y); } } } },
       scales: { y: { ticks: { color: '#94a3b8', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { color: 'rgba(148,163,184,0.1)' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } }
     }
   });
 
-  // 面积图：管理费用趋势
+  // 堆叠面积图：管理费用3.1-3.8各项月度占比变化趋势
+  const mgmtColors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
+  const mgmtItems = ['3.1 设备采购', '3.2 差旅费用', '3.3 招待费用', '3.4 房租水电装修', '3.5 福利及补贴', '3.6 办公费', '3.7 直播及道具采购', '3.8 其他费用'];
+  const areaDatasets = mgmtItems.map(function(item, idx) {
+    return {
+      label: item,
+      data: allMonths.map(m => (ec.mgmt_breakdown?.[m]?.[item]) || 0),
+      borderColor: mgmtColors[idx],
+      backgroundColor: mgmtColors[idx] + '40',
+      tension: 0.3, fill: true, pointRadius: 2, pointHoverRadius: 5
+    };
+  });
   _analysisCharts.mgmtArea = new Chart(document.getElementById('chart-mgmt-area').getContext('2d'), {
     type: 'line',
-    data: {
-      labels: allMonths,
-      datasets: [{
-        label: '管理费用', data: mgmtValues,
-        borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.25)',
-        tension: 0.3, fill: true, pointRadius: 4, pointBackgroundColor: '#8b5cf6'
-      }]
-    },
+    data: { labels: allMonths, datasets: areaDatasets },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return '管理费用: ¥' + fmt(ctx.parsed.y); } } } },
-      scales: { y: { ticks: { color: '#94a3b8', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { color: 'rgba(148,163,184,0.1)' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } }
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 }, padding: 8, boxWidth: 12 } },
+        tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ¥' + fmt(ctx.parsed.y); } } }
+      },
+      scales: {
+        y: { stacked: true, ticks: { color: '#94a3b8', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { color: 'rgba(148,163,184,0.1)' } },
+        x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+      }
     }
   });
+
+  // 多月：费用构成堆叠柱状图 + 总成本折线
+  if (isMulti) {
+    const labels = _analysisMonths;
+    const sectorData = getSectorData(_analysisSector);
+    _analysisCharts.mgmtStacked = new Chart(document.getElementById('chart-mgmt-stacked').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          { label: '管理费用', data: labels.map(m => ec.mgmt_fee[m] || 0), backgroundColor: 'rgba(59,130,246,0.65)', borderColor: '#3b82f6', borderWidth: 1, stack: 'fee', borderRadius: 0 },
+          { label: '财务费用', data: labels.map(m => ec.financial_fee[m] || 0), backgroundColor: 'rgba(16,185,129,0.65)', borderColor: '#10b981', borderWidth: 1, stack: 'fee', borderRadius: 0 },
+          { label: '营业税及附加', data: labels.map(m => ec.business_tax[m] || 0), backgroundColor: 'rgba(245,158,11,0.65)', borderColor: '#f59e0b', borderWidth: 1, stack: 'fee', borderRadius: 0 },
+          { label: '营业外支出', data: labels.map(m => ec.non_operating?.[m] || 0), backgroundColor: 'rgba(236,72,153,0.65)', borderColor: '#ec4899', borderWidth: 1, stack: 'fee', borderRadius: 0 },
+          { type: 'line', label: '总成本', data: labels.map(m => (sectorData[m]?.total_cost) || 0), borderColor: '#ef4444', backgroundColor: 'transparent', yAxisID: 'y1', tension: 0.3, pointRadius: 6, pointBackgroundColor: '#ef4444', pointBorderColor: '#fff', pointBorderWidth: 2, datalabels: { display: false } },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 11 }, padding: 12 } },
+          datalabels: {
+            color: '#fff', font: { size: 9, weight: 'bold' },
+            formatter: function(v) { return v > 10000 ? (v/10000).toFixed(1) + '万' : ''; },
+            textShadowBlur: 3, textShadowColor: 'rgba(0,0,0,0.8)'
+          },
+          tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ¥' + fmt(ctx.parsed.y); } } }
+        },
+        scales: {
+          y: { stacked: true, ticks: { color: '#94a3b8', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { color: 'rgba(148,163,184,0.1)' }, title: { display: true, text: '费用', color: '#94a3b8' } },
+          y1: { position: 'right', ticks: { color: '#ef4444', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { display: false }, title: { display: true, text: '总成本', color: '#ef4444' } },
+          x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+        }
+      }
+    });
+  }
 }
+
 
 function renderDetailTable() {
   const thead = document.getElementById('analysis-thead');
