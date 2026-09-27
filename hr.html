@@ -1,0 +1,2781 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>聚光人力资源管理系统</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+body { background: linear-gradient(135deg, #0a1628 0%, #0f1f3d 50%, #0a1628 100%); color: #e2e8f0; overflow: hidden; }
+
+/* 密码验证 */
+.auth-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: linear-gradient(135deg, #0a1628, #0f1f3d); display:flex; align-items:center; justify-content:center; z-index:9999; }
+.auth-overlay.hidden { display:none; }
+.auth-box { background: rgba(15,31,61,0.9); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:44px 40px; width:380px; max-width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+.auth-icon { width:64px; height:64px; border-radius:18px; background:linear-gradient(135deg,#38bdf8,#a855f7); display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px; }
+.auth-title { font-size:22px; font-weight:700; background:linear-gradient(90deg,#38bdf8,#c084fc); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; letter-spacing:2px; }
+.auth-subtitle { font-size:13px; color:#64748b; margin-bottom:28px; }
+.auth-input { width:100%; padding:14px 18px; font-size:15px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:12px; color:#e2e8f0; outline:none; text-align:center; letter-spacing:3px; }
+.auth-input:focus { border-color:#38bdf8; background:rgba(56,189,248,0.08); }
+.auth-input::placeholder { color:#475569; }
+.auth-btn { width:100%; margin-top:16px; padding:14px; font-size:15px; font-weight:600; color:#fff; background:linear-gradient(90deg,#38bdf8,#0ea5e9); border:none; border-radius:12px; cursor:pointer; letter-spacing:2px; }
+.auth-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(56,189,248,0.35); }
+.auth-error { color:#f87171; font-size:13px; margin-top:12px; min-height:18px; }
+.auth-hint { margin-top:20px; font-size:11px; color:#334155; }
+
+/* 主布局 */
+.app { display:flex; flex-direction:column; height:100vh; }
+.topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 32px; background:rgba(10,22,40,0.85); backdrop-filter:blur(12px); border-bottom:1px solid rgba(255,255,255,0.06); flex-shrink:0; }
+.topbar-left { display:flex; align-items:center; gap:14px; }
+.topbar-logo { width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#38bdf8,#a855f7); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; color:#fff; }
+.topbar-title { font-size:20px; font-weight:700; background:linear-gradient(90deg,#38bdf8,#818cf8,#c084fc); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:2px; }
+.topbar-subtitle { font-size:11px; color:#475569; letter-spacing:1px; margin-top:2px; }
+.topbar-right { font-size:12px; color:#64748b; }
+.topbar-right .pulse { display:inline-block; width:8px; height:8px; border-radius:50%; background:#34d399; margin-right:6px; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* 标签栏 */
+.tabbar { display:flex; gap:4px; padding:0 32px; background:rgba(15,31,61,0.6); border-bottom:1px solid rgba(255,255,255,0.06); flex-shrink:0; }
+.tab { padding:14px 24px; font-size:14px; font-weight:600; color:#64748b; cursor:pointer; border:none; background:transparent; position:relative; transition:all 0.3s; white-space:nowrap; }
+.tab:hover { color:#94a3b8; }
+.tab.active { color:#fff; }
+.tab.active::after { content:""; position:absolute; bottom:0; left:16px; right:16px; height:3px; border-radius:3px 3px 0 0; }
+.tab[data-tab="salary"].active { color:#7dd3fc; }
+.tab[data-tab="salary"].active::after { background:linear-gradient(90deg,#38bdf8,#0ea5e9); }
+.tab[data-tab="project"].active { color:#6ee7b7; }
+.tab[data-tab="project"].active::after { background:linear-gradient(90deg,#34d399,#10b981); }
+.tab[data-tab="personal"].active { color:#fcd34d; }
+.tab[data-tab="personal"].active::after { background:linear-gradient(90deg,#fbbf24,#f59e0b); }
+.tab[data-tab="dashboard"].active { color:#c4b5fd; }
+.tab[data-tab="dashboard"].active::after { background:linear-gradient(90deg,#a78bfa,#8b5cf6); }
+.tab[data-tab="analysis"].active { color:#f9a8d4; }
+.tab[data-tab="analysis"].active::after { background:linear-gradient(90deg,#f472b6,#ec4899); }
+
+/* 内容区 */
+.content { flex:1; overflow:auto; padding:20px 32px; }
+.panel { display:none; }
+.panel.active { display:block; }
+
+/* 筛选区 */
+.filters { background:rgba(15,31,61,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:20px; margin-bottom:20px; }
+.filters-row { display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end; }
+.filter-item { display:flex; flex-direction:column; gap:6px; }
+.filter-item label { font-size:12px; color:#94a3b8; font-weight:500; }
+.filter-item select, .filter-item input {
+  padding:8px 12px; font-size:13px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:8px; color:#e2e8f0; outline:none; min-width:120px;
+}
+.filter-item select:focus, .filter-item input:focus { border-color:#38bdf8; }
+/* 下拉列表选项文字用黑色 */
+.filter-item select option { color: #000; background: #fff; }
+.filter-item .range { display:flex; gap:6px; align-items:center; }
+.filter-item .range input { width:60px; min-width:60px; text-align:center; }
+.filter-item .range span { color:#64748b; }
+.btn-reset { padding:8px 20px; font-size:13px; font-weight:600; color:#94a3b8; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:8px; cursor:pointer; }
+.btn-reset:hover { color:#fff; border-color:#38bdf8; }
+
+/* 姓名搜索 */
+.name-search-wrap { position:relative; }
+.name-suggestions {
+  position:absolute; top:100%; left:0; right:0; z-index:100;
+  background:#fff; border:1px solid #ddd; border-radius:0 0 8px 8px;
+  max-height:200px; overflow-y:auto; display:none;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+.name-suggestions.show { display:block; }
+.name-suggestions div {
+  padding:8px 12px; font-size:13px; color:#333; cursor:pointer;
+}
+.name-suggestions div:hover { background:#f0f7ff; color:#0ea5e9; }
+
+/* 统计栏 */
+.stats { display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+.stat-card { flex:1; min-width:130px; background:rgba(15,31,61,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px; }
+.stat-card .stat-label { font-size:11px; color:#64748b; margin-bottom:4px; }
+.stat-card .stat-value { font-size:18px; font-weight:700; }
+.stat-card.blue .stat-value { color:#38bdf8; }
+.stat-card.green .stat-value { color:#34d399; }
+.stat-card.purple .stat-value { color:#a855f7; }
+.stat-card.orange .stat-value { color:#fb923c; }
+.stat-card.cyan .stat-value { color:#22d3ee; }
+.stat-card.pink .stat-value { color:#f472b6; }
+.stat-card.amber .stat-value { color:#fbbf24; }
+.stat-card.rose .stat-value { color:#fb7185; }
+
+/* 表格 */
+.table-wrap { background:rgba(15,31,61,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:16px; overflow:hidden; }
+.table-scroll { overflow-x:auto; max-height:calc(100vh - 380px); overflow-y:auto; }
+table { width:100%; border-collapse:collapse; font-size:12px; }
+/* 表头不透明 - 关键：所有th包括高亮列都必须是实色背景 */
+thead { background-color:#0f1f3d; }
+thead th {
+  position:sticky; top:0;
+  background-color:#0f1f3d !important;
+  background:#0f1f3d !important;
+  padding:10px 8px; text-align:left; font-weight:600; color:#94a3b8;
+  border-bottom:1px solid rgba(255,255,255,0.15);
+  white-space:nowrap; z-index:20;
+}
+/* 高亮列的表头也要用不透明背景，覆盖col-highlight的半透明 */
+thead th.col-highlight,
+thead th.col-highlight-green,
+thead th.col-highlight-purple {
+  background-color:#0f1f3d !important;
+  background:#0f1f3d !important;
+}
+tbody td { padding:8px; border-bottom:1px solid rgba(255,255,255,0.04); white-space:nowrap; }
+tbody tr:hover { background:rgba(56,189,248,0.05); }
+.col-highlight { background:rgba(56,189,248,0.08); }
+.col-highlight-green { background:rgba(52,211,153,0.08); }
+.col-highlight-purple { background:rgba(168,85,247,0.08); }
+.text-right { text-align:right; }
+.text-center { text-align:center; }
+
+/* 分页 */
+.pagination { display:flex; justify-content:center; align-items:center; gap:12px; padding:16px; }
+.pagination button { padding:6px 14px; font-size:13px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:6px; color:#94a3b8; cursor:pointer; }
+.pagination button:hover:not(:disabled) { color:#fff; border-color:#38bdf8; }
+.pagination button:disabled { opacity:0.3; cursor:not-allowed; }
+.pagination span { font-size:13px; color:#64748b; }
+
+/* 项目利润表 */
+.profit-table { width:100%; }
+.profit-table th, .profit-table td { padding:12px 16px; }
+.profit-positive { color:#34d399; }
+.profit-negative { color:#f87171; }
+
+/* 个人收入汇总 */
+.personal-summary { background:rgba(15,31,61,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:20px; margin-bottom:20px; }
+.personal-summary h3 { font-size:15px; color:#fbbf24; margin-bottom:12px; }
+.personal-info { display:flex; gap:24px; flex-wrap:wrap; margin-bottom:16px; }
+.personal-info span { font-size:13px; color:#94a3b8; }
+.personal-info span b { color:#e2e8f0; margin-left:4px; }
+
+/* 仪表盘样式 */
+.dashboard-header {
+  background: linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(168,85,247,0.1) 100%);
+  border: 1px solid rgba(168,85,247,0.2);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.dashboard-title { display:flex; align-items:center; gap:16px; }
+.dashboard-icon { font-size:36px; }
+.dashboard-main-title { font-size:22px; font-weight:700; color:#e2e8f0; margin-bottom:6px; }
+.dashboard-sub-info { font-size:13px; color:#94a3b8; }
+
+.dashboard-formula {
+  background: rgba(251,191,36,0.08);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color:#fcd34d;
+  line-height: 1.6;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+}
+.formula-icon { flex-shrink:0; }
+
+.dashboard-cards {
+  display:grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.dash-card {
+  background: rgba(15,31,61,0.7);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 18px;
+  transition: all 0.3s;
+}
+.dash-card:hover { transform:translateY(-2px); border-color:rgba(255,255,255,0.15); }
+.dash-card-label { font-size:13px; color:#94a3b8; margin-bottom:10px; }
+.dash-card-value { font-size:24px; font-weight:700; margin-bottom:6px; }
+.dash-card-desc { font-size:11px; color:#64748b; }
+.dash-card.purple .dash-card-value { color:#a855f7; }
+.dash-card.blue .dash-card-value { color:#38bdf8; }
+.dash-card.green .dash-card-value { color:#34d399; }
+.dash-card.orange .dash-card-value { color:#fb923c; }
+.dash-card.cyan .dash-card-value { color:#22d3ee; }
+.dash-card.rose .dash-card-value { color:#fb7185; }
+
+.dashboard-section {
+  background: rgba(15,31,61,0.5);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 20px;
+}
+.section-title { font-size:16px; font-weight:600; color:#e2e8f0; margin-bottom:16px; }
+
+@media (max-width:1200px) {
+  .dashboard-cards { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width:700px) {
+  .topbar { padding:12px 16px; }
+  .topbar-title { font-size:16px; }
+  .topbar-subtitle, .topbar-right { display:none; }
+  .tabbar { padding:0 12px; }
+  .tab { padding:12px 14px; font-size:13px; }
+  .content { padding:16px; }
+  .filter-item select, .filter-item input { min-width:100px; }
+  .stat-card { min-width:100px; padding:10px; }
+  .stat-card .stat-value { font-size:15px; }
+  .dashboard-cards { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-main-title { font-size:18px; }
+}
+
+/* ===== 仪表盘7模块样式（深色主题） ===== */
+.dash-module {
+  background: rgba(30,41,59,0.8);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.dash-module-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(148,163,184,0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dash-module-title .icon { font-size: 20px; }
+.chart-container { position: relative; height: 340px; }
+.chart-container.tall { height: 400px; }
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.chart-row .chart-subtitle { font-size: 13px; color: #94a3b8; margin-bottom: 8px; font-weight: 600; }
+
+/* 数据表格 */
+.dash-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 18px; }
+.dash-table th {
+  background: rgba(15,23,42,0.6);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #94a3b8;
+  border-bottom: 1px solid rgba(148,163,184,0.2);
+  white-space: nowrap;
+}
+.dash-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(148,163,184,0.08);
+  color: #cbd5e1;
+}
+.dash-table tr:hover { background: rgba(56,189,248,0.05); }
+.dash-table .text-right { text-align: right; }
+.dash-table .text-center { text-align: center; }
+.dash-table .val-blue { color: #3b82f6; font-weight: 600; }
+.dash-table .val-green { color: #10b981; font-weight: 600; }
+.dash-table .val-purple { color: #a78bfa; font-weight: 700; }
+.dash-table .val-orange { color: #f59e0b; font-weight: 600; }
+
+/* 环比 */
+.rate-up { color: #ef4444; }
+.rate-down { color: #10b981; }
+.rate-flat { color: #64748b; }
+
+/* 数据解读框 */
+.insight-box {
+  background: linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(167,139,250,0.06) 100%);
+  border-left: 4px solid #3b82f6;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-top: 18px;
+  font-size: 13px;
+  line-height: 1.9;
+  color: #cbd5e1;
+}
+.insight-box .insight-title {
+  font-weight: 700;
+  color: #60a5fa;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+.insight-box b { color: #a78bfa; }
+
+/* 部门切片器 */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-label { font-size: 13px; color: #94a3b8; margin-right: 4px; white-space: nowrap; }
+.filter-btn {
+  padding: 6px 16px;
+  border: 1px solid rgba(148,163,184,0.3);
+  border-radius: 20px;
+  background: rgba(15,23,42,0.5);
+  color: #cbd5e1;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+.filter-btn:hover { border-color: #3b82f6; color: #3b82f6; }
+.filter-btn.active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+
+/* 成本占比进度条 */
+.rate-bar {
+  display: inline-block;
+  width: 100%;
+  height: 14px;
+  background: rgba(15,23,42,0.6);
+  border-radius: 7px;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.rate-fill {
+  display: inline-block;
+  height: 100%;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
+}
+
+/* 热力矩阵 */
+.heatmap-cell {
+  text-align: right;
+  padding: 8px 10px !important;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+.heatmap-cell:hover { transform: scale(1.02); }
+
+@media (max-width: 900px) {
+  .chart-row { grid-template-columns: 1fr; }
+}
+
+
+/* 刷新按钮 */
+.refresh-btn {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 12px;
+  transition: all 0.2s;
+}
+.refresh-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.refresh-btn .spin { display: inline-block; animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* 刷新进度条 */
+.refresh-overlay {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: rgba(59,130,246,0.1); z-index: 9999; display: none;
+}
+.refresh-overlay.active { display: block; }
+.refresh-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #6366f1, #8b5cf6);
+  width: 0%; transition: width 0.4s ease;
+  box-shadow: 0 0 10px rgba(59,130,246,0.6);
+}
+.refresh-status {
+  position: fixed; top: 50px; right: 20px;
+  background: rgba(15,23,42,0.95); border: 1px solid rgba(59,130,246,0.3);
+  border-radius: 10px; padding: 12px 18px; z-index: 9998;
+  display: none; min-width: 240px; backdrop-filter: blur(10px);
+}
+.refresh-status.active { display: block; }
+.refresh-status .rs-title { font-size: 13px; font-weight: 600; color: #60a5fa; margin-bottom: 8px; }
+.refresh-status .rs-step { font-size: 12px; color: #475569; padding: 2px 0; }
+.refresh-status .rs-step.done { color: #34d399; }
+.refresh-status .rs-step.current { color: #e2e8f0; }
+.refresh-status .rs-percent { font-size: 11px; color: #94a3b8; text-align: right; margin-top: 6px; }
+
+/* 经营分析看板 */
+.analysis-filters {
+  display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;
+  padding: 16px 20px; background: rgba(30,41,59,0.6);
+  border-radius: 10px; margin-bottom: 16px;
+}
+.analysis-filters .filter-item { display: flex; flex-direction: column; gap: 4px; }
+.analysis-filters label { font-size: 11px; color: #94a3b8; }
+.analysis-filters select {
+  background: #1e293b; color: #e2e8f0; border: 1px solid #334155;
+  border-radius: 6px; padding: 6px 10px; font-size: 13px; min-width: 100px;
+}
+.analysis-filters .range { display: flex; align-items: center; gap: 6px; }
+.analysis-cards {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px; margin-bottom: 16px;
+}
+.analysis-card {
+  background: rgba(30,41,59,0.8); border-radius: 10px; padding: 14px;
+  border-left: 3px solid #3b82f6;
+}
+.analysis-card.income { border-left-color: #34d399; }
+.analysis-card.cost { border-left-color: #f59e0b; }
+.analysis-card.profit { border-left-color: #8b5cf6; }
+.analysis-card.profit.negative { border-left-color: #ef4444; }
+.analysis-card .ac-label { font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
+.analysis-card .ac-value { font-size: 18px; font-weight: 700; color: #f1f5f9; }
+.analysis-card .ac-sub { font-size: 10px; color: #64748b; margin-top: 2px; }
+.analysis-charts {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;
+}
+.analysis-chart-box {
+  background: rgba(30,41,59,0.6); border-radius: 10px; padding: 16px;
+  min-height: 300px;
+}
+.analysis-chart-box h3 { font-size: 14px; color: #e2e8f0; margin-bottom: 12px; }
+.analysis-chart-box canvas { max-height: 280px; }
+.analysis-detail {
+  background: rgba(30,41,59,0.6); border-radius: 10px; padding: 16px;
+}
+.analysis-detail h3 { font-size: 14px; color: #e2e8f0; margin-bottom: 12px; }
+.analysis-detail table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.analysis-detail th { background: rgba(51,65,85,0.5); padding: 8px; text-align: left; color: #94a3b8; }
+.analysis-detail td { padding: 8px; border-bottom: 1px solid rgba(51,65,85,0.3); color: #cbd5e1; }
+.analysis-detail .text-right { text-align: right; }
+
+
+.analysis-section { margin-bottom: 24px; }
+.section-title { font-size: 16px; font-weight: 600; color: #e2e8f0; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(71,85,105,0.5); }
+.section-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; font-size: 13px; font-weight: bold; }
+</style>
+<script>
+    // HR系统：只显示薪资、个人收入、仪表盘
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        document.querySelectorAll('.tab[data-tab="project"], .tab[data-tab="analysis"]').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('#panel-project, #panel-analysis').forEach(function(el) { el.style.display = 'none'; });
+      }, 100);
+    });
+    </script>
+    </head>
+<body>
+
+<!-- 密码验证 -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-box">
+    <div class="auth-icon">🔒</div>
+    <div class="auth-title">人力资源查询系统</div>
+    <div class="auth-subtitle">请输入访问密码以继续</div>
+    <input type="password" class="auth-input" id="authInput" placeholder="请输入密码" autocomplete="off">
+    <button class="auth-btn" id="authBtn">验 证 进 入</button>
+    <div class="auth-error" id="authError"></div>
+    <div class="auth-hint">验证成功后 24 小时内无需重复输入</div>
+  </div>
+</div>
+
+
+<!-- 刷新进度条 -->
+<div class="refresh-overlay" id="refreshOverlay"><div class="refresh-bar" id="refreshBar"></div></div>
+<div class="refresh-status" id="refreshStatus">
+  <div class="rs-title" id="rsTitle">🔄 正在更新数据</div>
+  <div class="rs-step" id="rs-step1">○ 连接飞书服务器</div>
+  <div class="rs-step" id="rs-step2">○ 读取最新薪资数据</div>
+  <div class="rs-step" id="rs-step3">○ 计算项目核算</div>
+  <div class="rs-step" id="rs-step4">○ 更新页面数据</div>
+  <div class="rs-percent" id="rsPercent">0%</div>
+</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">人</div>
+      <div>
+        <div class="topbar-title">聚光人力资源管理系统</div>
+        <div class="topbar-subtitle">HR MANAGEMENT SYSTEM</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="pulse"></span><span id="data-update-time">数据加载中...</span>
+      <button class="refresh-btn" id="refreshBtn" onclick="refreshData()"><span id="refreshIcon">🔄</span> 更新数据</button>
+    </div>
+  </div>
+
+  <div class="tabbar">
+    <button class="tab active" data-tab="salary">💰 薪资数据查询</button>
+    <button class="tab" data-tab="personal">👤 个人收入查询</button>
+    <button class="tab" data-tab="project">📊 项目独立核算</button>
+    <button class="tab" data-tab="dashboard">📈 人力资源仪表盘</button>
+    <button class="tab" data-tab="analysis">📊 项目经营分析看板</button>
+  </div>
+
+  <div class="content">
+    <!-- 薪资查询 -->
+    <div class="panel active" id="panel-salary">
+      <div class="filters">
+        <div class="filters-row">
+          <div class="filter-item">
+            <label>月份范围</label>
+            <div class="range">
+              <select id="f-month-start"><option value="all">起始月</option></select>
+              <span>~</span>
+              <select id="f-month-end"><option value="all">结束月</option></select>
+            </div>
+          </div>
+          <div class="filter-item">
+            <label>公司</label>
+            <select id="f-company"><option value="all">全部</option></select>
+          </div>
+          <div class="filter-item">
+            <label>部门</label>
+            <select id="f-dept"><option value="all">全部</option></select>
+          </div>
+          <div class="filter-item">
+            <label>岗位</label>
+            <select id="f-position"><option value="all">全部</option></select>
+          </div>
+          <div class="filter-item">
+            <label>岗级范围</label>
+            <div class="range">
+              <input type="number" id="f-level-min" placeholder="0" min="0" max="12">
+              <span>~</span>
+              <input type="number" id="f-level-max" placeholder="12" min="0" max="12">
+            </div>
+          </div>
+          <div class="filter-item">
+            <label>员工类型</label>
+            <select id="f-emptype"><option value="all">全部</option></select>
+          </div>
+          <div class="filter-item">
+            <label>所在项目</label>
+            <select id="f-project"><option value="all">全部</option></select>
+          </div>
+          <div class="filter-item">
+            <button class="btn-reset" onclick="resetFilters()">重置筛选</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats" id="salary-stats"></div>
+
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table id="salary-table">
+            <thead>
+              <tr>
+                <th>月份</th><th>公司</th><th>部门</th><th>岗位</th><th>姓名</th><th>岗级</th><th>员工类型</th><th>所在项目</th>
+                <th>底薪</th><th>实发底薪</th><th>绩效/奖励</th>
+                <th>社保基础</th><th>个人缴纳</th><th>单位缴纳</th><th>个人所得税</th>
+                <th class="col-highlight">本月薪资总额</th>
+                <th>其他扣罚</th><th>扣除合计</th>
+                <th class="col-highlight-green">综合收入</th>
+                <th class="col-highlight-purple">单位人工成本</th>
+              </tr>
+            </thead>
+            <tbody id="salary-tbody"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="salary-pagination"></div>
+      </div>
+    </div>
+
+    <!-- 项目独立核算 -->
+    <div class="panel" id="panel-project">
+      <div class="filters">
+        <div class="filters-row">
+          <div class="filter-item">
+            <label>月份</label>
+            <select id="p-month"><option value="all">全部</option></select>
+          </div>
+          <div class="filter-item">
+            <label>项目分组</label>
+            <select id="p-group"><option value="all">全部分组</option></select>
+          </div>
+          <div class="filter-item">
+            <label>项目名称</label>
+            <select id="p-project"><option value="all">全部项目</option></select>
+          </div>
+          <div class="filter-item">
+            <button class="btn-reset" onclick="resetProjectFilters()">重置</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats" id="project-stats"></div>
+
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="profit-table" id="project-table">
+            <thead>
+              <tr>
+                <th>项目名称</th><th>分组</th><th>月份</th><th class="text-center">人数</th>
+                <th class="text-right">项目收入</th>
+                <th class="text-right">直接人工成本</th>
+                <th class="text-right">内容事业部分摊</th>
+                <th class="text-right">管理层分摊</th>
+                <th class="text-right">部门经理分摊</th>
+                <th class="text-right col-highlight">人工成本合计</th>
+                <th class="text-right">主营业务成本</th>
+                <th class="text-right">千川投放</th>
+                <th class="text-right">管理费用分摊</th>
+                <th class="text-right col-highlight">总成本</th>
+                <th class="text-right">净利润</th>
+                <th class="text-right col-highlight-green">成本占比</th>
+              </tr>
+            </thead>
+            <tbody id="project-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 个人收入查询 -->
+    <div class="panel" id="panel-personal">
+      <div class="filters">
+        <div class="filters-row">
+          <div class="filter-item">
+            <label>姓名（输入汉字自动匹配）</label>
+            <div class="name-search-wrap">
+              <input type="text" id="p-name" placeholder="输入姓名搜索" autocomplete="off">
+              <div class="name-suggestions" id="name-suggestions"></div>
+            </div>
+          </div>
+          <div class="filter-item">
+            <label>月份</label>
+            <select id="p-personal-month"><option value="all">全部</option></select>
+          </div>
+          <div class="filter-item">
+            <label>岗级范围</label>
+            <div class="range">
+              <input type="number" id="p-level-min" placeholder="0" min="0" max="12">
+              <span>~</span>
+              <input type="number" id="p-level-max" placeholder="12" min="0" max="12">
+            </div>
+          </div>
+          <div class="filter-item">
+            <button class="btn-reset" onclick="resetPersonal()">重置</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="personal-summary" id="personal-summary" style="display:none;">
+        <h3 id="personal-name-title"></h3>
+        <div class="personal-info" id="personal-info"></div>
+        <div class="stats" id="personal-stats"></div>
+      </div>
+
+      <div class="table-wrap" id="personal-table-wrap" style="display:none;">
+        <div class="table-scroll">
+          <table id="personal-table">
+            <thead>
+              <tr>
+                <th>月份</th><th>公司</th><th>部门</th><th>岗位</th><th>岗级</th><th>员工类型</th><th>所在项目</th>
+                <th>底薪</th><th>实发底薪</th><th>绩效/奖励</th>
+                <th class="col-highlight">本月薪资总额</th>
+                <th>其他扣罚</th><th>个人所得税</th><th>社保个人</th><th>扣除合计</th>
+                <th class="col-highlight-green">综合收入</th>
+                <th>实发工资</th>
+              </tr>
+            </thead>
+            <tbody id="personal-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="personal-empty" style="text-align:center; padding:60px; color:#475569; font-size:14px;">
+        请输入姓名查询个人收入明细
+      </div>
+    </div>
+
+    <!-- 人力资源仪表盘 -->
+    <div class="panel" id="panel-dashboard">
+      <div class="dashboard-header">
+        <div class="dashboard-title">
+          <span class="dashboard-icon">📊</span>
+          <div>
+            <div class="dashboard-main-title">人力资源成本分析看板</div>
+            <div class="dashboard-sub-info">
+              统计周期：2026年1月 - 7月 | 数据来源：飞书文档 | 每月25日更新
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-formula">
+        <span class="formula-icon">⚡</span>
+        <span>人力成本计算公式：人力成本 = 应发工资 + 单位社保（含单位补缴）。应发工资包含基本工资、岗位工资、考核工资、绩效奖金及各项补贴；单位社保包含养老、医疗、工伤、失业等单位缴纳部分及单位补缴部分。</span>
+      </div>
+
+      <div class="dashboard-cards" id="dashboard-cards"></div>
+
+      <div class="dashboard-cards" id="dashboard-cards"></div>
+
+      <!-- Module 1: 月度人力成本分析 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">📈</span> 月度人力成本分析</div>
+        <div class="chart-container"><canvas id="dash-monthly-chart"></canvas></div>
+        <table class="dash-table" id="dash-monthly-table">
+          <thead>
+            <tr>
+              <th>月份</th>
+              <th class="text-center">在岗人数</th>
+              <th class="text-right">应发工资</th>
+              <th class="text-right">绩效/奖励</th>
+              <th class="text-right">单位社保</th>
+              <th class="text-right">个人所得税</th>
+              <th class="text-right">实发工资</th>
+              <th class="text-right">人力成本</th>
+              <th class="text-center">环比</th>
+            </tr>
+          </thead>
+          <tbody id="dash-monthly-tbody"></tbody>
+        </table>
+        <div class="insight-box" id="dash-monthly-insight"></div>
+      </div>
+
+      <!-- Module 2: 部门人力成本分析 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">🏢</span> 部门人力成本分析（1-7月累计）</div>
+        <div class="filter-bar" id="dash-dept-filter"></div>
+        <div class="chart-row">
+          <div>
+            <div class="chart-subtitle">各部门累计人力成本（按金额排序）</div>
+            <div class="chart-container"><canvas id="dash-dept-chart"></canvas></div>
+          </div>
+          <div>
+            <div class="chart-subtitle">部门月度人力成本趋势（可切换部门）</div>
+            <div class="chart-container"><canvas id="dash-dept-trend-chart"></canvas></div>
+          </div>
+        </div>
+        <table class="dash-table" id="dash-dept-table">
+          <thead>
+            <tr>
+              <th>部门</th>
+              <th class="text-center">人次</th>
+              <th class="text-right">应发工资</th>
+              <th class="text-right">绩效</th>
+              <th class="text-right">单位社保</th>
+              <th class="text-right">实发工资</th>
+              <th class="text-right">人均实发</th>
+              <th class="text-right">人力成本</th>
+              <th class="text-center">成本占比</th>
+              <th class="text-center">成本条</th>
+            </tr>
+          </thead>
+          <tbody id="dash-dept-tbody"></tbody>
+        </table>
+        <div class="insight-box" id="dash-dept-insight"></div>
+      </div>
+
+      <!-- Module 3: 岗级人力成本分析 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">🎖️</span> 岗级人力成本分析（1-7月累计）</div>
+        <div class="chart-row">
+          <div class="chart-container"><canvas id="dash-level-chart"></canvas></div>
+          <div class="chart-container"><canvas id="dash-level-salary-chart"></canvas></div>
+        </div>
+        <table class="dash-table" id="dash-level-table">
+          <thead>
+            <tr>
+              <th>岗级</th>
+              <th class="text-center">人次</th>
+              <th class="text-right">应发工资</th>
+              <th class="text-right">人均应发</th>
+              <th class="text-right">绩效</th>
+              <th class="text-right">单位社保</th>
+              <th class="text-right">实发工资</th>
+              <th class="text-right">人均实发</th>
+              <th class="text-right">人力成本</th>
+            </tr>
+          </thead>
+          <tbody id="dash-level-tbody"></tbody>
+        </table>
+        <div class="insight-box" id="dash-level-insight"></div>
+      </div>
+
+      <!-- Module 4: 主体公司 & 员工类型分析 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">🏛️</span> 主体公司 & 员工类型分析（1-7月累计）</div>
+        <div class="chart-row">
+          <div>
+            <div class="chart-subtitle">各主体人力成本</div>
+            <div class="chart-container"><canvas id="dash-entity-chart"></canvas></div>
+            <table class="dash-table" id="dash-entity-table">
+              <thead><tr><th>主体</th><th class="text-center">人次</th><th class="text-right">应发</th><th class="text-right">绩效</th><th class="text-right">社保</th><th class="text-right">实发</th><th class="text-right">人均</th><th class="text-right">人力成本</th></tr></thead>
+              <tbody id="dash-entity-tbody"></tbody>
+            </table>
+          </div>
+          <div>
+            <div class="chart-subtitle">员工类型分布</div>
+            <div class="chart-container"><canvas id="dash-type-chart"></canvas></div>
+            <table class="dash-table" id="dash-type-table">
+              <thead><tr><th>类型</th><th class="text-center">人次</th><th class="text-right">应发</th><th class="text-right">人均</th><th class="text-right">社保</th><th class="text-right">人力成本</th></tr></thead>
+              <tbody id="dash-type-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="insight-box" id="dash-entity-insight"></div>
+      </div>
+
+      <!-- Module 5: 部门×月度热力矩阵 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">🔄</span> 部门×月度人力成本趋势矩阵</div>
+        <div style="overflow-x:auto;">
+          <table class="dash-table" id="dash-heatmap-table">
+            <thead id="dash-heatmap-thead"></thead>
+            <tbody id="dash-heatmap-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Module 6: 岗位人力成本 TOP15 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">👤</span> 岗位人力成本 TOP15（1-7月累计）</div>
+        <table class="dash-table" id="dash-position-table">
+          <thead>
+            <tr>
+              <th>岗位</th>
+              <th class="text-center">人次</th>
+              <th class="text-right">应发工资</th>
+              <th class="text-right">人均应发</th>
+              <th class="text-right">绩效</th>
+              <th class="text-right">单位社保</th>
+              <th class="text-right">人力成本</th>
+            </tr>
+          </thead>
+          <tbody id="dash-position-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Module 7: 人均效能趋势分析 -->
+      <div class="dash-module">
+        <div class="dash-module-title"><span class="icon">📊</span> 人均效能趋势分析</div>
+        <div class="chart-container tall"><canvas id="dash-efficiency-chart"></canvas></div>
+        <div class="insight-box" id="dash-efficiency-insight"></div>
+      </div>
+    </div>
+    <!-- 项目经营分析看板 -->
+    <div class="panel" id="panel-analysis">
+      <div class="analysis-filters">
+        <div class="filter-item">
+          <label>年份</label>
+          <select id="a-year"><option value="2026">2026年</option></select>
+        </div>
+        <div class="filter-item">
+          <label>月份范围</label>
+          <div class="range">
+            <select id="a-month-start"></select>
+            <span>~</span>
+            <select id="a-month-end"></select>
+          </div>
+        </div>
+        <div class="filter-item">
+          <label>项目</label>
+          <select id="a-project"><option value="all">全部项目</option></select>
+        </div>
+        <div class="filter-item">
+          <label>板块</label>
+          <select id="a-sector">
+            <option value="daiyunying">代运营板块</option>
+            <option value="media">传媒板块</option>
+            <option value="private">私域板块</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <button class="refresh-btn" onclick="renderAnalysis()" style="margin-left:0">查询</button>
+        </div>
+      </div>
+
+      <!-- 第1部分：数据卡片概述 -->
+      <div class="analysis-section">
+        <div class="section-title"><span class="section-num">1</span>数据卡片概述</div>
+        <div class="analysis-cards" id="analysis-cards"></div>
+      </div>
+
+      <!-- 第2部分：项目净利润排名 -->
+      <div class="analysis-section">
+        <div class="section-title"><span class="section-num">2</span>项目净利润排名</div>
+        <div class="analysis-chart-box">
+          <div style="height:380px;position:relative"><canvas id="chart-profit-rank"></canvas></div>
+        </div>
+      </div>
+
+      <!-- 第3部分：成本结构总览 -->
+      <div class="analysis-section">
+        <div class="section-title"><span class="section-num">3</span>成本结构总览</div>
+        <div style="display:flex;gap:20px;align-items:flex-start">
+          <div style="flex:1;overflow-x:auto">
+            <table id="cost-overview-table">
+              <thead><tr><th>项目</th><th class="text-right">金额</th><th class="text-right">占收入比</th></tr></thead>
+              <tbody id="cost-overview-tbody"></tbody>
+            </table>
+          </div>
+          <div style="width:45%;height:340px;position:relative"><canvas id="chart-cost-overview"></canvas></div>
+        </div>
+      </div>
+
+      <!-- 第4部分：管理费用明细 -->
+      <div class="analysis-section">
+        <div class="section-title"><span class="section-num">4</span>管理费用明细</div>
+        <!-- 第一行：表格 -->
+        <div style="overflow-x:auto;margin-bottom:16px">
+          <table id="mgmt-detail-table">
+            <thead id="mgmt-detail-thead"></thead>
+            <tbody id="mgmt-detail-tbody"></tbody>
+          </table>
+        </div>
+        <!-- 第二行：折线图趋势 -->
+        <div class="analysis-chart-box" style="margin-bottom:16px">
+          <h4>管理费用趋势（折线图）</h4>
+          <div style="height:260px;position:relative"><canvas id="chart-mgmt-line"></canvas></div>
+        </div>
+        <!-- 第三行：面积图 -->
+        <div class="analysis-chart-box" style="margin-bottom:16px">
+          <h4>管理费用占比趋势（百分比堆积图）</h4>
+          <div style="height:260px;position:relative"><canvas id="chart-mgmt-area"></canvas></div>
+        </div>
+        <!-- 多月：费用构成堆叠柱状图+总成本折线 -->
+        <div class="analysis-chart-box" id="mgmt-stacked-box" style="display:none">
+          <h4>费用构成趋势（堆叠柱状+总成本折线）</h4>
+          <div style="height:300px;position:relative"><canvas id="chart-mgmt-stacked"></canvas></div>
+        </div>
+      </div>
+
+      <!-- 第5部分：项目成本明细 -->
+      <div class="analysis-section">
+        <div class="section-title"><span class="section-num">5</span>项目成本明细</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span style="color:#64748b;font-size:13px">共 <span id="detail-count">0</span> 条记录</span>
+          <button class="refresh-btn" onclick="downloadAnalysisExcel()" style="margin:0">📥 下载Excel</button>
+        </div>
+        <div style="overflow-x:auto">
+        <table id="analysis-table">
+          <thead id="analysis-thead"></thead>
+          <tbody id="analysis-tbody"></tbody>
+          <tfoot id="analysis-tfoot"></tfoot>
+        </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== 动态加载数据 ==========
+let DATA = null;
+async function loadData() {
+    try {
+        const res = await fetch('hr_data.json?t=' + Date.now());
+        if (!res.ok) throw new Error('数据加载失败');
+        DATA = await res.json();
+        initFilters();
+        initProjectFilters();
+        initAnalysisFilters();
+        renderDashboard();
+        renderSalaryTable();
+        renderProject();
+        renderAnalysis();
+        if (DATA.updateTime) {
+            document.getElementById('data-update-time').textContent = '更新于 ' + DATA.updateTime.split(' ')[0];
+        } else if (DATA.months) {
+            document.getElementById('data-update-time').textContent = '数据截止：' + DATA.months[DATA.months.length-1];
+        }
+    } catch(e) {
+        document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:100px;font-size:18px;">数据加载中...<br><span style="font-size:14px;color:#94a3b8;">如长时间未显示，请刷新页面</span></div>';
+        setTimeout(() => location.reload(), 3000);
+    }
+}
+// ===== 密码验证 =====
+const ACCESS_PASSWORD = 'juguang505';
+const AUTH_KEY = 'juguang_hr_auth_ts';
+const AUTH_DURATION = 24 * 60 * 60 * 1000;
+const authOverlay = document.getElementById('authOverlay');
+const authInput = document.getElementById('authInput');
+const authBtn = document.getElementById('authBtn');
+const authError = document.getElementById('authError');
+
+function checkAuth() {
+  const ts = localStorage.getItem(AUTH_KEY);
+  if (ts && (Date.now() - parseInt(ts)) < AUTH_DURATION) {
+    authOverlay.classList.add('hidden');
+    return true;
+  }
+  return false;
+}
+function doAuth() {
+  if (authInput.value.trim() === ACCESS_PASSWORD) {
+    localStorage.setItem(AUTH_KEY, Date.now().toString());
+    authOverlay.classList.add('hidden');
+    authError.textContent = '';
+  } else {
+    authError.textContent = '密码错误，请重新输入';
+    authInput.value = '';
+    authInput.focus();
+  }
+}
+authBtn.addEventListener('click', doAuth);
+authInput.addEventListener('keydown', e => { if (e.key === 'Enter') doAuth(); });
+if (!checkAuth()) authInput.focus();
+
+// ===== 标签切换 =====
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'analysis') setTimeout(renderAnalysis, 100);
+    if (tab.dataset.tab === 'dashboard') setTimeout(renderDashboard, 100);
+  });
+});
+
+// ===== 工具函数 =====
+function fmt(n) {
+  if (n === null || n === undefined || isNaN(n)) return '-';
+  return Number(n).toLocaleString('zh-CN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+
+// ===== 初始化筛选下拉 =====
+function initFilters() {
+  const fMonthStart = document.getElementById('f-month-start');
+  const fMonthEnd = document.getElementById('f-month-end');
+  DATA.months.forEach(m => { 
+    const o1=document.createElement('option'); o1.value=m; o1.textContent=m; fMonthStart.appendChild(o1);
+    const o2=document.createElement('option'); o2.value=m; o2.textContent=m; fMonthEnd.appendChild(o2);
+  });
+  
+  const fCompany = document.getElementById('f-company');
+  DATA.filters.companies.forEach(c => { const o=document.createElement('option'); o.value=c; o.textContent=c; fCompany.appendChild(o); });
+  
+  const fDept = document.getElementById('f-dept');
+  DATA.filters.departments.forEach(d => { const o=document.createElement('option'); o.value=d; o.textContent=d; fDept.appendChild(o); });
+  
+  const fPos = document.getElementById('f-position');
+  DATA.filters.positions.forEach(p => { const o=document.createElement('option'); o.value=p; o.textContent=p; fPos.appendChild(o); });
+  
+  const fEmpType = document.getElementById('f-emptype');
+  DATA.filters.emp_types.forEach(t => { const o=document.createElement('option'); o.value=t; o.textContent=t; fEmpType.appendChild(o); });
+  
+  const fProj = document.getElementById('f-project');
+  DATA.filters.projects.forEach(p => { const o=document.createElement('option'); o.value=p; o.textContent=p; fProj.appendChild(o); });
+  
+  // 个人模块
+  const pmMonth = document.getElementById('p-personal-month');
+  DATA.months.forEach(m => { const o=document.createElement('option'); o.value=m; o.textContent=m; pmMonth.appendChild(o); });
+}
+
+// ===== 薪资查询 =====
+let currentPage = 1;
+const pageSize = 50;
+
+function getFilteredSalary() {
+  const monthStart = document.getElementById('f-month-start').value;
+  const monthEnd = document.getElementById('f-month-end').value;
+  const company = document.getElementById('f-company').value;
+  const dept = document.getElementById('f-dept').value;
+  const position = document.getElementById('f-position').value;
+  const levelMin = document.getElementById('f-level-min').value;
+  const levelMax = document.getElementById('f-level-max').value;
+  const empType = document.getElementById('f-emptype').value;
+  const project = document.getElementById('f-project').value;
+  
+  // 计算月份范围
+  let months;
+  if (monthStart === 'all' && monthEnd === 'all') {
+    months = DATA.months;
+  } else if (monthStart === 'all') {
+    const endIdx = DATA.months.indexOf(monthEnd);
+    months = DATA.months.slice(0, endIdx + 1);
+  } else if (monthEnd === 'all') {
+    const startIdx = DATA.months.indexOf(monthStart);
+    months = DATA.months.slice(startIdx);
+  } else {
+    let startIdx = DATA.months.indexOf(monthStart);
+    let endIdx = DATA.months.indexOf(monthEnd);
+    if (startIdx > endIdx) { [startIdx, endIdx] = [endIdx, startIdx]; }
+    months = DATA.months.slice(startIdx, endIdx + 1);
+  }
+  
+  let result = [];
+  months.forEach(m => {
+    const emps = DATA.monthlyData[m] || [];
+    emps.forEach(e => {
+      if (company !== 'all' && e.company !== company) return;
+      if (dept !== 'all' && e.dept !== dept) return;
+      if (position !== 'all' && e.position !== position) return;
+      if (empType !== 'all' && e.empType !== empType) return;
+      if (project !== 'all' && e.project !== project) return;
+      if (levelMin && e.level && Number(e.level) < Number(levelMin)) return;
+      if (levelMax && e.level && Number(e.level) > Number(levelMax)) return;
+      result.push(e);
+    });
+  });
+  return result;
+}
+
+function renderSalaryStats(emps) {
+  const totalPeople = emps.length;
+  const totalSalary = emps.reduce((s, e) => s + (e.benyuexinzi || 0), 0);
+  const totalIncome = emps.reduce((s, e) => s + (e.zongheshouru || 0), 0);
+  const totalCost = emps.reduce((s, e) => s + (e.danweirengongchengben || 0), 0);
+  // 新增4项
+  const totalShebao = emps.reduce((s, e) => s + (e.gerenjiaona || 0) + (e.danweijiaona || 0), 0);
+  const totalGerenShebao = emps.reduce((s, e) => s + (e.gerenjiaona || 0), 0);
+  const totalDanweiShebao = emps.reduce((s, e) => s + (e.danweijiaona || 0), 0);
+  const totalGeshui = emps.reduce((s, e) => s + (e.gerensuodeshui || 0), 0);
+  
+  document.getElementById('salary-stats').innerHTML = `
+    <div class="stat-card blue"><div class="stat-label">筛选人数</div><div class="stat-value">${totalPeople}人</div></div>
+    <div class="stat-card green"><div class="stat-label">本月薪资总额</div><div class="stat-value">¥${fmt(totalSalary)}</div></div>
+    <div class="stat-card purple"><div class="stat-label">综合收入合计</div><div class="stat-value">¥${fmt(totalIncome)}</div></div>
+    <div class="stat-card orange"><div class="stat-label">单位人工成本</div><div class="stat-value">¥${fmt(totalCost)}</div></div>
+    <div class="stat-card cyan"><div class="stat-label">社保缴纳总额</div><div class="stat-value">¥${fmt(totalShebao)}</div></div>
+    <div class="stat-card pink"><div class="stat-label">个人社保缴纳</div><div class="stat-value">¥${fmt(totalGerenShebao)}</div></div>
+    <div class="stat-card amber"><div class="stat-label">单位社保缴纳</div><div class="stat-value">¥${fmt(totalDanweiShebao)}</div></div>
+    <div class="stat-card rose"><div class="stat-label">个人所得税总额</div><div class="stat-value">¥${fmt(totalGeshui)}</div></div>
+  `;
+}
+
+function renderSalaryTable() {
+  const emps = getFilteredSalary();
+  renderSalaryStats(emps);
+  
+  const totalPages = Math.ceil(emps.length / pageSize) || 1;
+  if (currentPage > totalPages) currentPage = totalPages;
+  const start = (currentPage - 1) * pageSize;
+  const pageData = emps.slice(start, start + pageSize);
+  
+  const tbody = document.getElementById('salary-tbody');
+  tbody.innerHTML = pageData.map(e => `
+    <tr>
+      <td>${e.month}</td>
+      <td>${e.company}</td>
+      <td>${e.dept}</td>
+      <td>${e.position}</td>
+      <td>${e.name}</td>
+      <td class="text-center">${e.level || '-'}</td>
+      <td>${e.empType || '-'}</td>
+      <td>${e.project || '-'}</td>
+      <td class="text-right">${fmt(e.dixin)}</td>
+      <td class="text-right">${fmt(e.shifadixin)}</td>
+      <td class="text-right">${fmt(e.jixiao)}</td>
+      <td class="text-right">${fmt(e.shebaojichu)}</td>
+      <td class="text-right">${fmt(e.gerenjiaona)}</td>
+      <td class="text-right">${fmt(e.danweijiaona)}</td>
+      <td class="text-right">${fmt(e.gerensuodeshui)}</td>
+      <td class="text-right col-highlight">${fmt(e.benyuexinzi)}</td>
+      <td class="text-right">${fmt(e.qitakoufa)}</td>
+      <td class="text-right">${fmt(e.kouchuheji)}</td>
+      <td class="text-right col-highlight-green">${fmt(e.zongheshouru)}</td>
+      <td class="text-right col-highlight-purple">${fmt(e.danweirengongchengben)}</td>
+    </tr>
+  `).join('');
+  
+  document.getElementById('salary-pagination').innerHTML = `
+    <button onclick="changePage(-1)" ${currentPage <= 1 ? 'disabled' : ''}>上一页</button>
+    <span>第 ${currentPage} / ${totalPages} 页，共 ${emps.length} 条</span>
+    <button onclick="changePage(1)" ${currentPage >= totalPages ? 'disabled' : ''}>下一页</button>
+  `;
+}
+
+function changePage(delta) {
+  currentPage += delta;
+  renderSalaryTable();
+}
+
+function resetFilters() {
+  ['f-month-start','f-month-end','f-company','f-dept','f-position','f-emptype','f-project'].forEach(id => {
+    document.getElementById(id).value = 'all';
+  });
+  document.getElementById('f-level-min').value = '';
+  document.getElementById('f-level-max').value = '';
+  currentPage = 1;
+  renderSalaryTable();
+}
+
+['f-month-start','f-month-end','f-company','f-dept','f-position','f-emptype','f-project'].forEach(id => {
+  document.getElementById(id).addEventListener('change', () => { currentPage = 1; renderSalaryTable(); });
+});
+['f-level-min','f-level-max'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => { currentPage = 1; renderSalaryTable(); });
+});
+
+// ===== 项目独立核算 =====
+function initProjectFilters() {
+  const monthSel = document.getElementById('p-month');
+  DATA.months.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = m;
+    monthSel.appendChild(opt);
+  });
+  
+  const groupSel = document.getElementById('p-group');
+  const groups = [...new Set(DATA.projectList.map(p => p.group))];
+  groups.forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g; opt.textContent = g;
+    groupSel.appendChild(opt);
+  });
+  
+  const projSel = document.getElementById('p-project');
+  DATA.projectList.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.id; opt.textContent = p.name;
+    opt.dataset.group = p.group;
+    projSel.appendChild(opt);
+  });
+}
+
+function renderProject() {
+  const month = document.getElementById('p-month').value;
+  const group = document.getElementById('p-group').value;
+  const project = document.getElementById('p-project').value;
+  
+  const months = month === 'all' ? DATA.months : [month];
+  let rows = [];
+  
+  months.forEach(m => {
+    const acc = DATA.projectAccounting[m] || {};
+    Object.keys(acc).forEach(pid => {
+      if (project !== 'all' && pid !== project) return;
+      const item = acc[pid];
+      if (group !== 'all' && item.group !== group) return;
+      
+      rows.push({
+        id: pid,
+        name: item.project_name,
+        group: item.group,
+        month: m,
+        count: item.headcount,
+        income: item.income,
+        direct: item.direct_cost,
+        contentShare: item.content_share,
+        mgmtShare: item.mgmt_share,
+        managerShare: item.manager_share,
+        laborTotal: item.labor_total || (item.direct_cost + item.content_share + item.mgmt_share + item.manager_share),
+        mainBizCost: item.main_business_cost || 0,
+        qianchuanCost: item.qianchuan_cost || 0,
+        mgmtFeeAlloc: item.mgmt_fee_alloc || 0,
+        total: item.total_cost,
+        profit: item.profit,
+        costRatio: item.cost_ratio,
+      });
+    });
+  });
+  
+  const totalIncome = rows.reduce((s,r) => s + r.income, 0);
+  const totalCost = rows.reduce((s,r) => s + r.total, 0);
+  const totalProfit = rows.reduce((s,r) => s + r.profit, 0);
+  const avgRatio = totalIncome > 0 ? (totalCost / totalIncome * 100) : 0;
+  
+  document.getElementById('project-stats').innerHTML = `
+    <div class="stat-card blue"><div class="stat-label">项目记录数</div><div class="stat-value">${rows.length}</div></div>
+    <div class="stat-card green"><div class="stat-label">收入合计</div><div class="stat-value">¥${fmt(totalIncome)}</div></div>
+    <div class="stat-card orange"><div class="stat-label">总成本合计</div><div class="stat-value">¥${fmt(totalCost)}</div></div>
+    <div class="stat-card ${totalProfit >= 0 ? 'green' : 'rose'}"><div class="stat-label">净利润合计</div><div class="stat-value">¥${fmt(totalProfit)}</div></div>
+    <div class="stat-card purple"><div class="stat-label">平均成本占比</div><div class="stat-value">${avgRatio.toFixed(1)}%</div></div>
+  `;
+  
+  const tbody = document.getElementById('project-tbody');
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.name}</td>
+      <td>${r.group}</td>
+      <td>${r.month}</td>
+      <td class="text-center">${r.count}</td>
+      <td class="text-right">${r.income > 0 ? '¥' + fmt(r.income) : '-'}</td>
+      <td class="text-right">¥${fmt(r.direct)}</td>
+      <td class="text-right">¥${fmt(r.contentShare)}</td>
+      <td class="text-right">¥${fmt(r.mgmtShare)}</td>
+      <td class="text-right">¥${fmt(r.managerShare)}</td>
+      <td class="text-right col-highlight">¥${fmt(r.laborTotal)}</td>
+      <td class="text-right">${r.mainBizCost > 0 ? '¥' + fmt(r.mainBizCost) : '-'}</td>
+      <td class="text-right">${r.qianchuanCost > 0 ? '¥' + fmt(r.qianchuanCost) : '-'}</td>
+      <td class="text-right">¥${fmt(r.mgmtFeeAlloc)}</td>
+      <td class="text-right col-highlight">¥${fmt(r.total)}</td>
+      <td class="text-right ${r.profit >= 0 ? 'profit-positive' : 'profit-negative'}">¥${fmt(r.profit)}</td>
+      <td class="text-right col-highlight-green">${r.costRatio > 0 ? r.costRatio.toFixed(1) + '%' : '-'}</td>
+    </tr>
+  `).join('');
+}
+
+function resetProjectFilters() {
+  document.getElementById('p-month').value = 'all';
+  document.getElementById('p-group').value = 'all';
+  document.getElementById('p-project').value = 'all';
+  renderProject();
+}
+
+document.getElementById('p-month').addEventListener('change', renderProject);
+document.getElementById('p-group').addEventListener('change', renderProject);
+document.getElementById('p-project').addEventListener('change', renderProject);
+
+// ===== 人力资源仪表盘（7大模块） =====
+let _dashCharts = {};
+
+function _dashDestroyCharts() {
+  Object.keys(_dashCharts).forEach(k => {
+    if (_dashCharts[k]) { try { _dashCharts[k].destroy(); } catch(e){} }
+  });
+  _dashCharts = {};
+}
+
+function _dashFmt(n) {
+  if (n === null || n === undefined || isNaN(n)) return '0';
+  n = Number(n);
+  if (Math.abs(n) >= 10000) return (n / 10000).toFixed(2) + '万';
+  return Math.round(n).toLocaleString('zh-CN') + '元';
+}
+
+function _dashFmtRaw(n) {
+  if (n === null || n === undefined || isNaN(n)) return 0;
+  return Number(n);
+}
+
+function _dashLevelGroup(level) {
+  const l = parseInt(level);
+  if (isNaN(l)) return '其他';
+  if (l === 0) return '兼职';
+  if (l >= 1 && l <= 4) return '基层';
+  if (l >= 5 && l <= 8) return '中层';
+  if (l >= 9 && l <= 12) return '高层';
+  return '其他';
+}
+
+const _DASH_COLORS = {
+  blue: '#3b82f6', green: '#10b981', purple: '#a78bfa',
+  orange: '#f59e0b', red: '#ef4444', cyan: '#06b6d4',
+  pink: '#ec4899', teal: '#14b8a6', indigo: '#6366f1',
+  amber: '#f59e0b', lime: '#84cc16', rose: '#f43f5e'
+};
+const _DASH_PALETTE = [_DASH_COLORS.blue, _DASH_COLORS.green, _DASH_COLORS.orange, _DASH_COLORS.red,
+  _DASH_COLORS.purple, _DASH_COLORS.cyan, _DASH_COLORS.pink, _DASH_COLORS.teal,
+  _DASH_COLORS.indigo, _DASH_COLORS.amber, _DASH_COLORS.lime, _DASH_COLORS.rose];
+
+function _dashChartDefaults() {
+  if (typeof Chart === 'undefined') return;
+  Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif";
+  Chart.defaults.font.size = 12;
+  Chart.defaults.color = '#94a3b8';
+Chart.register(ChartDataLabels);
+Chart.defaults.set('plugins.datalabels', {
+  color: '#e2e8f0',
+  font: { size: 10, weight: 'bold' },
+  textShadowBlur: 4,
+  textShadowColor: 'rgba(0,0,0,0.8)'
+});
+}
+
+function renderDashboard() {
+  _dashDestroyCharts();
+  _dashChartDefaults();
+
+  const months = DATA.months;
+  const allEmps = [];
+  months.forEach(m => { allEmps.push(...(DATA.monthlyData[m] || [])); });
+
+  // ===== 聚合计算 =====
+  // 月度
+  const monthly = {};
+  months.forEach(m => {
+    const emps = DATA.monthlyData[m] || [];
+    monthly[m] = {
+      headcount: emps.length,
+      gross: emps.reduce((s,e) => s + _dashFmtRaw(e.benyuexinzi), 0),
+      net: emps.reduce((s,e) => s + _dashFmtRaw(e.shifagongzi), 0),
+      perf: emps.reduce((s,e) => s + _dashFmtRaw(e.jixiao), 0),
+      social: emps.reduce((s,e) => s + _dashFmtRaw(e.danweijiaona), 0),
+      tax: emps.reduce((s,e) => s + _dashFmtRaw(e.gerensuodeshui), 0),
+      cost: emps.reduce((s,e) => s + _dashFmtRaw(e.danweirengongchengben), 0),
+    };
+  });
+
+  // 部门
+  const deptMap = {};
+  allEmps.forEach(e => {
+    const d = e.dept || '未知';
+    if (!deptMap[d]) deptMap[d] = { headcount:0, gross:0, net:0, perf:0, social:0, cost:0, monthly:{} };
+    deptMap[d].headcount++;
+    deptMap[d].gross += _dashFmtRaw(e.benyuexinzi);
+    deptMap[d].net += _dashFmtRaw(e.shifagongzi);
+    deptMap[d].perf += _dashFmtRaw(e.jixiao);
+    deptMap[d].social += _dashFmtRaw(e.danweijiaona);
+    deptMap[d].cost += _dashFmtRaw(e.danweirengongchengben);
+    if (!deptMap[d].monthly[e.month]) deptMap[d].monthly[e.month] = 0;
+    deptMap[d].monthly[e.month] += _dashFmtRaw(e.danweirengongchengben);
+  });
+  const deptList = Object.keys(deptMap).sort((a,b) => deptMap[b].cost - deptMap[a].cost);
+  const totalCost = allEmps.reduce((s,e) => s + _dashFmtRaw(e.danweirengongchengben), 0);
+  const totalGross = allEmps.reduce((s,e) => s + _dashFmtRaw(e.benyuexinzi), 0);
+  const totalNet = allEmps.reduce((s,e) => s + _dashFmtRaw(e.shifagongzi), 0);
+  const totalPerf = allEmps.reduce((s,e) => s + _dashFmtRaw(e.jixiao), 0);
+  const totalSocial = allEmps.reduce((s,e) => s + _dashFmtRaw(e.danweijiaona), 0);
+  const avgHeadcount = Math.round(months.reduce((s,m) => s + monthly[m].headcount, 0) / months.length);
+  const latestHeadcount = monthly[months[months.length-1]].headcount;
+
+  // 岗级
+  const levelMap = {};
+  ['兼职','基层','中层','高层','其他'].forEach(l => {
+    levelMap[l] = { headcount:0, gross:0, net:0, perf:0, social:0, cost:0 };
+  });
+  allEmps.forEach(e => {
+    const lg = _dashLevelGroup(e.level);
+    levelMap[lg].headcount++;
+    levelMap[lg].gross += _dashFmtRaw(e.benyuexinzi);
+    levelMap[lg].net += _dashFmtRaw(e.shifagongzi);
+    levelMap[lg].perf += _dashFmtRaw(e.jixiao);
+    levelMap[lg].social += _dashFmtRaw(e.danweijiaona);
+    levelMap[lg].cost += _dashFmtRaw(e.danweirengongchengben);
+  });
+
+  // 主体公司
+  const entityMap = {};
+  allEmps.forEach(e => {
+    const c = e.company || '未知';
+    if (!entityMap[c]) entityMap[c] = { headcount:0, gross:0, net:0, perf:0, social:0, cost:0 };
+    entityMap[c].headcount++;
+    entityMap[c].gross += _dashFmtRaw(e.benyuexinzi);
+    entityMap[c].net += _dashFmtRaw(e.shifagongzi);
+    entityMap[c].perf += _dashFmtRaw(e.jixiao);
+    entityMap[c].social += _dashFmtRaw(e.danweijiaona);
+    entityMap[c].cost += _dashFmtRaw(e.danweirengongchengben);
+  });
+  const entityList = Object.keys(entityMap).sort((a,b) => entityMap[b].cost - entityMap[a].cost);
+
+  // 员工类型
+  const typeMap = {};
+  allEmps.forEach(e => {
+    const t = e.empType || '未知';
+    if (!typeMap[t]) typeMap[t] = { headcount:0, gross:0, net:0, perf:0, social:0, cost:0 };
+    typeMap[t].headcount++;
+    typeMap[t].gross += _dashFmtRaw(e.benyuexinzi);
+    typeMap[t].net += _dashFmtRaw(e.shifagongzi);
+    typeMap[t].perf += _dashFmtRaw(e.jixiao);
+    typeMap[t].social += _dashFmtRaw(e.danweijiaona);
+    typeMap[t].cost += _dashFmtRaw(e.danweirengongchengben);
+  });
+  const typeList = Object.keys(typeMap).sort((a,b) => typeMap[b].headcount - typeMap[a].headcount);
+
+  // 岗位
+  const posMap = {};
+  allEmps.forEach(e => {
+    const p = e.position || '未知';
+    if (!posMap[p]) posMap[p] = { headcount:0, gross:0, net:0, perf:0, social:0, cost:0 };
+    posMap[p].headcount++;
+    posMap[p].gross += _dashFmtRaw(e.benyuexinzi);
+    posMap[p].net += _dashFmtRaw(e.shifagongzi);
+    posMap[p].perf += _dashFmtRaw(e.jixiao);
+    posMap[p].social += _dashFmtRaw(e.danweijiaona);
+    posMap[p].cost += _dashFmtRaw(e.danweirengongchengben);
+  });
+  const posList = Object.keys(posMap).sort((a,b) => posMap[b].cost - posMap[a].cost).slice(0, 15);
+
+  // ===== KPI卡片 =====
+  document.getElementById('dashboard-cards').innerHTML = `
+    <div class="dash-card purple">
+      <div class="dash-card-label">累计人力成本</div>
+      <div class="dash-card-value">${_dashFmt(totalCost)}</div>
+      <div class="dash-card-desc">= 应发${_dashFmt(totalGross)} + 社保${_dashFmt(totalSocial)}</div>
+    </div>
+    <div class="dash-card blue">
+      <div class="dash-card-label">累计应发工资</div>
+      <div class="dash-card-value">${_dashFmt(totalGross)}</div>
+      <div class="dash-card-desc">占人力成本${totalCost>0?(totalGross/totalCost*100).toFixed(1):0}%</div>
+    </div>
+    <div class="dash-card green">
+      <div class="dash-card-label">累计实发工资</div>
+      <div class="dash-card-value">${_dashFmt(totalNet)}</div>
+      <div class="dash-card-desc">扣除社保+个税</div>
+    </div>
+    <div class="dash-card orange">
+      <div class="dash-card-label">累计绩效奖金</div>
+      <div class="dash-card-value">${_dashFmt(totalPerf)}</div>
+      <div class="dash-card-desc">占应发${totalGross>0?(totalPerf/totalGross*100).toFixed(1):0}%</div>
+    </div>
+    <div class="dash-card cyan">
+      <div class="dash-card-label">累计单位社保</div>
+      <div class="dash-card-value">${_dashFmt(totalSocial)}</div>
+      <div class="dash-card-desc">占人力成本${totalCost>0?(totalSocial/totalCost*100).toFixed(1):0}%</div>
+    </div>
+    <div class="dash-card rose">
+      <div class="dash-card-label">平均在岗人数</div>
+      <div class="dash-card-value">${avgHeadcount}人</div>
+      <div class="dash-card-desc">7月在岗${latestHeadcount}人</div>
+    </div>
+  `;
+
+  // ===== Module 1: 月度人力成本分析 =====
+  // 图表
+  const monthlyCtx = document.getElementById('dash-monthly-chart');
+  if (monthlyCtx) {
+    _dashCharts.monthly = new Chart(monthlyCtx, {
+      type: 'bar',
+      data: {
+        labels: months,
+        datasets: [
+          { label:'应发工资', data: months.map(m=>monthly[m].gross), backgroundColor:_DASH_COLORS.blue, borderRadius:4 },
+          { label:'实发工资', data: months.map(m=>monthly[m].net), backgroundColor:_DASH_COLORS.green, borderRadius:4 },
+          { label:'绩效奖金', data: months.map(m=>monthly[m].perf), backgroundColor:_DASH_COLORS.orange, borderRadius:4 },
+          { label:'单位社保', data: months.map(m=>monthly[m].social), backgroundColor:_DASH_COLORS.cyan, borderRadius:4 },
+          { label:'人力成本', data: months.map(m=>monthly[m].cost), type:'line', borderColor:_DASH_COLORS.purple,
+            backgroundColor:_DASH_COLORS.purple+'20', fill:true, tension:0.3, borderWidth:3, pointRadius:5 },
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ position:'top', labels:{color:'#cbd5e1'} } },
+        scales:{
+          x:{ ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y:{ beginAtZero:true, ticks:{color:'#94a3b8', callback:v=>(v/10000).toFixed(0)+'万'}, grid:{color:'rgba(148,163,184,0.1)'} }
+        }
+      }
+    });
+  }
+
+  // 月度表格
+  const mTbody = document.getElementById('dash-monthly-tbody');
+  if (mTbody) {
+    mTbody.innerHTML = months.map((m, i) => {
+      const d = monthly[m];
+      let rateHtml = '<span class="rate-flat">—</span>';
+      if (i > 0) {
+        const prev = monthly[months[i-1]].cost;
+        if (prev > 0) {
+          const rate = (d.cost - prev) / prev * 100;
+          if (rate >= 0) rateHtml = `<span class="rate-up">↑${rate.toFixed(1)}%</span>`;
+          else rateHtml = `<span class="rate-down">↓${Math.abs(rate).toFixed(1)}%</span>`;
+        }
+      }
+      return `<tr>
+        <td class="text-center" style="font-weight:600">${m}</td>
+        <td class="text-center">${d.headcount}</td>
+        <td class="text-right val-blue">${_dashFmt(d.gross)}</td>
+        <td class="text-right">${_dashFmt(d.perf)}</td>
+        <td class="text-right">${_dashFmt(d.social)}</td>
+        <td class="text-right">${_dashFmt(d.tax)}</td>
+        <td class="text-right val-green">${_dashFmt(d.net)}</td>
+        <td class="text-right val-purple">${_dashFmt(d.cost)}</td>
+        <td class="text-center">${rateHtml}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 月度解读
+  const maxMonth = months.reduce((a,b) => monthly[a].cost > monthly[b].cost ? a : b);
+  const minMonth = months.reduce((a,b) => monthly[a].cost < monthly[b].cost ? a : b);
+  const monthAvg = totalCost / months.length;
+  const lastRate = months.length > 1 ? ((monthly[months[months.length-1]].cost - monthly[months[months.length-2]].cost) / monthly[months[months.length-2]].cost * 100) : 0;
+  const firstHc = monthly[months[0]].headcount;
+  const lastHc = monthly[months[months.length-1]].headcount;
+  document.getElementById('dash-monthly-insight').innerHTML = `
+    <div class="insight-title">💡 数据解读</div>
+    ${months[0]}-${months[months.length-1]}累计人力成本 <b>${_dashFmt(totalCost)}</b>，月均 ${_dashFmt(monthAvg)}。其中应发工资 ${_dashFmt(totalGross)}（占 ${totalCost>0?(totalGross/totalCost*100).toFixed(1):0}%），单位社保 ${_dashFmt(totalSocial)}（占 ${totalCost>0?(totalSocial/totalCost*100).toFixed(1):0}%）。<br>
+    人力成本最高的月份为 <b>${maxMonth}</b>（${_dashFmt(monthly[maxMonth].cost)}），最低为 <b>${minMonth}</b>（${_dashFmt(monthly[minMonth].cost)}），月度波动幅度 ${monthly[minMonth].cost>0?((monthly[maxMonth].cost-monthly[minMonth].cost)/monthly[minMonth].cost*100).toFixed(1):0}%。<br>
+    ${months[months.length-1]}环比${lastRate>=0?'上升':'下降'} ${Math.abs(lastRate).toFixed(1)}%。<br>
+    在岗人数从${months[0]}的${firstHc}人变化到${months[months.length-1]}的${lastHc}人，${lastHc>=firstHc?'净增':'净减'}${Math.abs(lastHc-firstHc)}人。
+  `;
+
+  // ===== Module 2: 部门人力成本分析 =====
+  // 切片器
+  const filterBar = document.getElementById('dash-dept-filter');
+  if (filterBar) {
+    let btns = '<span class="filter-label">🔍 部门切片器：</span>';
+    btns += `<button class="filter-btn active" onclick="_dashFilterDept('全部')">全部</button>`;
+    deptList.forEach(d => {
+      btns += `<button class="filter-btn" onclick="_dashFilterDept('${d}')">${d}</button>`;
+    });
+    filterBar.innerHTML = btns;
+  }
+
+  // 部门柱状图
+  const deptCtx = document.getElementById('dash-dept-chart');
+  if (deptCtx) {
+    _dashCharts.dept = new Chart(deptCtx, {
+      type:'bar',
+      data: {
+        labels: deptList,
+        datasets:[{ label:'累计人力成本', data: deptList.map(d=>deptMap[d].cost),
+          backgroundColor: deptList.map((_,i)=>_DASH_PALETTE[i%_DASH_PALETTE.length]), borderRadius:4 }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+        plugins:{ legend:{display:false} },
+        scales:{
+          x:{ beginAtZero:true, ticks:{color:'#94a3b8', callback:v=>(v/10000).toFixed(0)+'万'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y:{ ticks:{color:'#cbd5e1'}, grid:{display:false} }
+        }
+      }
+    });
+  }
+
+  // 部门趋势图
+  const deptTrendCtx = document.getElementById('dash-dept-trend-chart');
+  if (deptTrendCtx) {
+    const allDeptMonthly = months.map(m => deptList.reduce((s,d) => s + (deptMap[d].monthly[m]||0), 0));
+    _dashCharts.deptTrend = new Chart(deptTrendCtx, {
+      type:'line',
+      data: {
+        labels: months,
+        datasets:[{ label:'全部部门人力成本', data: allDeptMonthly,
+          borderColor:_DASH_COLORS.purple, backgroundColor:_DASH_COLORS.purple+'20',
+          fill:true, tension:0.3, borderWidth:3, pointRadius:5 }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'top', labels:{color:'#cbd5e1'}} },
+        scales:{
+          x:{ ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y:{ beginAtZero:true, ticks:{color:'#94a3b8', callback:v=>(v/10000).toFixed(0)+'万'}, grid:{color:'rgba(148,163,184,0.1)'} }
+        }
+      }
+    });
+  }
+
+  // 部门表格
+  const deptTbody = document.getElementById('dash-dept-tbody');
+  if (deptTbody) {
+    const maxDeptCost = deptList.length > 0 ? deptMap[deptList[0]].cost : 1;
+    deptTbody.innerHTML = deptList.map(d => {
+      const info = deptMap[d];
+      const pct = totalCost > 0 ? (info.cost / totalCost * 100) : 0;
+      const barW = maxDeptCost > 0 ? (info.cost / maxDeptCost * 100) : 0;
+      const avgNet = info.headcount > 0 ? info.net / info.headcount : 0;
+      return `<tr>
+        <td style="font-weight:600">${d}</td>
+        <td class="text-center">${info.headcount}</td>
+        <td class="text-right">${_dashFmt(info.gross)}</td>
+        <td class="text-right">${_dashFmt(info.perf)}</td>
+        <td class="text-right">${_dashFmt(info.social)}</td>
+        <td class="text-right">${_dashFmt(info.net)}</td>
+        <td class="text-right">${_dashFmt(avgNet)}</td>
+        <td class="text-right val-purple">${_dashFmt(info.cost)}</td>
+        <td class="text-center" style="color:#94a3b8">${pct.toFixed(1)}%</td>
+        <td style="min-width:120px"><div class="rate-bar"><span class="rate-fill" style="width:${barW.toFixed(1)}%"></span></div></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 部门解读
+  if (deptList.length > 0) {
+    const topDept = deptList[0];
+    const top3Pct = deptList.slice(0,3).reduce((s,d) => s + deptMap[d].cost, 0) / totalCost * 100;
+    const highestAvgDept = deptList.reduce((a,b) => (deptMap[a].net/deptMap[a].headcount) > (deptMap[b].net/deptMap[b].headcount) ? a : b);
+    const highestAvg = deptMap[highestAvgDept].net / deptMap[highestAvgDept].headcount;
+    document.getElementById('dash-dept-insight').innerHTML = `
+      <div class="insight-title">💡 数据解读</div>
+      <b>${months.length}个月累计</b>共 ${deptList.length} 个部门，总人力成本 ${_dashFmt(totalCost)}。<br>
+      人力成本最高的部门为 <b>${topDept}</b>，累计 ${_dashFmt(deptMap[topDept].cost)}（占总成本 ${(deptMap[topDept].cost/totalCost*100).toFixed(1)}%），人均实发 ${_dashFmt(deptMap[topDept].net/deptMap[topDept].headcount)}，${deptMap[topDept].headcount}人次。<br>
+      前3大部门（${deptList.slice(0,3).join('、')}）合计占总人力成本 ${top3Pct.toFixed(1)}%，成本集中度较高。<br>
+      人均实发最高的是 <b>${highestAvgDept}</b>（${_dashFmt(highestAvg)}/人），建议关注高人均部门的绩效产出匹配度。
+    `;
+  }
+
+  // ===== Module 3: 岗级人力成本分析 =====
+  const levelLabels = ['兼职','基层','中层','高层','其他'];
+  const levelCtx = document.getElementById('dash-level-chart');
+  if (levelCtx) {
+    _dashCharts.level = new Chart(levelCtx, {
+      type:'bar',
+      data: {
+        labels: levelLabels,
+        datasets:[
+          { label:'人力成本', data: levelLabels.map(l=>levelMap[l].cost), backgroundColor:_DASH_COLORS.purple, borderRadius:4, yAxisID:'y' },
+          { label:'人次', data: levelLabels.map(l=>levelMap[l].headcount), type:'line', borderColor:_DASH_COLORS.orange,
+            backgroundColor:_DASH_COLORS.orange, borderWidth:2, tension:0.3, yAxisID:'y1' },
+        ]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'top', labels:{color:'#cbd5e1'}} },
+        scales:{
+          x:{ ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y:{ beginAtZero:true, position:'left', ticks:{color:'#94a3b8', callback:v=>(v/10000).toFixed(0)+'万'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y1:{ beginAtZero:true, position:'right', grid:{display:false}, ticks:{color:'#f59e0b'} }
+        }
+      }
+    });
+  }
+
+  const levelSalaryCtx = document.getElementById('dash-level-salary-chart');
+  if (levelSalaryCtx) {
+    _dashCharts.levelSalary = new Chart(levelSalaryCtx, {
+      type:'bar',
+      data: {
+        labels: levelLabels,
+        datasets:[{ label:'人均实发工资', data: levelLabels.map(l => levelMap[l].headcount>0?levelMap[l].net/levelMap[l].headcount:0),
+          backgroundColor:_DASH_COLORS.green, borderRadius:4 }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{
+          x:{ ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y:{ beginAtZero:true, ticks:{color:'#94a3b8', callback:v=>(v/10000).toFixed(1)+'万'}, grid:{color:'rgba(148,163,184,0.1)'} }
+        }
+      }
+    });
+  }
+
+  // 岗级表格
+  const levelTbody = document.getElementById('dash-level-tbody');
+  if (levelTbody) {
+    levelTbody.innerHTML = levelLabels.map(l => {
+      const info = levelMap[l];
+      const avgGross = info.headcount > 0 ? info.gross / info.headcount : 0;
+      const avgNet = info.headcount > 0 ? info.net / info.headcount : 0;
+      return `<tr>
+        <td class="text-center" style="font-weight:600">${l}</td>
+        <td class="text-center">${info.headcount}</td>
+        <td class="text-right">${_dashFmt(info.gross)}</td>
+        <td class="text-right">${_dashFmt(avgGross)}</td>
+        <td class="text-right">${_dashFmt(info.perf)}</td>
+        <td class="text-right">${_dashFmt(info.social)}</td>
+        <td class="text-right">${_dashFmt(info.net)}</td>
+        <td class="text-right">${_dashFmt(avgNet)}</td>
+        <td class="text-right val-purple">${_dashFmt(info.cost)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 岗级解读
+  const totalHeadcount = allEmps.length;
+  const jcAvg = levelMap['基层'].headcount > 0 ? levelMap['基层'].net / levelMap['基层'].headcount : 1;
+  const gcAvg = levelMap['高层'].headcount > 0 ? levelMap['高层'].net / levelMap['高层'].headcount : 0;
+  document.getElementById('dash-level-insight').innerHTML = `
+    <div class="insight-title">💡 数据解读</div>
+    共 5 个层级（兼职/基层/中层/高层/其他），总人次 ${totalHeadcount}。<br>
+    ${levelLabels.map(l => {
+      const info = levelMap[l];
+      const hcPct = totalHeadcount > 0 ? (info.headcount / totalHeadcount * 100) : 0;
+      const costPct = totalCost > 0 ? (info.cost / totalCost * 100) : 0;
+      const avgNet = info.headcount > 0 ? info.net / info.headcount : 0;
+      return `<b>${l}</b>：${info.headcount}人次（占 ${hcPct.toFixed(1)}%），人力成本 ${_dashFmt(info.cost)}（占 ${costPct.toFixed(1)}%），人均实发 ${_dashFmt(avgNet)}。`;
+    }).join('<br>')}<br>
+    高层以 ${totalHeadcount>0?(levelMap['高层'].headcount/totalHeadcount*100).toFixed(1):0}% 的人次占比贡献了 ${totalCost>0?(levelMap['高层'].cost/totalCost*100).toFixed(1):0}% 的人力成本，建议关注核心人才保留。<br>
+    高层人均实发是基层的 ${jcAvg>0?(gcAvg/jcAvg).toFixed(1):0} 倍，层级薪资梯度明显。
+  `;
+
+  // ===== Module 4: 主体公司 & 员工类型分析 =====
+  const entityCtx = document.getElementById('dash-entity-chart');
+  if (entityCtx) {
+    _dashCharts.entity = new Chart(entityCtx, {
+      type:'doughnut',
+      data: {
+        labels: entityList,
+        datasets:[{ data: entityList.map(e=>entityMap[e].cost),
+          backgroundColor: entityList.map((_,i)=>_DASH_PALETTE[i%_DASH_PALETTE.length]),
+          borderWidth:2, borderColor:'rgba(15,23,42,0.8)' }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'bottom', labels:{color:'#cbd5e1'}} }, cutout:'55%' }
+    });
+  }
+
+  const typeCtx = document.getElementById('dash-type-chart');
+  if (typeCtx) {
+    _dashCharts.type = new Chart(typeCtx, {
+      type:'pie',
+      data: {
+        labels: typeList,
+        datasets:[{ data: typeList.map(t=>typeMap[t].headcount),
+          backgroundColor: typeList.map((_,i)=>_DASH_PALETTE[i%_DASH_PALETTE.length]),
+          borderWidth:2, borderColor:'rgba(15,23,42,0.8)' }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'bottom', labels:{color:'#cbd5e1'}} } }
+    });
+  }
+
+  // 主体表格
+  const entityTbody = document.getElementById('dash-entity-tbody');
+  if (entityTbody) {
+    entityTbody.innerHTML = entityList.map(e => {
+      const info = entityMap[e];
+      const avg = info.headcount > 0 ? info.net / info.headcount : 0;
+      return `<tr>
+        <td style="font-weight:600">${e}</td>
+        <td class="text-center">${info.headcount}</td>
+        <td class="text-right">${_dashFmt(info.gross)}</td>
+        <td class="text-right">${_dashFmt(info.perf)}</td>
+        <td class="text-right">${_dashFmt(info.social)}</td>
+        <td class="text-right">${_dashFmt(info.net)}</td>
+        <td class="text-right">${_dashFmt(avg)}</td>
+        <td class="text-right val-purple">${_dashFmt(info.cost)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 类型表格
+  const typeTbody = document.getElementById('dash-type-tbody');
+  if (typeTbody) {
+    typeTbody.innerHTML = typeList.map(t => {
+      const info = typeMap[t];
+      const avg = info.headcount > 0 ? info.gross / info.headcount : 0;
+      return `<tr>
+        <td style="font-weight:600">${t}</td>
+        <td class="text-center">${info.headcount}</td>
+        <td class="text-right">${_dashFmt(info.gross)}</td>
+        <td class="text-right">${_dashFmt(avg)}</td>
+        <td class="text-right">${_dashFmt(info.social)}</td>
+        <td class="text-right val-purple">${_dashFmt(info.cost)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 主体解读
+  if (entityList.length > 0) {
+    const topEntity = entityList[0];
+    document.getElementById('dash-entity-insight').innerHTML = `
+      <div class="insight-title">💡 数据解读</div>
+      人力成本最高的主体为 <b>${topEntity}</b>（${_dashFmt(entityMap[topEntity].cost)}，占 ${totalCost>0?(entityMap[topEntity].cost/totalCost*100).toFixed(1):0}%）。<br>
+      员工类型方面，${typeList.slice(0,2).map(t => `${t}：${typeMap[t].headcount}人（${totalHeadcount>0?(typeMap[t].headcount/totalHeadcount*100).toFixed(1):0}%），人力成本 ${_dashFmt(typeMap[t].cost)}`).join('；')}。
+    `;
+  }
+
+  // ===== Module 5: 部门×月度热力矩阵 =====
+  const heatThead = document.getElementById('dash-heatmap-thead');
+  const heatTbody = document.getElementById('dash-heatmap-tbody');
+  if (heatThead && heatTbody) {
+    heatThead.innerHTML = `<tr><th>部门</th>${months.map(m=>`<th class="text-right">${m}</th>`).join('')}</tr>`;
+    // Find max value for heatmap coloring
+    let maxVal = 0;
+    deptList.forEach(d => {
+      months.forEach(m => {
+        const v = deptMap[d].monthly[m] || 0;
+        if (v > maxVal) maxVal = v;
+      });
+    });
+    heatTbody.innerHTML = deptList.map(d => {
+      const cells = months.map(m => {
+        const v = deptMap[d].monthly[m] || 0;
+        const intensity = maxVal > 0 ? v / maxVal : 0;
+        // Blue gradient: from transparent to solid blue
+        const bg = `rgba(59,130,246,${(0.1 + intensity * 0.7).toFixed(2)})`;
+        const textColor = intensity > 0.5 ? '#fff' : '#cbd5e1';
+        return `<td class="heatmap-cell" style="background:${bg};color:${textColor}">${v>0?_dashFmt(v):'0元'}</td>`;
+      }).join('');
+      return `<tr><td style="font-weight:600;white-space:nowrap">${d}</td>${cells}</tr>`;
+    }).join('');
+  }
+
+  // ===== Module 6: 岗位人力成本 TOP15 =====
+  const posTbody = document.getElementById('dash-position-tbody');
+  if (posTbody) {
+    posTbody.innerHTML = posList.map(p => {
+      const info = posMap[p];
+      const avgGross = info.headcount > 0 ? info.gross / info.headcount : 0;
+      return `<tr>
+        <td style="font-weight:600">${p}</td>
+        <td class="text-center">${info.headcount}</td>
+        <td class="text-right">${_dashFmt(info.gross)}</td>
+        <td class="text-right">${_dashFmt(avgGross)}</td>
+        <td class="text-right">${_dashFmt(info.perf)}</td>
+        <td class="text-right">${_dashFmt(info.social)}</td>
+        <td class="text-right val-purple">${_dashFmt(info.cost)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ===== Module 7: 人均效能趋势分析 =====
+  const effCtx = document.getElementById('dash-efficiency-chart');
+  if (effCtx) {
+    const perCapitaCost = months.map(m => monthly[m].headcount > 0 ? monthly[m].cost / monthly[m].headcount : 0);
+    const perCapitaNet = months.map(m => monthly[m].headcount > 0 ? monthly[m].net / monthly[m].headcount : 0);
+    const headcounts = months.map(m => monthly[m].headcount);
+    _dashCharts.efficiency = new Chart(effCtx, {
+      type:'line',
+      data: {
+        labels: months,
+        datasets: [
+          { label:'人均实发工资', data: perCapitaNet, borderColor:_DASH_COLORS.green,
+            backgroundColor:_DASH_COLORS.green+'20', fill:true, tension:0.3, borderWidth:3, pointRadius:5, yAxisID:'y' },
+          { label:'人均人力成本', data: perCapitaCost, borderColor:_DASH_COLORS.purple,
+            backgroundColor:_DASH_COLORS.purple+'20', fill:true, tension:0.3, borderWidth:3, pointRadius:5, yAxisID:'y' },
+          { label:'在岗人数', data: headcounts, borderColor:_DASH_COLORS.blue,
+            backgroundColor:_DASH_COLORS.blue, tension:0.3, borderWidth:2, pointRadius:4, yAxisID:'y1' },
+        ]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'top', labels:{color:'#cbd5e1'}} },
+        scales:{
+          x:{ ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y:{ beginAtZero:true, position:'left', ticks:{color:'#94a3b8', callback:v=>(v/10000).toFixed(1)+'万'}, grid:{color:'rgba(148,163,184,0.1)'} },
+          y1:{ beginAtZero:true, position:'right', grid:{display:false}, ticks:{color:'#3b82f6'} }
+        }
+      }
+    });
+  }
+
+  // 人均效能解读
+  const maxNetMonth = months.reduce((a,b) => (monthly[a].net/monthly[a].headcount) > (monthly[b].net/monthly[b].headcount) ? a : b);
+  const minNetMonth = months.reduce((a,b) => (monthly[a].net/monthly[a].headcount) < (monthly[b].net/monthly[b].headcount) ? a : b);
+  const firstPerCapCost = monthly[months[0]].headcount > 0 ? monthly[months[0]].cost / monthly[months[0]].headcount : 0;
+  const lastPerCapCost = monthly[months[months.length-1]].headcount > 0 ? monthly[months[months.length-1]].cost / monthly[months[months.length-1]].headcount : 0;
+  const costChange = firstPerCapCost > 0 ? ((lastPerCapCost - firstPerCapCost) / firstPerCapCost * 100) : 0;
+  const socialPct = totalCost > 0 ? (totalSocial / totalCost * 100) : 0;
+  document.getElementById('dash-efficiency-insight').innerHTML = `
+    <div class="insight-title">💡 数据解读</div>
+    人均实发工资最高的月份为 <b>${maxNetMonth}</b>（${_dashFmt(monthly[maxNetMonth].net/monthly[maxNetMonth].headcount)}/人），最低为 <b>${minNetMonth}</b>（${_dashFmt(monthly[minNetMonth].net/monthly[minNetMonth].headcount)}/人）。<br>
+    人均人力成本从${months[0]}的 ${_dashFmt(firstPerCapCost)} 变化到${months[months.length-1]}的 ${_dashFmt(lastPerCapCost)}，变化 ${costChange>=0?'+':''}${costChange.toFixed(1)}%。<br>
+    单位社保占人力成本比例平均 ${socialPct.toFixed(1)}%，建议关注社保基数调整影响。
+  `;
+}
+
+// 部门切片器切换函数
+function _dashFilterDept(deptName) {
+  document.querySelectorAll('#dash-dept-filter .filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === deptName);
+  });
+  if (!_dashCharts.deptTrend) return;
+  const months = DATA.months;
+  if (deptName === '全部') {
+    const allEmps = [];
+    months.forEach(m => { allEmps.push(...(DATA.monthlyData[m] || [])); });
+    const deptMap = {};
+    allEmps.forEach(e => {
+      const d = e.dept || '未知';
+      if (!deptMap[d]) deptMap[d] = { monthly:{} };
+      if (!deptMap[d].monthly[e.month]) deptMap[d].monthly[e.month] = 0;
+      deptMap[d].monthly[e.month] += Number(e.danweirengongchengben) || 0;
+    });
+    const deptList = Object.keys(deptMap);
+    const allDeptMonthly = months.map(m => deptList.reduce((s,d) => s + (deptMap[d].monthly[m]||0), 0));
+    _dashCharts.deptTrend.data.datasets = [{
+      label: '全部部门人力成本', data: allDeptMonthly,
+      borderColor: _DASH_COLORS.purple, backgroundColor: _DASH_COLORS.purple+'20',
+      fill: true, tension: 0.3, borderWidth: 3, pointRadius: 5
+    }];
+  } else {
+    const emps = [];
+    months.forEach(m => { emps.push(...(DATA.monthlyData[m] || [])); });
+    const deptEmps = emps.filter(e => e.dept === deptName);
+    const monthlyData = months.map(m => deptEmps.filter(e=>e.month===m).reduce((s,e)=>s+(Number(e.danweirengongchengben)||0),0));
+    const deptList = DATA.filters.departments || [];
+    const idx = deptList.indexOf(deptName);
+    const color = _DASH_PALETTE[(idx >= 0 ? idx : 0) % _DASH_PALETTE.length];
+    _dashCharts.deptTrend.data.datasets = [{
+      label: deptName + ' 人力成本', data: monthlyData,
+      borderColor: color, backgroundColor: color+'20',
+      fill: true, tension: 0.3, borderWidth: 3, pointRadius: 5
+    }];
+  }
+  _dashCharts.deptTrend.update();
+}
+
+
+// ===== 个人收入查询 =====
+const nameInput = document.getElementById('p-name');
+const nameSuggestions = document.getElementById('name-suggestions');
+let selectedName = '';
+
+nameInput.addEventListener('input', () => {
+  const val = nameInput.value.trim();
+  if (!val) {
+    nameSuggestions.classList.remove('show');
+    selectedName = '';
+    renderPersonal();
+    return;
+  }
+  const matches = DATA.filters.names.filter(n => n.includes(val));
+  if (matches.length > 0) {
+    nameSuggestions.innerHTML = matches.map(n => `<div data-name="${n}">${n}</div>`).join('');
+    nameSuggestions.classList.add('show');
+  } else {
+    nameSuggestions.classList.remove('show');
+  }
+});
+
+nameSuggestions.addEventListener('click', (e) => {
+  if (e.target.dataset.name) {
+    selectedName = e.target.dataset.name;
+    nameInput.value = selectedName;
+    nameSuggestions.classList.remove('show');
+    renderPersonal();
+  }
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.name-search-wrap')) {
+    nameSuggestions.classList.remove('show');
+  }
+});
+
+nameInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const val = nameInput.value.trim();
+    if (DATA.filters.names.includes(val)) {
+      selectedName = val;
+      nameSuggestions.classList.remove('show');
+      renderPersonal();
+    }
+  }
+});
+
+document.getElementById('p-personal-month').addEventListener('change', renderPersonal);
+['p-level-min','p-level-max'].forEach(id => {
+  document.getElementById(id).addEventListener('input', renderPersonal);
+});
+
+function renderPersonal() {
+  const month = document.getElementById('p-personal-month').value;
+  const levelMin = document.getElementById('p-level-min').value;
+  const levelMax = document.getElementById('p-level-max').value;
+  const summary = document.getElementById('personal-summary');
+  const tableWrap = document.getElementById('personal-table-wrap');
+  const empty = document.getElementById('personal-empty');
+  
+  if (!selectedName) {
+    summary.style.display = 'none';
+    tableWrap.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  
+  const months = month === 'all' ? DATA.months : [month];
+  let records = [];
+  months.forEach(m => {
+    const emps = DATA.monthlyData[m] || [];
+    emps.forEach(e => {
+      if (e.name !== selectedName) return;
+      if (levelMin && e.level && Number(e.level) < Number(levelMin)) return;
+      if (levelMax && e.level && Number(e.level) > Number(levelMax)) return;
+      records.push(e);
+    });
+  });
+  
+  if (records.length === 0) {
+    summary.style.display = 'none';
+    tableWrap.style.display = 'none';
+    empty.style.display = 'block';
+    empty.textContent = '未找到该员工的薪资数据';
+    return;
+  }
+  
+  empty.style.display = 'none';
+  summary.style.display = 'block';
+  tableWrap.style.display = 'block';
+  
+  // 员工信息（取最新一条）
+  const latest = records[records.length - 1];
+  document.getElementById('personal-name-title').textContent = selectedName + ' - 收入明细';
+  document.getElementById('personal-info').innerHTML = `
+    <span>公司：<b>${latest.company}</b></span>
+    <span>部门：<b>${latest.dept}</b></span>
+    <span>岗位：<b>${latest.position}</b></span>
+    <span>岗级：<b>${latest.level || '-'}</b></span>
+    <span>员工类型：<b>${latest.empType || '-'}</b></span>
+  `;
+  
+  // 汇总统计
+  const totalSalary = records.reduce((s, e) => s + (e.benyuexinzi || 0), 0);
+  const totalIncome = records.reduce((s, e) => s + (e.zongheshouru || 0), 0);
+  const totalKouchu = records.reduce((s, e) => s + (e.kouchuheji || 0), 0);
+  const totalGeshui = records.reduce((s, e) => s + (e.gerensuodeshui || 0), 0);
+  const totalShebao = records.reduce((s, e) => s + (e.gerenjiaona || 0), 0);
+  const totalShifa = records.reduce((s, e) => s + (e.shifagongzi || 0), 0);
+  
+  document.getElementById('personal-stats').innerHTML = `
+    <div class="stat-card blue"><div class="stat-label">记录月数</div><div class="stat-value">${records.length}月</div></div>
+    <div class="stat-card green"><div class="stat-label">本月薪资总额累计</div><div class="stat-value">¥${fmt(totalSalary)}</div></div>
+    <div class="stat-card purple"><div class="stat-label">综合收入累计</div><div class="stat-value">¥${fmt(totalIncome)}</div></div>
+    <div class="stat-card orange"><div class="stat-label">扣除合计累计</div><div class="stat-value">¥${fmt(totalKouchu)}</div></div>
+    <div class="stat-card cyan"><div class="stat-label">个税累计</div><div class="stat-value">¥${fmt(totalGeshui)}</div></div>
+    <div class="stat-card pink"><div class="stat-label">社保个人累计</div><div class="stat-value">¥${fmt(totalShebao)}</div></div>
+    <div class="stat-card amber"><div class="stat-label">实发工资累计</div><div class="stat-value">¥${fmt(totalShifa)}</div></div>
+  `;
+  
+  // 明细表
+  const tbody = document.getElementById('personal-tbody');
+  tbody.innerHTML = records.map(e => `
+    <tr>
+      <td>${e.month}</td>
+      <td>${e.company}</td>
+      <td>${e.dept}</td>
+      <td>${e.position}</td>
+      <td class="text-center">${e.level || '-'}</td>
+      <td>${e.empType || '-'}</td>
+      <td>${e.project || '-'}</td>
+      <td class="text-right">${fmt(e.dixin)}</td>
+      <td class="text-right">${fmt(e.shifadixin)}</td>
+      <td class="text-right">${fmt(e.jixiao)}</td>
+      <td class="text-right col-highlight">¥${fmt(e.benyuexinzi)}</td>
+      <td class="text-right">${fmt(e.qitakoufa)}</td>
+      <td class="text-right">${fmt(e.gerensuodeshui)}</td>
+      <td class="text-right">${fmt(e.gerenjiaona)}</td>
+      <td class="text-right">${fmt(e.kouchuheji)}</td>
+      <td class="text-right col-highlight-green">¥${fmt(e.zongheshouru)}</td>
+      <td class="text-right">¥${fmt(e.shifagongzi)}</td>
+    </tr>
+  `).join('');
+}
+
+function resetPersonal() {
+  selectedName = '';
+  nameInput.value = '';
+  document.getElementById('p-personal-month').value = 'all';
+  document.getElementById('p-level-min').value = '';
+  document.getElementById('p-level-max').value = '';
+  nameSuggestions.classList.remove('show');
+  renderPersonal();
+}
+
+
+// ===== 刷新数据功能 =====
+let _isRefreshing = false;
+
+function setRefreshProgress(percent, step) {
+  document.getElementById('refreshBar').style.width = percent + '%';
+  document.getElementById('rsPercent').textContent = percent + '%';
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('rs-step' + i);
+    if (!el) continue;
+    if (i < step) { el.className = 'rs-step done'; el.textContent = '✓ ' + el.textContent.substring(2); }
+    else if (i === step) { el.className = 'rs-step current'; }
+    else { el.className = 'rs-step'; }
+  }
+}
+
+async function refreshData() {
+  if (_isRefreshing) return;
+  _isRefreshing = true;
+  const btn = document.getElementById('refreshBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">🔄</span> 更新中...';
+  
+  document.getElementById('refreshOverlay').classList.add('active');
+  document.getElementById('refreshStatus').classList.add('active');
+  document.getElementById('rsTitle').innerHTML = '🔄 正在更新数据';
+  document.getElementById('rsTitle').style.color = '#60a5fa';
+  
+  try {
+    setRefreshProgress(15, 1);
+    await new Promise(r => setTimeout(r, 400));
+    
+    setRefreshProgress(40, 2);
+    const resp = await fetch('hr_data.json?t=' + Date.now());
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const newData = await resp.json();
+    await new Promise(r => setTimeout(r, 300));
+    
+    setRefreshProgress(65, 3);
+    DATA = newData;
+    document.getElementById('data-update-time').textContent = '更新于 ' + (DATA.updateTime || DATA.dashboardStats.monthly[DATA.months[DATA.months.length-1]] ? '最新' : '');
+    if (DATA.updateTime) {
+      document.getElementById('data-update-time').textContent = '更新于 ' + DATA.updateTime.split(' ')[0];
+    }
+    await new Promise(r => setTimeout(r, 300));
+    
+    setRefreshProgress(85, 4);
+    // 重新渲染所有页面
+    if (typeof renderSalary === 'function') renderSalary();
+    if (typeof renderProject === 'function') renderProject();
+    if (typeof renderPersonal === 'function') renderPersonal();
+    if (typeof renderDashboard === 'function') renderDashboard();
+    if (typeof renderAnalysis === 'function') renderAnalysis();
+    // 重新初始化筛选器
+    initFilters();
+    initProjectFilters();
+    initAnalysisFilters();
+    await new Promise(r => setTimeout(r, 300));
+    
+    setRefreshProgress(100, 4);
+    document.getElementById('rsTitle').innerHTML = '✅ 数据已更新（' + DATA.months[0] + '-' + DATA.months[DATA.months.length-1] + '）';
+    document.getElementById('rsTitle').style.color = '#34d399';
+  } catch (e) {
+    console.error('刷新失败:', e);
+    document.getElementById('rsTitle').innerHTML = '❌ 刷新失败：' + e.message;
+    document.getElementById('rsTitle').style.color = '#f87171';
+  }
+  
+  setTimeout(() => {
+    document.getElementById('refreshOverlay').classList.remove('active');
+    document.getElementById('refreshStatus').classList.remove('active');
+    document.getElementById('refreshBar').style.width = '0%';
+  }, 1200);
+  
+  btn.disabled = false;
+  btn.innerHTML = '<span id="refreshIcon">🔄</span> 更新数据';
+  _isRefreshing = false;
+}
+
+// ===== 项目经营分析看板 =====
+let _analysisCharts = {};
+let _analysisRows = [];
+let _analysisMonths = [];
+let _analysisSector = 'daiyunying';
+
+function initAnalysisFilters() {
+  const startSel = document.getElementById('a-month-start');
+  const endSel = document.getElementById('a-month-end');
+  const projSel = document.getElementById('a-project');
+  if (!startSel || !DATA) return;
+  startSel.innerHTML = DATA.months.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+  endSel.innerHTML = DATA.months.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+  startSel.value = DATA.months[DATA.months.length - 1];
+  endSel.value = DATA.months[DATA.months.length - 1];
+  // 只显示A/B/C组项目
+  projSel.innerHTML = '<option value="all">全部项目</option>' +
+    DATA.projectList.filter(p => ['A组','B组','C组'].includes(p.group)).map(p => '<option value="' + p.id + '">' + p.name + '(' + p.id + ')</option>').join('');
+  document.getElementById('a-sector').addEventListener('change', function() {
+    const sector = this.value;
+    document.getElementById('a-project').style.display = sector === 'daiyunying' ? '' : 'none';
+    renderAnalysis();
+  });
+}
+
+function getSectorData(sector) {
+  if (sector === 'media') return DATA.extraCosts.media_sector || {};
+  if (sector === 'private') return DATA.extraCosts.private_sector || {};
+  return DATA.extraCosts.daiyunying_sector || {};
+}
+
+function getSectorName(sector) {
+  return {daiyunying: '代运营板块', media: '传媒板块', private: '私域板块'}[sector] || sector;
+}
+
+function renderAnalysis() {
+  if (!DATA) return;
+  _analysisSector = document.getElementById('a-sector').value;
+  const startMonth = document.getElementById('a-month-start').value;
+  const endMonth = document.getElementById('a-month-end').value;
+  const project = document.getElementById('a-project').value;
+  const startIdx = DATA.months.indexOf(startMonth);
+  const endIdx = DATA.months.indexOf(endMonth);
+  _analysisMonths = DATA.months.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
+
+  // 销毁旧图表
+  Object.keys(_analysisCharts).forEach(k => { if (_analysisCharts[k]) { try { _analysisCharts[k].destroy(); } catch(e){} } });
+  _analysisCharts = {};
+
+  // 收集项目级数据
+  _analysisRows = [];
+  const sectorData = getSectorData(_analysisSector);
+
+  if (_analysisSector !== 'daiyunying') {
+    _analysisMonths.forEach(m => {
+      const d = sectorData[m] || {};
+      _analysisRows.push({
+        project_name: getSectorName(_analysisSector), month: m,
+        income: d.income || 0, labor_cost: d.labor_cost || 0,
+        main_business_cost: d.main_business_cost || 0,
+        mgmt_fee: d.mgmt_fee || 0, sales_fee: d.sales_fee || 0,
+        financial_fee: d.financial_fee || 0, business_tax: d.business_tax || 0,
+        total_cost: d.total_cost || 0, net_profit: d.net_profit || 0,
+        isSector: true
+      });
+    });
+  } else {
+    _analysisMonths.forEach(m => {
+      const acc = DATA.projectAccounting[m] || {};
+      Object.keys(acc).forEach(pid => {
+        if (project !== 'all' && pid !== project) return;
+        const g = acc[pid].group || '';
+        if (!['A组','B组','C组'].includes(g)) return;
+        if ((acc[pid].income || 0) <= 0) return;
+        _analysisRows.push({ ...acc[pid], pid, month: m, isSector: false });
+      });
+    });
+  }
+
+  if (_analysisRows.length === 0) {
+    document.getElementById('analysis-cards').innerHTML = '<div style="color:#64748b;padding:20px">暂无数据</div>';
+    return;
+  }
+
+  // 计算汇总数据
+  const ec = DATA.extraCosts;
+  const isSingleProject = (project !== 'all' && _analysisSector === 'daiyunying');
+  let sumIncome, sumLabor, sumMainBiz, sumMgmt, sumSales, sumFinancial, sumTax, sumNonOp, sumTotalCost, sumProfit, sumQianchuan, sumMgmtAlloc;
+  let projFinancialAlloc = 0, projTaxAlloc = 0, projNonOpAlloc = 0, projMgmtAllocOnly = 0;
+
+  if (isSingleProject) {
+    // 单个项目：用项目级数据
+    sumIncome = _analysisRows.reduce((s, r) => s + (r.income || 0), 0);
+    sumLabor = _analysisRows.reduce((s, r) => s + (r.labor_total || 0), 0);
+    sumMainBiz = _analysisRows.reduce((s, r) => s + (r.main_business_cost || 0), 0);
+    sumQianchuan = _analysisRows.reduce((s, r) => s + (r.qianchuan_cost || 0), 0);
+    sumMgmtAlloc = _analysisRows.reduce((s, r) => s + (r.mgmt_fee_alloc || 0), 0);
+    sumTotalCost = _analysisRows.reduce((s, r) => s + (r.total_cost || 0), 0);
+    sumProfit = _analysisRows.reduce((s, r) => s + (r.profit || 0), 0);
+    // 计算单项目各项分摊（管理费用/财务费用/营业税/营业外支出分别按存续项目数分摊）
+    _analysisMonths.forEach(m => {
+      const dyCount = ec.dy_active_count?.[m] || 1;
+      projMgmtAllocOnly += (ec.mgmt_fee[m] || 0) / dyCount;
+      projFinancialAlloc += (ec.financial_fee[m] || 0) / dyCount;
+      projTaxAlloc += (ec.business_tax[m] || 0) / dyCount;
+      projNonOpAlloc += (ec.non_operating?.[m] || 0) / dyCount;
+    });
+    sumMgmt = projMgmtAllocOnly;
+    sumSales = sumQianchuan;
+    sumFinancial = projFinancialAlloc;
+    sumTax = projTaxAlloc;
+    sumNonOp = projNonOpAlloc;
+  } else {
+    // 全部项目或传媒/私域：用板块级数据
+    sumIncome = 0; sumLabor = 0; sumMainBiz = 0; sumMgmt = 0; sumSales = 0; sumFinancial = 0; sumTax = 0; sumNonOp = 0;
+    _analysisMonths.forEach(m => {
+      const sd = sectorData[m] || {};
+      sumIncome += sd.income || 0;
+      sumLabor += sd.labor_cost || 0;
+      sumMainBiz += sd.main_business_cost || 0;
+      sumMgmt += sd.mgmt_fee || 0;
+      sumSales += sd.sales_fee || 0;
+      sumFinancial += sd.financial_fee || 0;
+      sumTax += sd.business_tax || 0;
+      sumNonOp += ec.non_operating?.[m] || 0;
+    });
+    sumTotalCost = sumLabor + sumMainBiz + sumMgmt + sumSales + sumFinancial + sumTax + sumNonOp;
+    sumProfit = sumIncome - sumTotalCost;
+    sumQianchuan = _analysisMonths.reduce((s, m) => s + (ec.qianchuan['1003']?.[m] || 0) + (ec.qianchuan['1008']?.[m] || 0), 0);
+    sumMgmtAlloc = _analysisRows.reduce((s, r) => s + (r.mgmt_fee_alloc || 0), 0);
+  }
+
+  const projLabel = project === 'all' ? '全部项目' : (_analysisRows[0]?.project_name || '');
+  const costRatio = sumIncome > 0 ? (sumTotalCost / sumIncome * 100) : 0;
+
+  // 第1部分：数据卡片
+  document.getElementById('analysis-cards').innerHTML =
+    '<div class="analysis-card income"><div class="ac-label">项目收入</div><div class="ac-value">¥' + fmt(sumIncome) + '</div><div class="ac-sub">' + _analysisMonths[0] + '-' + _analysisMonths[_analysisMonths.length-1] + (isSingleProject ? ' ' + projLabel : ' ' + getSectorName(_analysisSector) + ' ' + projLabel) + '</div></div>' +
+    '<div class="analysis-card cost"><div class="ac-label">人工成本</div><div class="ac-value">¥' + fmt(sumLabor) + '</div><div class="ac-sub">' + (isSingleProject ? '直接+分摊' : '取自财务表格') + '</div></div>' +
+    '<div class="analysis-card cost"><div class="ac-label">主营业务成本</div><div class="ac-value">¥' + fmt(sumMainBiz) + '</div></div>' +
+    '<div class="analysis-card cost"><div class="ac-label">千川投放</div><div class="ac-value">¥' + fmt(sumQianchuan) + '</div><div class="ac-sub">1003+1008</div></div>' +
+    '<div class="analysis-card cost"><div class="ac-label">管理费用分摊</div><div class="ac-value">¥' + fmt(sumMgmtAlloc) + '</div></div>' +
+    '<div class="analysis-card cost"><div class="ac-label">总成本</div><div class="ac-value">¥' + fmt(sumTotalCost) + '</div></div>' +
+    '<div class="analysis-card profit ' + (sumProfit >= 0 ? '' : 'negative') + '"><div class="ac-label">净利润</div><div class="ac-value">¥' + fmt(sumProfit) + '</div></div>' +
+    '<div class="analysis-card"><div class="ac-label">成本占比</div><div class="ac-value">' + costRatio.toFixed(1) + '%</div></div>';
+
+  // 第2部分：净利润排名
+  renderProfitRanking(project);
+
+  // 第3部分：成本结构总览
+  renderCostOverview(sumIncome, sumLabor, sumMainBiz, sumMgmt, sumSales, sumFinancial, sumTax, sumNonOp, sumTotalCost, sumProfit, isSingleProject);
+
+  // 第4部分：管理费用明细
+  renderMgmtDetail();
+
+  // 第5部分：项目成本明细
+  renderDetailTable();
+}
+
+function renderProfitRanking(project) {
+  let profitData = [];
+  if (_analysisSector !== 'daiyunying') {
+    // 传媒/私域：按月显示
+    profitData = _analysisRows.map(r => ({ name: r.month, profit: r.net_profit || 0 }));
+  } else if (project === 'all') {
+    // 全部项目：按项目汇总净利润，降序
+    const byProj = {};
+    _analysisRows.forEach(r => {
+      const key = r.pid || r.project_name;
+      if (!byProj[key]) byProj[key] = { name: r.project_name, profit: 0 };
+      byProj[key].profit += (r.profit || 0);
+    });
+    profitData = Object.values(byProj).sort((a, b) => b.profit - a.profit);
+  } else {
+    // 单个项目：按月显示
+    profitData = _analysisRows.map(r => ({ name: r.month, profit: r.profit || 0 }));
+  }
+
+  _analysisCharts.profitRank = new Chart(document.getElementById('chart-profit-rank').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: profitData.map(d => d.name),
+      datasets: [{
+        label: '净利润',
+        data: profitData.map(d => d.profit),
+        backgroundColor: profitData.map(d => d.profit >= 0 ? 'rgba(139,92,246,0.8)' : 'rgba(239,68,68,0.8)'),
+        borderRadius: 4,
+        maxBarThickness: _analysisSector !== 'daiyunying' ? 60 : 80,
+        datalabels: {
+          anchor: 'end', align: 'top',
+          formatter: function(v) { return (v/10000).toFixed(1) + '万'; },
+          color: '#e2e8f0', font: { size: 10 }
+        }
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      indexAxis: 'x',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: function(ctx) { return '净利润: ¥' + fmt(ctx.parsed.y); } } }
+      },
+      scales: {
+        y: { ticks: { color: '#94a3b8', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { color: 'rgba(148,163,184,0.1)' } },
+        x: { ticks: { color: '#94a3b8', font: { size: 10 }, maxRotation: 45, minRotation: 0 }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+function renderCostOverview(income, labor, mainBiz, mgmt, sales, financial, tax, nonOp, totalCost, profit, isSingleProject) {
+  // 左侧表格
+  const mgmtLabel = isSingleProject ? '管理费用分摊' : '管理费用';
+  const finLabel = isSingleProject ? '财务费用分摊' : '财务费用';
+  const taxLabel = isSingleProject ? '营业税及附加分摊' : '营业税及附加';
+  const nonOpLabel = isSingleProject ? '营业外支出分摊' : '营业外支出';
+  const rows = [
+    { label: '当月收入', value: income, isIncome: true },
+    { label: '人工成本', value: labor },
+    { label: '主营营业成本', value: mainBiz },
+    { label: mgmtLabel, value: mgmt },
+    { label: '销售费用(千川投放)', value: sales },
+    { label: finLabel, value: financial },
+    { label: taxLabel, value: tax },
+    { label: nonOpLabel, value: nonOp },
+    { label: '总成本小计', value: totalCost, isTotal: true },
+    { label: '净利润', value: profit, isProfit: true },
+  ];
+  document.getElementById('cost-overview-tbody').innerHTML = rows.map(function(r) {
+    const pct = income > 0 ? (r.value / income * 100).toFixed(1) : 0;
+    let cls = '';
+    if (r.isIncome) cls = 'style="color:#34d399;font-weight:600"';
+    else if (r.isTotal) cls = 'style="color:#f59e0b;font-weight:bold;border-top:2px solid #475569"';
+    else if (r.isProfit) cls = 'style="color:' + (r.value >= 0 ? '#8b5cf6' : '#ef4444') + ';font-weight:bold"';
+    return '<tr><td ' + cls + '>' + r.label + '</td><td class="text-right" ' + cls + '>¥' + fmt(r.value) + '</td><td class="text-right" ' + cls + '>' + (r.isIncome ? '100%' : pct + '%') + '</td></tr>';
+  }).join('');
+
+  // 右侧饼图（成本拆分）
+  const costItems = [
+    { label: '人工成本', value: labor, color: '#3b82f6' },
+    { label: '主营营业成本', value: mainBiz, color: '#10b981' },
+    { label: mgmtLabel, value: mgmt, color: '#f59e0b' },
+    { label: '销售费用', value: sales, color: '#ef4444' },
+    { label: finLabel, value: financial, color: '#ec4899' },
+    { label: taxLabel, value: tax, color: '#8b5cf6' },
+    { label: nonOpLabel, value: nonOp, color: '#6366f1' },
+  ].filter(i => i.value > 0);
+
+  _analysisCharts.costOverview = new Chart(document.getElementById('chart-cost-overview').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels: costItems.map(i => i.label), datasets: [{ data: costItems.map(i => i.value), backgroundColor: costItems.map(i => i.color), borderWidth: 2, borderColor: '#0f172a' }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '50%',
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 }, padding: 10 } },
+        datalabels: {
+          formatter: function(v) { return totalCost > 0 ? (v/totalCost*100).toFixed(0) + '%' : ''; },
+          color: '#fff', font: { size: 11, weight: 'bold' }, textShadowBlur: 4, textShadowColor: 'rgba(0,0,0,0.8)'
+        },
+        tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ¥' + fmt(ctx.parsed) + ' (' + (ctx.parsed/totalCost*100).toFixed(1) + '%)'; } } }
+      }
+    }
+  });
+}
+
+function renderMgmtDetail() {
+  const ec = DATA.extraCosts;
+  const isMulti = _analysisMonths.length > 1;
+  const stackedBox = document.getElementById('mgmt-stacked-box');
+  const allMonths = DATA.months;
+
+  if (_analysisSector !== 'daiyunying') {
+    // 传媒/私域板块：展示该板块成本分析
+    const sectorData = getSectorData(_analysisSector);
+    const sectorName = getSectorName(_analysisSector);
+    // 表格：各月成本构成
+    document.getElementById('mgmt-detail-thead').innerHTML = '<tr><th>月份</th><th class="text-right">收入</th><th class="text-right">人工成本</th><th class="text-right">主营成本</th><th class="text-right">管理费用</th><th class="text-right">销售费用</th><th class="text-right">财务费用</th><th class="text-right">营业税</th><th class="text-right">总成本</th><th class="text-right">净利润</th></tr>';
+    let tInc=0,tLab=0,tMb=0,tMg=0,tSa=0,tFi=0,tTx=0,tCo=0,tPr=0;
+    document.getElementById('mgmt-detail-tbody').innerHTML = _analysisMonths.map(function(m) {
+      const d = sectorData[m] || {};
+      tInc+=d.income||0; tLab+=d.labor_cost||0; tMb+=d.main_business_cost||0;
+      tMg+=d.mgmt_fee||0; tSa+=d.sales_fee||0; tFi+=d.financial_fee||0;
+      tTx+=d.business_tax||0; tCo+=d.total_cost||0; tPr+=d.net_profit||0;
+      return '<tr><td>' + m + '</td><td class="text-right">¥' + fmt(d.income||0) + '</td><td class="text-right">¥' + fmt(d.labor_cost||0) + '</td><td class="text-right">¥' + fmt(d.main_business_cost||0) + '</td><td class="text-right">¥' + fmt(d.mgmt_fee||0) + '</td><td class="text-right">¥' + fmt(d.sales_fee||0) + '</td><td class="text-right">¥' + fmt(d.financial_fee||0) + '</td><td class="text-right">¥' + fmt(d.business_tax||0) + '</td><td class="text-right">¥' + fmt(d.total_cost||0) + '</td><td class="text-right ' + ((d.net_profit||0)>=0?'profit-positive':'profit-negative') + '">¥' + fmt(d.net_profit||0) + '</td></tr>';
+    }).join('') + '<tr style="font-weight:bold;border-top:2px solid #475569"><td>合计</td><td class="text-right">¥' + fmt(tInc) + '</td><td class="text-right">¥' + fmt(tLab) + '</td><td class="text-right">¥' + fmt(tMb) + '</td><td class="text-right">¥' + fmt(tMg) + '</td><td class="text-right">¥' + fmt(tSa) + '</td><td class="text-right">¥' + fmt(tFi) + '</td><td class="text-right">¥' + fmt(tTx) + '</td><td class="text-right">¥' + fmt(tCo) + '</td><td class="text-right ' + (tPr>=0?'profit-positive':'profit-negative') + '">¥' + fmt(tPr) + '</td></tr>';
+
+    // 折线图：板块成本趋势
+    const mgmtValues = allMonths.map(m => (sectorData[m]?.mgmt_fee) || 0);
+    _analysisCharts.mgmtLine = new Chart(document.getElementById('chart-mgmt-line').getContext('2d'), {
+      type: 'line',
+      data: { labels: allMonths, datasets: [
+        { label: '人工成本', data: allMonths.map(m => (sectorData[m]?.labor_cost)||0), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', tension: 0.3, fill: false },
+        { label: '管理费用', data: mgmtValues, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', tension: 0.3, fill: false },
+        { label: '净利润', data: allMonths.map(m => (sectorData[m]?.net_profit)||0), borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', tension: 0.3, fill: false },
+      ]},
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 11 } } }, tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ¥' + fmt(ctx.parsed.y); } } } },
+        scales: { y: { ticks: { color: '#94a3b8', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { color: 'rgba(148,163,184,0.1)' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } }
+      }
+    });
+
+    // 面积图：板块收入成本趋势
+    _analysisCharts.mgmtArea = new Chart(document.getElementById('chart-mgmt-area').getContext('2d'), {
+      type: 'line',
+      data: { labels: allMonths, datasets: [
+        { label: '收入', data: allMonths.map(m => (sectorData[m]?.income)||0), borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,0.2)', tension: 0.3, fill: true },
+        { label: '总成本', data: allMonths.map(m => (sectorData[m]?.total_cost)||0), borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.2)', tension: 0.3, fill: true },
+      ]},
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 11 } } }, tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ¥' + fmt(ctx.parsed.y); } } } },
+        scales: { y: { ticks: { color: '#94a3b8', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { color: 'rgba(148,163,184,0.1)' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } }
+      }
+    });
+
+    stackedBox.style.display = 'none';
+    return;
+  }
+
+  // ===== 代运营板块 =====
+  if (isMulti) {
+    // 多月：管理费用公示表格
+    stackedBox.style.display = '';
+    document.getElementById('mgmt-detail-thead').innerHTML = '<tr><th>月份</th><th class="text-right">管理费用</th><th class="text-right">财务费用</th><th class="text-right">营业税及附加</th><th class="text-right">营业外支出</th><th class="text-right">分摊基数</th><th class="text-right">存续项目数</th><th class="text-right">每项目分摊</th></tr>';
+    let totalMgmt = 0, totalFin = 0, totalTax = 0, totalNonOp = 0, totalBase = 0;
+    document.getElementById('mgmt-detail-tbody').innerHTML = _analysisMonths.map(function(m) {
+      const mgmt = ec.mgmt_fee[m] || 0;
+      const fin = ec.financial_fee[m] || 0;
+      const tax = ec.business_tax[m] || 0;
+      const nonOp = ec.non_operating?.[m] || 0;
+      const base = mgmt + fin + tax + nonOp;
+      const count = ec.dy_active_count[m] || 0;
+      const per = count > 0 ? base / count : 0;
+      totalMgmt += mgmt; totalFin += fin; totalTax += tax; totalNonOp += nonOp; totalBase += base;
+      return '<tr><td>' + m + '</td><td class="text-right">¥' + fmt(mgmt) + '</td><td class="text-right">¥' + fmt(fin) + '</td>' +
+        '<td class="text-right">¥' + fmt(tax) + '</td><td class="text-right">¥' + fmt(nonOp) + '</td>' +
+        '<td class="text-right">¥' + fmt(base) + '</td><td class="text-right">' + count + '</td><td class="text-right">¥' + fmt(per) + '</td></tr>';
+    }).join('') + '<tr style="font-weight:bold;border-top:2px solid #475569"><td>合计</td><td class="text-right">¥' + fmt(totalMgmt) + '</td><td class="text-right">¥' + fmt(totalFin) + '</td><td class="text-right">¥' + fmt(totalTax) + '</td><td class="text-right">¥' + fmt(totalNonOp) + '</td><td class="text-right">¥' + fmt(totalBase) + '</td><td class="text-right">-</td><td class="text-right">-</td></tr>';
+  } else {
+    // 单月：3.1-3.8明细表格
+    stackedBox.style.display = 'none';
+    const month = _analysisMonths[0];
+    const breakdown = ec.mgmt_breakdown?.[month] || {};
+    const items = Object.entries(breakdown).filter(e => e[1] > 0).sort((a, b) => b[1] - a[1]);
+    const total = items.reduce((s, e) => s + e[1], 0);
+    document.getElementById('mgmt-detail-thead').innerHTML = '<tr><th>费用项目</th><th class="text-right">金额</th><th class="text-right">占比</th></tr>';
+    document.getElementById('mgmt-detail-tbody').innerHTML = items.map(function(e) {
+      return '<tr><td>' + e[0] + '</td><td class="text-right">¥' + fmt(e[1]) + '</td><td class="text-right">' + (total > 0 ? (e[1]/total*100).toFixed(1) : 0) + '%</td></tr>';
+    }).join('') + (total > 0 ? '<tr style="font-weight:bold;border-top:2px solid #475569"><td>合计</td><td class="text-right">¥' + fmt(total) + '</td><td class="text-right">100%</td></tr>' : '');
+  }
+
+  // 折线图：管理费用趋势
+  const mgmtValues = allMonths.map(m => ec.mgmt_fee[m] || 0);
+  _analysisCharts.mgmtLine = new Chart(document.getElementById('chart-mgmt-line').getContext('2d'), {
+    type: 'line',
+    data: { labels: allMonths, datasets: [{ label: '管理费用', data: mgmtValues, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', tension: 0.3, fill: false, pointRadius: 5, pointBackgroundColor: '#f59e0b', datalabels: { anchor: 'end', align: 'top', formatter: function(v) { return (v/10000).toFixed(1) + '万'; }, color: '#fbbf24', font: { size: 10 } } }] },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return '管理费用: ¥' + fmt(ctx.parsed.y); } } } },
+      scales: { y: { ticks: { color: '#94a3b8', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { color: 'rgba(148,163,184,0.1)' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } }
+    }
+  });
+
+  // 百分比堆积面积图：管理费用3.1-3.8各项月度占比变化趋势
+  const mgmtColors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
+  const mgmtItems = ['3.1 设备采购', '3.2 差旅费用', '3.3 招待费用', '3.4 房租水电装修', '3.5 福利及补贴', '3.6 办公费', '3.7 直播及道具采购', '3.8 其他费用'];
+  // 计算每月管理费用总额，用于换算百分比
+  const mgmtMonthlyTotal = allMonths.map(function(m) {
+    return mgmtItems.reduce(function(s, item) { return s + ((ec.mgmt_breakdown?.[m]?.[item]) || 0); }, 0);
+  });
+  const areaDatasets = mgmtItems.map(function(item, idx) {
+    return {
+      label: item,
+      data: allMonths.map(function(m, mi) {
+        const val = (ec.mgmt_breakdown?.[m]?.[item]) || 0;
+        return mgmtMonthlyTotal[mi] > 0 ? (val / mgmtMonthlyTotal[mi] * 100) : 0;
+      }),
+      borderColor: mgmtColors[idx],
+      backgroundColor: mgmtColors[idx] + '55',
+      tension: 0.3, fill: true, pointRadius: 2, pointHoverRadius: 5
+    };
+  });
+  _analysisCharts.mgmtArea = new Chart(document.getElementById('chart-mgmt-area').getContext('2d'), {
+    type: 'line',
+    data: { labels: allMonths, datasets: areaDatasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 }, padding: 8, boxWidth: 12 } },
+        datalabels: {
+          color: '#fff', font: { size: 9, weight: 'bold' },
+          formatter: function(v) { return v > 8 ? v.toFixed(0) + '%' : ''; },
+          textShadowBlur: 3, textShadowColor: 'rgba(0,0,0,0.8)'
+        },
+        tooltip: { callbacks: {
+          label: function(ctx) {
+            const mi = ctx.dataIndex;
+            const pct = ctx.parsed.y;
+            const amt = mgmtMonthlyTotal[mi] > 0 ? (pct / 100 * mgmtMonthlyTotal[mi]) : 0;
+            return ctx.dataset.label + ': ' + pct.toFixed(1) + '% (¥' + fmt(amt) + ')';
+          }
+        } }
+      },
+      scales: {
+        y: { stacked: true, max: 100, ticks: { color: '#94a3b8', callback: function(v) { return v + '%'; } }, grid: { color: 'rgba(148,163,184,0.1)' } },
+        x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+      }
+    }
+  });
+
+  // 多月：费用构成堆叠柱状图 + 总成本折线
+  if (isMulti) {
+    const labels = _analysisMonths;
+    const sectorData = getSectorData(_analysisSector);
+    _analysisCharts.mgmtStacked = new Chart(document.getElementById('chart-mgmt-stacked').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          { label: '管理费用', data: labels.map(m => ec.mgmt_fee[m] || 0), backgroundColor: 'rgba(59,130,246,0.65)', borderColor: '#3b82f6', borderWidth: 1, stack: 'fee', borderRadius: 0 },
+          { label: '财务费用', data: labels.map(m => ec.financial_fee[m] || 0), backgroundColor: 'rgba(16,185,129,0.65)', borderColor: '#10b981', borderWidth: 1, stack: 'fee', borderRadius: 0 },
+          { label: '营业税及附加', data: labels.map(m => ec.business_tax[m] || 0), backgroundColor: 'rgba(245,158,11,0.65)', borderColor: '#f59e0b', borderWidth: 1, stack: 'fee', borderRadius: 0 },
+          { label: '营业外支出', data: labels.map(m => ec.non_operating?.[m] || 0), backgroundColor: 'rgba(236,72,153,0.65)', borderColor: '#ec4899', borderWidth: 1, stack: 'fee', borderRadius: 0 },
+          { type: 'line', label: '总成本', data: labels.map(m => (sectorData[m]?.total_cost) || 0), borderColor: '#ef4444', backgroundColor: 'transparent', yAxisID: 'y1', tension: 0.3, pointRadius: 6, pointBackgroundColor: '#ef4444', pointBorderColor: '#fff', pointBorderWidth: 2, datalabels: { display: false } },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 11 }, padding: 12 } },
+          datalabels: {
+            color: '#fff', font: { size: 9, weight: 'bold' },
+            formatter: function(v) { return v > 10000 ? (v/10000).toFixed(1) + '万' : ''; },
+            textShadowBlur: 3, textShadowColor: 'rgba(0,0,0,0.8)'
+          },
+          tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ¥' + fmt(ctx.parsed.y); } } }
+        },
+        scales: {
+          y: { stacked: true, ticks: { color: '#94a3b8', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { color: 'rgba(148,163,184,0.1)' }, title: { display: true, text: '费用', color: '#94a3b8' } },
+          y1: { position: 'right', ticks: { color: '#ef4444', callback: function(v) { return (v/10000).toFixed(0) + '万'; } }, grid: { display: false }, title: { display: true, text: '总成本', color: '#ef4444' } },
+          x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+        }
+      }
+    });
+  }
+}
+
+
+function renderDetailTable() {
+  const thead = document.getElementById('analysis-thead');
+  const tbody = document.getElementById('analysis-tbody');
+  const tfoot = document.getElementById('analysis-tfoot');
+
+  if (_analysisSector !== 'daiyunying') {
+    thead.innerHTML = '<tr><th>板块</th><th>月份</th><th class="text-right">收入</th><th class="text-right">人工成本</th><th class="text-right">主营成本</th><th class="text-right">管理费用</th><th class="text-right">销售费用</th><th class="text-right">财务费用</th><th class="text-right">营业税</th><th class="text-right">总成本</th><th class="text-right">净利润</th></tr>';
+    tbody.innerHTML = _analysisRows.map(function(r) {
+      return '<tr><td>' + r.project_name + '</td><td>' + r.month + '</td>' +
+        '<td class="text-right">¥' + fmt(r.income) + '</td>' +
+        '<td class="text-right">¥' + fmt(r.labor_cost) + '</td>' +
+        '<td class="text-right">¥' + fmt(r.main_business_cost) + '</td>' +
+        '<td class="text-right">¥' + fmt(r.mgmt_fee) + '</td>' +
+        '<td class="text-right">¥' + fmt(r.sales_fee) + '</td>' +
+        '<td class="text-right">¥' + fmt(r.financial_fee) + '</td>' +
+        '<td class="text-right">¥' + fmt(r.business_tax) + '</td>' +
+        '<td class="text-right">¥' + fmt(r.total_cost) + '</td>' +
+        '<td class="text-right ' + (r.net_profit >= 0 ? 'profit-positive' : 'profit-negative') + '">¥' + fmt(r.net_profit) + '</td></tr>';
+    }).join('');
+    // 合计行
+    const sumIncome = _analysisRows.reduce((s, r) => s + r.income, 0);
+    const sumLabor = _analysisRows.reduce((s, r) => s + r.labor_cost, 0);
+    const sumMainBiz = _analysisRows.reduce((s, r) => s + r.main_business_cost, 0);
+    const sumMgmt = _analysisRows.reduce((s, r) => s + r.mgmt_fee, 0);
+    const sumSales = _analysisRows.reduce((s, r) => s + r.sales_fee, 0);
+    const sumFin = _analysisRows.reduce((s, r) => s + r.financial_fee, 0);
+    const sumTax = _analysisRows.reduce((s, r) => s + r.business_tax, 0);
+    const sumCost = _analysisRows.reduce((s, r) => s + r.total_cost, 0);
+    const sumProfit = _analysisRows.reduce((s, r) => s + r.net_profit, 0);
+    tfoot.innerHTML = '<tr style="font-weight:bold;border-top:2px solid #475569;background:rgba(30,41,59,0.5)"><td colspan="2">合计</td>' +
+      '<td class="text-right">¥' + fmt(sumIncome) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumLabor) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumMainBiz) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumMgmt) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumSales) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumFin) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumTax) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumCost) + '</td>' +
+      '<td class="text-right ' + (sumProfit >= 0 ? 'profit-positive' : 'profit-negative') + '">¥' + fmt(sumProfit) + '</td></tr>';
+  } else {
+    thead.innerHTML = '<tr><th>项目</th><th>月份</th><th class="text-right">收入</th><th class="text-right">直接人工</th><th class="text-right">内容分摊</th><th class="text-right">管理分摊</th><th class="text-right">经理分摊</th><th class="text-right">人工合计</th><th class="text-right">主营成本</th><th class="text-right">千川投放</th><th class="text-right">管理费分摊</th><th class="text-right">总成本</th><th class="text-right">净利润</th></tr>';
+    tbody.innerHTML = _analysisRows.map(function(r) {
+      return '<tr><td>' + r.project_name + '</td><td>' + r.month + '</td>' +
+        '<td class="text-right">' + (r.income > 0 ? '¥' + fmt(r.income) : '-') + '</td>' +
+        '<td class="text-right">¥' + fmt(r.direct_cost) + '</td>' +
+        '<td class="text-right">¥' + fmt(r.content_share || 0) + '</td>' +
+        '<td class="text-right">¥' + fmt(r.mgmt_share || 0) + '</td>' +
+        '<td class="text-right">¥' + fmt(r.manager_share || 0) + '</td>' +
+        '<td class="text-right">¥' + fmt(r.labor_total || 0) + '</td>' +
+        '<td class="text-right">' + (r.main_business_cost > 0 ? '¥' + fmt(r.main_business_cost) : '-') + '</td>' +
+        '<td class="text-right">' + (r.qianchuan_cost > 0 ? '¥' + fmt(r.qianchuan_cost) : '-') + '</td>' +
+        '<td class="text-right">¥' + fmt(r.mgmt_fee_alloc || 0) + '</td>' +
+        '<td class="text-right">¥' + fmt(r.total_cost) + '</td>' +
+        '<td class="text-right ' + (r.profit >= 0 ? 'profit-positive' : 'profit-negative') + '">¥' + fmt(r.profit) + '</td></tr>';
+    }).join('');
+    // 合计行
+    const sumIncome = _analysisRows.reduce((s, r) => s + r.income, 0);
+    const sumDirect = _analysisRows.reduce((s, r) => s + r.direct_cost, 0);
+    const sumContent = _analysisRows.reduce((s, r) => s + (r.content_share || 0), 0);
+    const sumMgmtShare = _analysisRows.reduce((s, r) => s + (r.mgmt_share || 0), 0);
+    const sumManager = _analysisRows.reduce((s, r) => s + (r.manager_share || 0), 0);
+    const sumLaborTotal = _analysisRows.reduce((s, r) => s + (r.labor_total || 0), 0);
+    const sumMainBiz = _analysisRows.reduce((s, r) => s + (r.main_business_cost || 0), 0);
+    const sumQianchuan = _analysisRows.reduce((s, r) => s + (r.qianchuan_cost || 0), 0);
+    const sumMgmtAlloc = _analysisRows.reduce((s, r) => s + (r.mgmt_fee_alloc || 0), 0);
+    const sumCost = _analysisRows.reduce((s, r) => s + r.total_cost, 0);
+    const sumProfit = _analysisRows.reduce((s, r) => s + r.profit, 0);
+    // 计算项目差额（板块级数据 - 项目级汇总）
+    const sectorData = DATA.extraCosts.daiyunying_sector || {};
+    let secIncome = 0, secLabor = 0, secCost = 0, secProfit = 0;
+    _analysisMonths.forEach(function(m) {
+      const sd = sectorData[m] || {};
+      secIncome += sd.income || 0;
+      secLabor += sd.labor_cost || 0;
+      secCost += sd.total_cost || 0;
+      secProfit += sd.net_profit || 0;
+    });
+    const diffIncome = secIncome - sumIncome;
+    const diffLabor = secLabor - sumLaborTotal;
+    const diffCost = secCost - sumCost;
+    const diffProfit = secProfit - sumProfit;
+    let diffRow = '';
+    if (Math.abs(diffLabor) > 1 || Math.abs(diffIncome) > 1 || Math.abs(diffProfit) > 1) {
+      diffRow = '<tr style="background:rgba(245,158,11,0.08);color:#fbbf24"><td colspan="2">⚠ 项目差额</td>' +
+        '<td class="text-right">' + (Math.abs(diffIncome) > 1 ? '¥' + fmt(diffIncome) : '-') + '</td>' +
+        '<td class="text-right">-</td><td class="text-right">-</td><td class="text-right">-</td><td class="text-right">-</td>' +
+        '<td class="text-right">¥' + fmt(diffLabor) + '</td>' +
+        '<td class="text-right">-</td><td class="text-right">-</td><td class="text-right">-</td>' +
+        '<td class="text-right">¥' + fmt(diffCost) + '</td>' +
+        '<td class="text-right ' + (diffProfit >= 0 ? 'profit-positive' : 'profit-negative') + '">¥' + fmt(diffProfit) + '</td></tr>';
+    }
+    tfoot.innerHTML = diffRow +
+      '<tr style="font-weight:bold;border-top:2px solid #475569;background:rgba(30,41,59,0.5)"><td colspan="2">合计</td>' +
+      '<td class="text-right">¥' + fmt(sumIncome + diffIncome) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumDirect) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumContent) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumMgmtShare) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumManager) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumLaborTotal + diffLabor) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumMainBiz) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumQianchuan) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumMgmtAlloc) + '</td>' +
+      '<td class="text-right">¥' + fmt(sumCost + diffCost) + '</td>' +
+      '<td class="text-right ' + ((sumProfit + diffProfit) >= 0 ? 'profit-positive' : 'profit-negative') + '">¥' + fmt(sumProfit + diffProfit) + '</td></tr>';
+  }
+  document.getElementById('detail-count').textContent = _analysisRows.length;
+}
+
+function downloadAnalysisExcel() {
+  if (!_analysisRows || _analysisRows.length === 0) { alert('暂无数据可下载'); return; }
+  let headers, rows;
+  if (_analysisSector !== 'daiyunying') {
+    headers = ['板块','月份','收入','人工成本','主营业务成本','管理费用','销售费用','财务费用','营业税及附加','总成本','净利润'];
+    rows = _analysisRows.map(function(r) { return [r.project_name, r.month, r.income, r.labor_cost, r.main_business_cost, r.mgmt_fee, r.sales_fee, r.financial_fee, r.business_tax, r.total_cost, r.net_profit]; });
+  } else {
+    headers = ['项目名称','月份','项目收入','直接人工','内容分摊','管理分摊','经理分摊','人工合计','主营业务成本','千川投放','管理费分摊','总成本','净利润'];
+    rows = _analysisRows.map(function(r) { return [r.project_name, r.month, r.income, r.direct_cost, r.content_share||0, r.mgmt_share||0, r.manager_share||0, r.labor_total||0, r.main_business_cost, r.qianchuan_cost, r.mgmt_fee_alloc||0, r.total_cost, r.profit]; });
+  }
+  let csv = '\uFEFF' + headers.join(',') + '\n';
+  rows.forEach(function(r) { csv += r.map(function(c) { return typeof c === 'number' ? c.toFixed(2) : c; }).join(',') + '\n'; });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = '项目经营分析_' + getSectorName(_analysisSector) + '_' + _analysisMonths[0] + '-' + _analysisMonths[_analysisMonths.length-1] + '.csv';
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+
+
+// ===== 初始化（数据加载后自动执行） =====
+loadData();
+</script>
+</body>
+</html>
