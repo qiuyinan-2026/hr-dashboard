@@ -2994,7 +2994,7 @@ const valueLabelPlugin = {
 // ========== 加载数据 ==========
 async function loadData() {
     try {
-        const resp = await fetch('finance_data.json?t=' + Date.now(), {cache: 'no-store'});
+        const resp = await fetch('finance_v2.json?t=' + Date.now(), {cache: 'no-store'});
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         DATA = await resp.json();
         document.getElementById('updateTime').textContent = '更新于 ' + DATA.updateTime;
@@ -3002,7 +3002,7 @@ async function loadData() {
     } catch (e) {
         document.getElementById('updateTime').textContent = '数据加载失败';
         console.error('加载数据失败:', e);
-        alert('数据加载失败：' + e.message + '\n请确认 finance_data.json 已上传到GitHub');
+        alert('数据加载失败：' + e.message + '\n请确认 finance_v2.json 已上传到GitHub');
         return false;
     }
 }
@@ -3610,7 +3610,7 @@ async function refreshData() {
         
         // 步骤2：读取最新数据 (20-55%)
         setProgress(40, 2);
-        const resp = await fetch('finance_data.json?t=' + Date.now(), {cache: 'no-store'});
+        const resp = await fetch('finance_v2.json?t=' + Date.now(), {cache: 'no-store'});
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         const newData = await resp.json();
         await new Promise(r => setTimeout(r, 300));
