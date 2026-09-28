@@ -1,11 +1,11 @@
 {
-  "updateTime": "2026-09-28 16:30:00",
+  "updateTime": "2026-09-28 17:00:00",
   "dataPeriod": "2026年1月 — 9月",
   "currentMonth": "9",
   "summary": {
-    "totalEstimate": 10676438.0,
-    "totalReceived": 8116314.48,
-    "totalReceivable": 2560123.52
+    "totalEstimate": 10952239.29,
+    "totalReceived": 7916128.87,
+    "totalReceivable": 3036110.42
   },
   "monthlyUnpaid": {
     "1月": 73711.92,
@@ -13,10 +13,10 @@
     "3月": 0.0,
     "4月": 15423.06,
     "5月": 70087.01,
-    "6月": 119676.01,
-    "7月": 184631.98,
-    "8月": 966452.9,
-    "9月": 1089200.0
+    "6月": 233476.07,
+    "7月": 328517.59,
+    "8月": 1128454.13,
+    "9月": 1145500.0
   },
   "yearData": {
     "before2026": {
@@ -24,8 +24,8 @@
       "receivableWan": "31.47"
     },
     "2026": {
-      "receivable": 2560123.52,
-      "receivableWan": "256.01"
+      "receivable": 3036110.42,
+      "receivableWan": "303.61"
     }
   },
   "filterOptions": {
@@ -42,7 +42,7 @@
     ],
     "projects": [
       "DAVIDGARCE男装",
-      "上海赢内（KOC）",
+      "上海赢内 （KOC）",
       "乐锦记",
       "养舒优1",
       "养舒优2",
@@ -768,31 +768,31 @@
       "group": "B组",
       "name": "南方黑芝麻-2",
       "code": 1011,
-      "month": "6月",
-      "estimate": 0.0,
-      "invoice": "-",
-      "received": 75615.68,
-      "receivable": -75615.68
-    },
-    {
-      "group": "B组",
-      "name": "南方黑芝麻-2",
-      "code": 1011,
       "month": "7月",
-      "estimate": 0.0,
-      "invoice": 75615.68,
-      "received": 65986.86,
-      "receivable": -65986.86
+      "estimate": 75615.68,
+      "invoice": "已回款",
+      "received": 75615.68,
+      "receivable": 0.0
     },
     {
       "group": "B组",
       "name": "南方黑芝麻-2",
       "code": 1011,
       "month": "8月",
-      "estimate": 0.0,
+      "estimate": 65986.86,
+      "invoice": "已开票",
+      "received": 0.0,
+      "receivable": 65986.86
+    },
+    {
+      "group": "B组",
+      "name": "南方黑芝麻-2",
+      "code": 1011,
+      "month": "9月",
+      "estimate": 56300.0,
       "invoice": "-",
-      "received": 56300.0,
-      "receivable": -56300.0
+      "received": 0.0,
+      "receivable": 56300.0
     },
     {
       "group": "B组",
@@ -928,21 +928,21 @@
       "group": "B组",
       "name": "养舒优2",
       "code": 1015,
-      "month": "6月",
-      "estimate": 0.0,
-      "invoice": "-",
-      "received": 38184.38,
-      "receivable": -38184.38
+      "month": "7月",
+      "estimate": 38184.38,
+      "invoice": "已开票",
+      "received": 0.0,
+      "receivable": 38184.38
     },
     {
       "group": "B组",
       "name": "养舒优2",
       "code": 1015,
-      "month": "7月",
-      "estimate": 0.0,
-      "invoice": "-",
-      "received": 39714.37,
-      "receivable": -39714.37
+      "month": "8月",
+      "estimate": 39714.37,
+      "invoice": "已开票",
+      "received": 0.0,
+      "receivable": 39714.37
     },
     {
       "group": "C组",
@@ -1336,7 +1336,7 @@
     },
     {
       "group": "传媒",
-      "name": "上海赢内（KOC）",
+      "name": "上海赢内 （KOC）",
       "code": 1081,
       "month": "8月",
       "estimate": 12000.0,
@@ -1346,7 +1346,7 @@
     },
     {
       "group": "传媒",
-      "name": "上海赢内（KOC）",
+      "name": "上海赢内 （KOC）",
       "code": 1081,
       "month": "9月",
       "estimate": 50000.0,
