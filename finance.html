@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>聚光直播 2026 经营数据仪表盘系统</title>
+<title>聚光直播 2026 财务管理系统</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -812,6 +812,48 @@ body {
     .cards-grid { grid-template-columns: repeat(2, 1fr); }
     .cards-grid-3 { grid-template-columns: 1fr; }
 }
+
+/* ========== 财务指标分析页面样式 ========== */
+.section-block {
+    margin-bottom: 30px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(56, 189, 248, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+}
+.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 16px;
+    padding-left: 12px;
+    border-left: 3px solid #38bdf8;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.section-title .badge {
+    font-size: 11px;
+    font-weight: 500;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.1);
+    padding: 3px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+.chart-container {
+    position: relative;
+    width: 100%;
+}
+.cards-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+@media (max-width: 1200px) {
+    .cards-grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
 </style>
 </head>
 <body>
@@ -829,12 +871,11 @@ body {
 
 <!-- ========== 顶部导航 ========== -->
 <div class="top-nav">
-    <div class="nav-title">聚光直播 · 2026经营数据系统</div>
+    <div class="nav-title">聚光直播 · 2026财务管理系统</div>
     <div style="display:flex;align-items:center;">
         <div class="nav-tabs">
             <button class="nav-tab active" data-page="finance">财务收入数据查询</button>
-            <button class="nav-tab" data-page="dashboard">经营数据仪表盘</button>
-            <button class="nav-tab" data-page="receivable">应收款分析</button>
+            <button class="nav-tab" data-page="analysis">财务指标分析</button>
         </div>
         <span class="update-time" id="updateTime">数据加载中...</span>
         <button class="refresh-btn" id="refreshBtn" onclick="refreshData()">
@@ -2000,977 +2041,107 @@ body {
     </div>
 </div>
 
-<!-- ========== 页面2：经营数据仪表盘 ========== -->
-<div class="page-container" id="page-dashboard">
-    
-
-<div class="header">
-  <h1>聚光直播 · 2026 经营数据仪表盘</h1>
-  <div class="meta">数据周期：<span id="dashPeriod">2026年1月 — 8月</span> ｜ 更新时间：<span id="dashUpdate">2026-09-03</span></div>
-</div>
-
-<!-- 第一板块 -->
-<div class="section-title">第一板块 · 核心指标概览 <span class="badge">数据卡片</span></div>
-<div class="cards-grid">
-  <div class="card blue">
-    <div class="card-label"><span class="dot"></span>业务总收入<span id="cardRevenuePeriod">（1-8月）</span></div>
-    <div class="card-value">836.24<span class="card-unit">万元</span></div>
-    <div class="card-sub">累计收入小计 <strong>¥8,362,366.85</strong></div>
-    <div class="progress-wrap">
-      <div class="progress-label"><span>年度目标 2,000 万</span><span>41.81%</span></div>
-      <div class="progress-bar"><div class="progress-fill" style="width:41.81%"></div></div>
-    </div>
-  </div>
-  <div class="card green">
-    <div class="card-label"><span class="dot"></span>回款总计<span id="cardReceivedPeriod">（1-8月）</span></div>
-    <div class="card-value">620.64<span class="card-unit">万元</span></div>
-    <div class="card-sub">累计回款小计 <strong>¥6,206,406.31</strong></div>
-    <div class="progress-wrap">
-      <div class="progress-label"><span>占业务收入比</span><span>74.22%</span></div>
-      <div class="progress-bar"><div class="progress-fill" style="width:74.22%"></div></div>
-    </div>
-  </div>
-  <div class="card red">
-    <div class="card-label"><span class="dot"></span>应收款总计</div>
-    <div class="card-value">215.60<span class="card-unit">万元</span></div>
-    <div class="card-sub">业务收入 − 回款总计 = <strong>¥2,155,960.54</strong></div>
-    <div class="progress-wrap">
-      <div class="progress-label"><span>未回款占比</span><span>25.78%</span></div>
-      <div class="progress-bar"><div class="progress-fill" style="width:25.78%"></div></div>
-    </div>
-  </div>
-  <div class="card purple">
-    <div class="card-label"><span class="dot"></span>年底前每月收入目标</div>
-    <div class="card-value">232.75<span class="card-unit">万元/月</span></div>
-    <div class="card-sub">剩余 <strong>5 个月</strong>（8-12月）需完成 <strong>1,163.76 万</strong></div>
-    <div class="progress-wrap">
-      <div class="progress-label"><span>距年度目标缺口</span><span>58.19%</span></div>
-      <div class="progress-bar"><div class="progress-fill" style="width:58.19%"></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- 第二板块 -->
-<div class="section-title">第二板块 · 项目收入分析 <span class="badge">柱状图排名</span></div>
-<div class="chart-row-full">
-  <div class="chart-box">
-    <h3>（1）各项目总收入降序排名 <span class="hint">单位：元</span></h3>
-    <div class="chart-container tall"><canvas id="chartRevenue"></canvas></div>
-  </div>
-</div>
-<div class="chart-row-full">
-  <div class="chart-box">
-    <h3>（2）各项目月均收入排名 <span class="hint">月均 = 总收入 ÷ 存续月份数，单位：元/月</span></h3>
-    <div class="chart-container tall"><canvas id="chartAvgMonthly"></canvas></div>
-  </div>
-</div>
-
-<!-- 第三板块 -->
-<div class="section-title">第三板块 · 应收账款分析 <span class="badge">应收款 + 风险预警</span></div>
-<div class="cards-grid-3">
-  <div class="card red">
-    <div class="card-label"><span class="dot"></span>2026年度总的应收款</div>
-    <div class="card-value">215.60<span class="card-unit">万元</span></div>
-    <div class="card-sub">各项目（预估收入 − 实际回款）汇总 <strong>¥2,155,960.55</strong></div>
-  </div>
-  <div class="card orange">
-    <div class="card-label"><span class="dot"></span>超过2个月未回款总额</div>
-    <div class="card-value">94.51<span class="card-unit">万元</span></div>
-    <div class="card-sub">1-6月到期未回款部分 <strong>¥945,145.57</strong><br>占2026应收款 <strong>43.84%</strong></div>
-  </div>
-  <div class="card purple">
-    <div class="card-label"><span class="dot"></span>年度应收款总计（含往年）</div>
-    <div class="card-value">247.06<span class="card-unit">万元</span></div>
-    <div class="card-sub">
-      <strong>¥2,470,640.55</strong>
-      <div class="year-breakdown">
-        <span class="year-item">2024: ¥314,680</span>
-        <span class="year-item">2025: ¥0</span>
-        <span class="year-item">2026: ¥2,155,960.55</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="chart-row-full" style="margin-top:24px">
-  <div class="chart-box">
-    <h3>（2）各项目应收款降序排名 <span class="hint">红色 = 超过2个月（含2个月）未回款预警</span></h3>
-    <div class="legend-inline">
-      <span><span class="sw" style="background:#f87171"></span>超2个月未回款</span>
-      <span><span class="sw" style="background:#38bdf8"></span>正常应收款</span>
-    </div>
-    <div class="chart-container tall"><canvas id="chartReceivable"></canvas></div>
-  </div>
-</div>
-<div class="chart-row-full">
-  <div class="chart-box">
-    <h3>（3）每月应收款情况 <span class="hint">鼠标悬浮查看未回款项目明细</span></h3>
-    <div class="chart-container medium"><canvas id="chartMonthlyReceivable"></canvas></div>
-  </div>
-</div>
-
-<!-- 第四板块 -->
-<div class="section-title">第四板块 · 收入分析 <span class="badge">趋势 + 排名</span></div>
-<div class="chart-row-full">
-  <div class="chart-box">
-    <h3>（1）每月收入趋势 + 存续项目数量 <span class="hint">柱状图=收入（万元），折线=存续项目数</span></h3>
-    <div class="chart-container normal"><canvas id="chartTrend"></canvas></div>
-  </div>
-</div>
-<div class="chart-row-full">
-  <div class="chart-box">
-    <h3>（2）项目月均收入排名 <span class="hint">年度总收入 ÷ 存续月份，单位：元/月</span></h3>
-    <div class="chart-container tall"><canvas id="chartAvgRank"></canvas></div>
-  </div>
-</div>
-<div class="chart-row-full">
-  <div class="chart-box">
-    <h3>（3）项目存续时间排名 <span class="hint">按有收入数据的月份数降序</span></h3>
-    <div class="chart-container medium"><canvas id="chartActiveMonths"></canvas></div>
-  </div>
-</div>
-
-<div class="footer">数据来源：飞书表格「2026账单」｜ 聚光直播经营分析 ｜ 共 27 个项目</div>
-
-
-
-</div>
-
-<!-- ========== 页面3：应收款分析 ========== -->
-<div class="page-container" id="page-receivable">
+<!-- ========== 页面2：财务指标分析 ========== -->
+<div class="page-container" id="page-analysis">
     <div class="page-header">
-        <h1>应收款分析</h1>
-        <p>多维度回款分析与应收款监控 · 数据周期：2026年1月-7月 · 更新时间：2026-08-12</p>
+        <h1>财务指标分析</h1>
+        <p>多维度财务指标分析与可视化 · 数据周期：2026年1月-8月 · 数据来源：飞书财务表格</p>
     </div>
 
-    <!-- 年度目标与完成率 -->
-    <div class="receivable-section">
-        <div class="section-title">年度目标与完成率</div>
-        <div class="target-cards">
-            <div class="target-card red">
-                <div class="tc-label">年度回款目标</div>
-                <div class="tc-value">2000<span style="font-size:14px">万元</span></div>
-                <div class="tc-sub">全年回款考核目标</div>
-            </div>
-            <div class="target-card blue">
-                <div class="tc-label">已完成回款</div>
-                <div class="tc-value">620.64<span style="font-size:14px">万元</span></div>
-                <div class="tc-sub">完成率 31.0%</div>
-            </div>
-            <div class="target-card orange">
-                <div class="tc-label">剩余目标</div>
-                <div class="tc-value">1379.36<span style="font-size:14px">万元</span></div>
-                <div class="tc-sub">还需完成 69.0%</div>
-            </div>
-            <div class="target-card green">
-                <div class="tc-label">年底前月均目标</div>
-                <div class="tc-value">229.89<span style="font-size:14px">万元/月</span></div>
-                <div class="tc-sub">剩余6个月需完成</div>
-            </div>
+    <!-- 筛选栏 -->
+    <div class="filter-bar" style="margin-bottom:20px;">
+        <div class="filter-item">
+            <label>起始月份</label>
+            <select id="analysisMonthFrom">
+                <option value="all">全部月份</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>结束月份</label>
+            <select id="analysisMonthTo">
+                <option value="all">全部月份</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>业务板块</label>
+            <select id="analysisSector">
+                <option value="集团总计">集团总计</option>
+                <option value="代运营板块">代运营板块</option>
+                <option value="传媒板块">传媒板块</option>
+                <option value="私域板块">私域板块</option>
+            </select>
+        </div>
+        <button class="page-btn" onclick="applyAnalysisFilters()" style="margin-left:10px;">应用筛选</button>
+    </div>
+
+    <!-- 第一部分：数据概览 -->
+    <div class="section-block">
+        <div class="section-title">一、数据概览 <span class="badge">各板块年度汇总</span></div>
+        <div class="cards-grid-4" id="overviewCards"></div>
+    </div>
+
+    <!-- 第二部分：业务收入分析 -->
+    <div class="section-block">
+        <div class="section-title">二、业务收入分析 <span class="badge">月度收入趋势</span></div>
+        <div class="chart-container" style="height:350px;">
+            <canvas id="chartRevenueAnalysis"></canvas>
         </div>
     </div>
 
-    <!-- 实际经营数据 -->
-    <div class="receivable-section">
-        <div class="section-title">实际经营数据</div>
-        <div class="target-cards">
-            <div class="target-card blue">
-                <div class="tc-label">业务总收入</div>
-                <div class="tc-value">836.24<span style="font-size:14px">万元</span></div>
-                <div class="tc-sub">27个项目累计</div>
-            </div>
-            <div class="target-card green">
-                <div class="tc-label">回款总计</div>
-                <div class="tc-value">620.64<span style="font-size:14px">万元</span></div>
-                <div class="tc-sub">回款率 74.2%</div>
-            </div>
-            <div class="target-card orange">
-                <div class="tc-label">应收款总计</div>
-                <div class="tc-value">215.60<span style="font-size:14px">万元</span></div>
-                <div class="tc-sub">占收入 25.8%</div>
-            </div>
-            <div class="target-card red">
-                <div class="tc-label">超2个月未回款</div>
-                <div class="tc-value">87.87<span style="font-size:14px">万元</span></div>
-                <div class="tc-sub">需重点跟进</div>
-            </div>
+    <!-- 第三部分：成本分析 -->
+    <div class="section-block">
+        <div class="section-title">三、成本分析 <span class="badge">7项成本构成（嵌套柱状图）</span></div>
+        <div class="chart-container" style="height:400px;">
+            <canvas id="chartCostAnalysis"></canvas>
         </div>
     </div>
 
-    <!-- 当前月（7月）回款数据 -->
-    <div class="receivable-section">
-        <div class="current-month-box">
-            <div class="cm-header">
-                <div class="cm-title" id="cmTitle">📊 当前月回款数据</div>
-                <div class="cm-badge">⚠ 回款率 0% - 待跟进</div>
-            </div>
-            <div class="cm-stats">
-                <div class="cm-stat">
-                    <div class="cm-label" id="cmLabelEst">当月预估收入</div>
-                    <div class="cm-value" style="color:#38bdf8">121.53万</div>
-                </div>
-                <div class="cm-stat">
-                    <div class="cm-label" id="cmLabelRec">当月已回款</div>
-                    <div class="cm-value" style="color:#34d399">0万</div>
-                </div>
-                <div class="cm-stat">
-                    <div class="cm-label" id="cmLabelRecv">当月应收款</div>
-                    <div class="cm-value" style="color:#fb923c">121.53万</div>
-                </div>
-                <div class="cm-stat">
-                    <div class="cm-label">月度目标</div>
-                    <div class="cm-value" style="color:#f87171">166万</div>
-                </div>
-            </div>
+    <!-- 第四部分：净利润分析 -->
+    <div class="section-block">
+        <div class="section-title">四、净利润分析 <span class="badge">收入折线 + 成本/利润柱状</span></div>
+        <div class="chart-container" style="height:400px;">
+            <canvas id="chartProfitAnalysis"></canvas>
         </div>
     </div>
 
-    <!-- 月度回款趋势 + 月度目标达成 -->
-    <div class="receivable-section">
-        <div class="two-col">
-            <div class="chart-box">
-                <h3>月度回款趋势与目标红线</h3>
-                <div class="chart-container">
-                    <canvas id="chartMonthlyTrend"></canvas>
-                </div>
-            </div>
-            <div class="data-table-wrapper">
-                <div class="data-table-header">
-                    <h3>月度目标达成情况</h3>
-                </div>
-                <div style="max-height: 340px; overflow-y: auto;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>月份</th>
-                                <th style="text-align:right">目标</th>
-                                <th style="text-align:right">预估</th>
-                                <th style="text-align:right">回款</th>
-                                <th style="text-align:right">未回</th>
-                                <th>回款率</th>
-                                <th style="text-align:right">预估率</th>
-                                <th>状态</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-    <tr>
-        <td style="font-weight:600">1月</td>
-        <td class="num" style="color:#f87171;font-weight:700">1,350,000.00</td>
-        <td class="num">1,575,306.02</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">1,506,094.10</td>
-        <td class="num" style="color:#fb923c;font-weight:600">69,211.92</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:100%"></span></span>
-            <span class="rate-text">111.6%</span>
-        </td>
-        <td class="num">116.7%</td>
-        <td><span class="tag pass">达标</span></td>
-    </tr>
-    <tr>
-        <td style="font-weight:600">2月</td>
-        <td class="num" style="color:#f87171;font-weight:700">1,350,000.00</td>
-        <td class="num">926,979.45</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">886,038.81</td>
-        <td class="num" style="color:#fb923c;font-weight:600">40,940.64</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:65.63250444444445%"></span></span>
-            <span class="rate-text">65.6%</span>
-        </td>
-        <td class="num">68.7%</td>
-        <td><span class="tag fail">未达标</span></td>
-    </tr>
-    <tr>
-        <td style="font-weight:600">3月</td>
-        <td class="num" style="color:#f87171;font-weight:700">1,350,000.00</td>
-        <td class="num">1,016,259.10</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">1,016,259.10</td>
-        <td class="num" style="color:#fb923c;font-weight:600">0</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:75.27845185185184%"></span></span>
-            <span class="rate-text">75.3%</span>
-        </td>
-        <td class="num">75.3%</td>
-        <td><span class="tag fail">未达标</span></td>
-    </tr>
-    <tr>
-        <td style="font-weight:600">4月</td>
-        <td class="num" style="color:#f87171;font-weight:700">1,350,000.00</td>
-        <td class="num">1,045,824.28</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">1,030,401.22</td>
-        <td class="num" style="color:#fb923c;font-weight:600">15,423.06</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:76.3260162962963%"></span></span>
-            <span class="rate-text">76.3%</span>
-        </td>
-        <td class="num">77.5%</td>
-        <td><span class="tag fail">未达标</span></td>
-    </tr>
-    <tr>
-        <td style="font-weight:600">5月</td>
-        <td class="num" style="color:#f87171;font-weight:700">1,350,000.00</td>
-        <td class="num">1,336,227.63</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">1,236,140.62</td>
-        <td class="num" style="color:#fb923c;font-weight:600">100,087.01</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:91.56597185185186%"></span></span>
-            <span class="rate-text">91.6%</span>
-        </td>
-        <td class="num">99.0%</td>
-        <td><span class="tag fail">未达标</span></td>
-    </tr>
-    <tr>
-        <td style="font-weight:600">6月</td>
-        <td class="num" style="color:#f87171;font-weight:700">1,350,000.00</td>
-        <td class="num">1,246,455.40</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">531,472.46</td>
-        <td class="num" style="color:#fb923c;font-weight:600">714,982.94</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:39.368330370370366%"></span></span>
-            <span class="rate-text">39.4%</span>
-        </td>
-        <td class="num">92.3%</td>
-        <td><span class="tag fail">未达标</span></td>
-    </tr>
-    <tr>
-        <td style="font-weight:600">7月</td>
-        <td class="num" style="color:#f87171;font-weight:700">1,660,000.00</td>
-        <td class="num">1,215,314.98</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
-        <td class="num" style="color:#fb923c;font-weight:600">1,215,314.98</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:0.0%"></span></span>
-            <span class="rate-text">0.0%</span>
-        </td>
-        <td class="num">73.2%</td>
-        <td><span class="tag fail">未达标</span></td>
-    </tr>
-<tr style="background:rgba(56,189,248,0.1);font-weight:700">
-    <td>合计</td>
-    <td class="num" style="color:#f87171">9,760,000.00</td>
-    <td class="num">8,362,366.86</td>
-    <td class="num" style="color:#6ee7b7">6,206,406.31</td>
-    <td class="num" style="color:#fb923c">2,155,960.55</td>
-    <td class="rate-cell">
-        <span class="rate-bar"><span class="rate-fill" style="width:63.6%;background:linear-gradient(90deg,#34d399,#10b981)"></span></span>
-        <span class="rate-text" style="color:#34d399">63.6%</span>
-    </td>
-    <td class="num">85.7%</td>
-    <td><span class="tag fail">6个月未达标</span></td>
-</tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <!-- 第五部分：营业税及附加分析 -->
+    <div class="section-block">
+        <div class="section-title">五、营业税及附加分析 <span class="badge">双Y轴：金额 + 占比</span></div>
+        <div class="chart-container" style="height:380px;">
+            <canvas id="chartTaxAnalysis"></canvas>
         </div>
     </div>
 
-    <!-- 业务组回款汇总 -->
-    <div class="receivable-section">
-        <div class="section-title">业务组回款汇总</div>
-        <div class="data-table-wrapper">
+    <!-- 第六部分：人工成本分析 -->
+    <div class="section-block">
+        <div class="section-title">六、人工成本分析 <span class="badge">双Y轴：金额 + 占比</span></div>
+        <div class="chart-container" style="height:380px;">
+            <canvas id="chartLaborAnalysis"></canvas>
+        </div>
+    </div>
+
+    <!-- 第七部分：管理费用分析 -->
+    <div class="section-block">
+        <div class="section-title">七、管理费用分析 <span class="badge">费用趋势 + 明细表格</span></div>
+        <div class="chart-container" style="height:350px;">
+            <canvas id="chartMgmtAnalysis"></canvas>
+        </div>
+        <div class="data-table-wrapper" style="margin-top:15px;">
             <div class="data-table-header">
-                <h3>各业务组收入/回款/应收款对比</h3>
+                <h3>管理费用明细（所选时段）</h3>
             </div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>业务组</th>
-                        <th style="text-align:right">预估收入</th>
-                        <th style="text-align:right">已回款</th>
-                        <th style="text-align:right">应收款</th>
-                        <th>回款率</th>
-                        <th style="text-align:center">项目数</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-    <tr>
-        <td style="font-weight:600"><span class="group-dot" style="background:#38bdf8"></span>A组</td>
-        <td class="num">3,470,894.84</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">2,486,697.95</td>
-        <td class="num" style="color:#fb923c;font-weight:600">984,196.89</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:71.64428957461587%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
-            <span class="rate-text" style="color:#38bdf8">71.6%</span>
-        </td>
-        <td class="num" style="text-align:center">7</td>
-    </tr>
-    <tr>
-        <td style="font-weight:600"><span class="group-dot" style="background:#34d399"></span>B组</td>
-        <td class="num">3,590,024.14</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">2,589,345.89</td>
-        <td class="num" style="color:#fb923c;font-weight:600">1,000,678.25</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:72.12614146934399%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
-            <span class="rate-text" style="color:#34d399">72.1%</span>
-        </td>
-        <td class="num" style="text-align:center">8</td>
-    </tr>
-    <tr>
-        <td style="font-weight:600"><span class="group-dot" style="background:#fb923c"></span>C组</td>
-        <td class="num">649,925.51</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">545,570.70</td>
-        <td class="num" style="color:#fb923c;font-weight:600">104,354.81</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:83.94357377970898%;background:linear-gradient(90deg,#fb923c,#fb923cdd)"></span></span>
-            <span class="rate-text" style="color:#fb923c">83.9%</span>
-        </td>
-        <td class="num" style="text-align:center">3</td>
-    </tr>
-    <tr>
-        <td style="font-weight:600"><span class="group-dot" style="background:#a855f7"></span>传媒</td>
-        <td class="num">261,353.73</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">251,353.73</td>
-        <td class="num" style="color:#fb923c;font-weight:600">10,000.00</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:96.17376801930472%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
-            <span class="rate-text" style="color:#a855f7">96.2%</span>
-        </td>
-        <td class="num" style="text-align:center">5</td>
-    </tr>
-    <tr>
-        <td style="font-weight:600"><span class="group-dot" style="background:#f87171"></span>私域</td>
-        <td class="num">287,984.04</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">231,253.44</td>
-        <td class="num" style="color:#fb923c;font-weight:600">56,730.60</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:80.3007833350765%;background:linear-gradient(90deg,#f87171,#f87171dd)"></span></span>
-            <span class="rate-text" style="color:#f87171">80.3%</span>
-        </td>
-        <td class="num" style="text-align:center">2</td>
-    </tr>
-    <tr>
-        <td style="font-weight:600"><span class="group-dot" style="background:#0ea5e9"></span>聚能</td>
-        <td class="num">11,835.18</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">11,835.18</td>
-        <td class="num" style="color:#fb923c;font-weight:600">0</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#0ea5e9,#0ea5e9dd)"></span></span>
-            <span class="rate-text" style="color:#0ea5e9">100.0%</span>
-        </td>
-        <td class="num" style="text-align:center">1</td>
-    </tr>
-    <tr>
-        <td style="font-weight:600"><span class="group-dot" style="background:#94a3b8"></span>其他</td>
-        <td class="num">90,349.42</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">90,349.42</td>
-        <td class="num" style="color:#fb923c;font-weight:600">0</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#94a3b8,#94a3b8dd)"></span></span>
-            <span class="rate-text" style="color:#94a3b8">100.0%</span>
-        </td>
-        <td class="num" style="text-align:center">1</td>
-    </tr>
-<tr style="background:rgba(56,189,248,0.1);font-weight:700">
-    <td>合计</td>
-    <td class="num">8,362,366.86</td>
-    <td class="num" style="color:#6ee7b7">6,206,406.31</td>
-    <td class="num" style="color:#fb923c">2,155,960.55</td>
-    <td class="rate-cell">
-        <span class="rate-bar"><span class="rate-fill" style="width:74.2%;background:linear-gradient(90deg,#38bdf8,#0ea5e9)"></span></span>
-        <span class="rate-text" style="color:#38bdf8">74.2%</span>
-    </td>
-    <td class="num" style="text-align:center">27</td>
-</tr>
-                </tbody>
+            <table class="data-table" id="mgmtDetailTable">
+                <thead><tr><th>费用项目</th><th style="text-align:right">金额（元）</th><th style="text-align:right">占比</th></tr></thead>
+                <tbody></tbody>
             </table>
         </div>
     </div>
 
-    <!-- 年度未回款排名 + 7月业务组明细 -->
-    <div class="receivable-section">
-        <div class="two-col">
-            <div>
-                <div class="section-title">年度未回款排名（按业务组）</div>
-                <div class="data-table-wrapper">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>排名</th>
-                                <th>业务组</th>
-                                <th style="text-align:right">未回款金额</th>
-                                <th>占比</th>
-                                <th style="text-align:right">已回款</th>
-                                <th style="text-align:right">回款率</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-    <tr>
-        <td style="font-weight:700;color:#7dd3fc">#1</td>
-        <td style="font-weight:600"><span class="group-dot" style="background:#34d399"></span>B组</td>
-        <td class="num" style="color:#7dd3fc;font-weight:700;font-size:14px">1,000,678.25</td>
-        <td class="rate-cell">
-            <span class="rate-bar" style="width:140px"><span class="rate-fill" style="width:46.4144972411485%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
-            <span class="rate-text" style="color:#34d399">46.4%</span>
-        </td>
-        <td class="num" style="color:#6ee7b7">2,589,345.89</td>
-        <td class="num">72.1%</td>
-    </tr>
-    <tr>
-        <td style="font-weight:700;color:#7dd3fc">#2</td>
-        <td style="font-weight:600"><span class="group-dot" style="background:#38bdf8"></span>A组</td>
-        <td class="num" style="color:#7dd3fc;font-weight:700;font-size:14px">984,196.89</td>
-        <td class="rate-cell">
-            <span class="rate-bar" style="width:140px"><span class="rate-fill" style="width:45.65004169487239%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
-            <span class="rate-text" style="color:#38bdf8">45.7%</span>
-        </td>
-        <td class="num" style="color:#6ee7b7">2,486,697.95</td>
-        <td class="num">71.6%</td>
-    </tr>
-    <tr>
-        <td style="font-weight:700;color:#7dd3fc">#3</td>
-        <td style="font-weight:600"><span class="group-dot" style="background:#fb923c"></span>C组</td>
-        <td class="num" style="color:#7dd3fc;font-weight:700;font-size:14px">104,354.81</td>
-        <td class="rate-cell">
-            <span class="rate-bar" style="width:140px"><span class="rate-fill" style="width:4.840293112042334%;background:linear-gradient(90deg,#fb923c,#fb923cdd)"></span></span>
-            <span class="rate-text" style="color:#fb923c">4.8%</span>
-        </td>
-        <td class="num" style="color:#6ee7b7">545,570.70</td>
-        <td class="num">83.9%</td>
-    </tr>
-    <tr>
-        <td style="font-weight:700;color:#7dd3fc">#4</td>
-        <td style="font-weight:600"><span class="group-dot" style="background:#f87171"></span>私域</td>
-        <td class="num" style="color:#7dd3fc;font-weight:700;font-size:14px">56,730.60</td>
-        <td class="rate-cell">
-            <span class="rate-bar" style="width:140px"><span class="rate-fill" style="width:2.6313375724801644%;background:linear-gradient(90deg,#f87171,#f87171dd)"></span></span>
-            <span class="rate-text" style="color:#f87171">2.6%</span>
-        </td>
-        <td class="num" style="color:#6ee7b7">231,253.44</td>
-        <td class="num">80.3%</td>
-    </tr>
-    <tr>
-        <td style="font-weight:700;color:#7dd3fc">#5</td>
-        <td style="font-weight:600"><span class="group-dot" style="background:#a855f7"></span>传媒</td>
-        <td class="num" style="color:#7dd3fc;font-weight:700;font-size:14px">10,000.00</td>
-        <td class="rate-cell">
-            <span class="rate-bar" style="width:140px"><span class="rate-fill" style="width:0.4638303794566186%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
-            <span class="rate-text" style="color:#a855f7">0.5%</span>
-        </td>
-        <td class="num" style="color:#6ee7b7">251,353.73</td>
-        <td class="num">96.2%</td>
-    </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div>
-                <div class="section-title">7月各业务组回款明细</div>
-                <div class="data-table-wrapper">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>业务组</th>
-                                <th style="text-align:right">7月预估</th>
-                                <th style="text-align:right">7月回款</th>
-                                <th style="text-align:right">7月应收</th>
-                                <th>回款率</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-    <tr>
-        <td style="font-weight:600"><span class="group-dot" style="background:#38bdf8"></span>A组</td>
-        <td class="num">515,165.26</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
-        <td class="num" style="color:#fb923c;font-weight:600">515,165.26</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:0.0%"></span></span>
-            <span class="rate-text">0.0%</span>
-        </td>
-    </tr>
-    <tr>
-        <td style="font-weight:600"><span class="group-dot" style="background:#34d399"></span>B组</td>
-        <td class="num">530,403.12</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
-        <td class="num" style="color:#fb923c;font-weight:600">530,403.12</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:0.0%"></span></span>
-            <span class="rate-text">0.0%</span>
-        </td>
-    </tr>
-    <tr>
-        <td style="font-weight:600"><span class="group-dot" style="background:#fb923c"></span>C组</td>
-        <td class="num">103,016.00</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
-        <td class="num" style="color:#fb923c;font-weight:600">103,016.00</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:0.0%"></span></span>
-            <span class="rate-text">0.0%</span>
-        </td>
-    </tr>
-    <tr>
-        <td style="font-weight:600"><span class="group-dot" style="background:#a855f7"></span>传媒</td>
-        <td class="num">10,000.00</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
-        <td class="num" style="color:#fb923c;font-weight:600">10,000.00</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:0.0%"></span></span>
-            <span class="rate-text">0.0%</span>
-        </td>
-    </tr>
-    <tr>
-        <td style="font-weight:600"><span class="group-dot" style="background:#f87171"></span>私域</td>
-        <td class="num">56,730.60</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
-        <td class="num" style="color:#fb923c;font-weight:600">56,730.60</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:0.0%"></span></span>
-            <span class="rate-text">0.0%</span>
-        </td>
-    </tr>
-<tr style="background:rgba(251,146,60,0.15);font-weight:700">
-    <td>合计</td>
-    <td class="num">1,215,314.98</td>
-    <td class="num" style="color:#6ee7b7">0</td>
-    <td class="num" style="color:#fb923c">1,215,314.98</td>
-    <td class="rate-cell">
-        <span class="rate-bar"><span class="rate-fill" style="width:0%"></span></span>
-        <span class="rate-text">0.0%</span>
-    </td>
-</tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 项目回款明细 -->
-    <div class="receivable-section">
-        <div class="section-title">项目回款明细（按业务组可筛选）</div>
-        <div class="filter-bar" style="margin-bottom: 12px;">
-            <div class="filter-item">
-                <label>业务组筛选</label>
-                <select id="projGroupFilter" onchange="filterProjectDetail()">
-                    <option value="all">全部业务组</option>
-                    <option value="A组">A组</option>
-                    <option value="B组">B组</option>
-                    <option value="C组">C组</option>
-                    <option value="传媒">传媒</option>
-                    <option value="私域">私域</option>
-                    <option value="聚能">聚能</option>
-                    <option value="其他">其他</option>
-                </select>
-            </div>
-        </div>
-        <div class="data-table-wrapper">
-            <div style="max-height: 500px; overflow-y: auto;">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>项目名称</th>
-                            <th style="text-align:right">总收入</th>
-                            <th style="text-align:right">已回款</th>
-                            <th style="text-align:right">应收款</th>
-                            <th>回款率</th>
-                            <th>状态</th>
-                        </tr>
-                    </thead>
-                    <tbody id="projectDetailBody">
-                        
-    <tr class="proj-row" data-group="A组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>阴山优麦冲饮</td>
-        <td class="num">1,817,335.56</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">1,279,936.94</td>
-        <td class="num" style="color:#fb923c;font-weight:600">537,398.62</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:70.42931246005003%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
-            <span class="rate-text" style="color:#38bdf8">70.4%</span>
-        </td>
-        <td><span class="tag warn">待跟进</span></td>
-    </tr>
-    <tr class="proj-row" data-group="A组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>阴山优麦食品</td>
-        <td class="num">637,397.10</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">562,396.36</td>
-        <td class="num" style="color:#fb923c;font-weight:600">75,000.74</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:88.23327875197424%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
-            <span class="rate-text" style="color:#38bdf8">88.2%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="A组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>抖音超市美妆</td>
-        <td class="num">707,381.47</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">513,909.70</td>
-        <td class="num" style="color:#fb923c;font-weight:600">193,471.77</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:72.64958467176133%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
-            <span class="rate-text" style="color:#38bdf8">72.6%</span>
-        </td>
-        <td><span class="tag warn">待跟进</span></td>
-    </tr>
-    <tr class="proj-row" data-group="A组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>抖超箱包</td>
-        <td class="num">8,886.58</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">8,286.58</td>
-        <td class="num" style="color:#fb923c;font-weight:600">600.00</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:93.24824623195876%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
-            <span class="rate-text" style="color:#38bdf8">93.2%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="A组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>追觅戒指</td>
-        <td class="num">183,468.64</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">41,442.88</td>
-        <td class="num" style="color:#fb923c;font-weight:600">142,025.76</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:22.588536111675545%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
-            <span class="rate-text" style="color:#38bdf8">22.6%</span>
-        </td>
-        <td><span class="tag fail">风险</span></td>
-    </tr>
-    <tr class="proj-row" data-group="A组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>美菱小家电</td>
-        <td class="num">27,095.86</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">21,395.86</td>
-        <td class="num" style="color:#fb923c;font-weight:600">5,700.00</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:78.96357598540884%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
-            <span class="rate-text" style="color:#38bdf8">79.0%</span>
-        </td>
-        <td><span class="tag warn">待跟进</span></td>
-    </tr>
-    <tr class="proj-row" data-group="A组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#38bdf8"></span>蓝漂</td>
-        <td class="num">89,329.63</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">59,329.63</td>
-        <td class="num" style="color:#fb923c;font-weight:600">30,000.00</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:66.41651823700602%;background:linear-gradient(90deg,#38bdf8,#38bdf8dd)"></span></span>
-            <span class="rate-text" style="color:#38bdf8">66.4%</span>
-        </td>
-        <td><span class="tag warn">待跟进</span></td>
-    </tr>
-    <tr class="proj-row" data-group="B组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>古井店播</td>
-        <td class="num">486,751.30</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">444,344.20</td>
-        <td class="num" style="color:#fb923c;font-weight:600">42,407.10</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:91.28772742877112%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
-            <span class="rate-text" style="color:#34d399">91.3%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="B组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>桂格</td>
-        <td class="num">1,319,500.36</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">1,190,519.20</td>
-        <td class="num" style="color:#fb923c;font-weight:600">128,981.16</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:90.22500001439938%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
-            <span class="rate-text" style="color:#34d399">90.2%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="B组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>南方黑芝麻-1</td>
-        <td class="num">710,309.46</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">628,078.70</td>
-        <td class="num" style="color:#fb923c;font-weight:600">82,230.76</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:88.42324864996166%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
-            <span class="rate-text" style="color:#34d399">88.4%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="B组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>南方黑芝麻-2</td>
-        <td class="num">74,425.86</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
-        <td class="num" style="color:#fb923c;font-weight:600">74,425.86</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:0.0%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
-            <span class="rate-text" style="color:#34d399">0.0%</span>
-        </td>
-        <td><span class="tag fail">风险</span></td>
-    </tr>
-    <tr class="proj-row" data-group="B组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>旺旺</td>
-        <td class="num">274,774.39</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
-        <td class="num" style="color:#fb923c;font-weight:600">274,774.39</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:0.0%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
-            <span class="rate-text" style="color:#34d399">0.0%</span>
-        </td>
-        <td><span class="tag fail">风险</span></td>
-    </tr>
-    <tr class="proj-row" data-group="B组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>乐锦记</td>
-        <td class="num">80,241.94</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">80,241.94</td>
-        <td class="num" style="color:#fb923c;font-weight:600">0</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
-            <span class="rate-text" style="color:#34d399">100.0%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="B组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>养舒优1</td>
-        <td class="num">607,342.19</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">246,161.85</td>
-        <td class="num" style="color:#fb923c;font-weight:600">361,180.34</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:40.53099785476783%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
-            <span class="rate-text" style="color:#34d399">40.5%</span>
-        </td>
-        <td><span class="tag fail">风险</span></td>
-    </tr>
-    <tr class="proj-row" data-group="B组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#34d399"></span>养舒优2</td>
-        <td class="num">36,678.64</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">0</td>
-        <td class="num" style="color:#fb923c;font-weight:600">36,678.64</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:0.0%;background:linear-gradient(90deg,#34d399,#34d399dd)"></span></span>
-            <span class="rate-text" style="color:#34d399">0.0%</span>
-        </td>
-        <td><span class="tag fail">风险</span></td>
-    </tr>
-    <tr class="proj-row" data-group="C组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#fb923c"></span>素颜霜</td>
-        <td class="num">97,166.69</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">97,166.69</td>
-        <td class="num" style="color:#fb923c;font-weight:600">0</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#fb923c,#fb923cdd)"></span></span>
-            <span class="rate-text" style="color:#fb923c">100.0%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="C组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#fb923c"></span>拓趣（沐浴油）</td>
-        <td class="num">149,354.81</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">90,000.00</td>
-        <td class="num" style="color:#fb923c;font-weight:600">59,354.81</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:60.25919084895893%;background:linear-gradient(90deg,#fb923c,#fb923cdd)"></span></span>
-            <span class="rate-text" style="color:#fb923c">60.3%</span>
-        </td>
-        <td><span class="tag warn">待跟进</span></td>
-    </tr>
-    <tr class="proj-row" data-group="C组">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#fb923c"></span>拓趣（护手霜）</td>
-        <td class="num">403,404.01</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">358,404.01</td>
-        <td class="num" style="color:#fb923c;font-weight:600">45,000.00</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:88.8449299252132%;background:linear-gradient(90deg,#fb923c,#fb923cdd)"></span></span>
-            <span class="rate-text" style="color:#fb923c">88.8%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="传媒">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#a855f7"></span>古井（达）</td>
-        <td class="num">198,569.94</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">188,569.94</td>
-        <td class="num" style="color:#fb923c;font-weight:600">10,000.00</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:94.96399102502625%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
-            <span class="rate-text" style="color:#a855f7">95.0%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="传媒">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#a855f7"></span>阴山优麦（达）</td>
-        <td class="num">29,687.28</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">29,687.28</td>
-        <td class="num" style="color:#fb923c;font-weight:600">0</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
-            <span class="rate-text" style="color:#a855f7">100.0%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="传媒">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#a855f7"></span>素颜霜（达）</td>
-        <td class="num">25,128.75</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">25,128.75</td>
-        <td class="num" style="color:#fb923c;font-weight:600">0</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
-            <span class="rate-text" style="color:#a855f7">100.0%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="传媒">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#a855f7"></span>南方黑芝麻（达）</td>
-        <td class="num">3,893.46</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">3,893.46</td>
-        <td class="num" style="color:#fb923c;font-weight:600">0</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
-            <span class="rate-text" style="color:#a855f7">100.0%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="传媒">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#a855f7"></span>蓝漂（达）</td>
-        <td class="num">4,074.30</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">4,074.30</td>
-        <td class="num" style="color:#fb923c;font-weight:600">0</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#a855f7,#a855f7dd)"></span></span>
-            <span class="rate-text" style="color:#a855f7">100.0%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="私域">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#f87171"></span>阴山优麦</td>
-        <td class="num">108,104.26</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">78,337.86</td>
-        <td class="num" style="color:#fb923c;font-weight:600">29,766.40</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:72.46509989523076%;background:linear-gradient(90deg,#f87171,#f87171dd)"></span></span>
-            <span class="rate-text" style="color:#f87171">72.5%</span>
-        </td>
-        <td><span class="tag warn">待跟进</span></td>
-    </tr>
-    <tr class="proj-row" data-group="私域">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#f87171"></span>南方黑芝麻（私）</td>
-        <td class="num">179,879.78</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">152,915.58</td>
-        <td class="num" style="color:#fb923c;font-weight:600">26,964.20</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:85.0098771523959%;background:linear-gradient(90deg,#f87171,#f87171dd)"></span></span>
-            <span class="rate-text" style="color:#f87171">85.0%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="聚能">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#0ea5e9"></span>DAVIDGARCE男装</td>
-        <td class="num">11,835.18</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">11,835.18</td>
-        <td class="num" style="color:#fb923c;font-weight:600">0</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#0ea5e9,#0ea5e9dd)"></span></span>
-            <span class="rate-text" style="color:#0ea5e9">100.0%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-    <tr class="proj-row" data-group="其他">
-        <td style="padding-left:14px"><span class="group-dot" style="background:#94a3b8"></span>营业外收入</td>
-        <td class="num">90,349.42</td>
-        <td class="num" style="color:#6ee7b7;font-weight:600">90,349.42</td>
-        <td class="num" style="color:#fb923c;font-weight:600">0</td>
-        <td class="rate-cell">
-            <span class="rate-bar"><span class="rate-fill" style="width:100.0%;background:linear-gradient(90deg,#94a3b8,#94a3b8dd)"></span></span>
-            <span class="rate-text" style="color:#94a3b8">100.0%</span>
-        </td>
-        <td><span class="tag pass">正常</span></td>
-    </tr>
-                    </tbody>
-                </table>
-            </div>
+    <!-- 第八部分：人均薪资及人效分析 -->
+    <div class="section-block">
+        <div class="section-title">八、人均薪资及人效分析 <span class="badge">双折线 + 柱状</span></div>
+        <div class="chart-container" style="height:400px;">
+            <canvas id="chartPerCapitaAnalysis"></canvas>
         </div>
     </div>
 </div>
@@ -2978,10 +2149,10 @@ body {
 <script>
 // ========== 全局数据 ==========
 let DATA = null;
-let dashboardCharts = {};
+let ANALYSIS_DATA = null;
+let analysisCharts = {};
 let receivableFilter = 'all';
 let sortOrder = 'none';
-let receivableChart = null;
 let isLoading = false;
 
 // 通用tooltip样式
@@ -2994,30 +2165,15 @@ const tooltipStyle = {
     padding: 12
 };
 
-// 数值标签插件
-const valueLabelPlugin = {
-    id: 'valueLabel',
-    afterDatasetsDraw(chart) {
-        const { ctx, data, chartArea: { top, bottom } } = chart;
-        if (!data.datasets[0].horizontal) {
-            data.datasets.forEach((dataset, i) => {
-                const meta = chart.getDatasetMeta(i);
-                meta.data.forEach((bar, index) => {
-                    const val = dataset.data[index];
-                    if (val > 0) {
-                        ctx.save();
-                        ctx.fillStyle = '#94a3b8';
-                        ctx.font = '10px sans-serif';
-                        ctx.textAlign = 'center';
-                        const label = val >= 10000 ? (val/10000).toFixed(1) + '万' : val.toLocaleString();
-                        ctx.fillText(label, bar.x, Math.max(top + 12, bar.y - 5));
-                        ctx.restore();
-                    }
-                });
-            });
-        }
-    }
-};
+// 数值格式化
+function fmtMoney(v) {
+    if (v === null || v === undefined || isNaN(v)) return '0.00';
+    return Number(v).toLocaleString('zh-CN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+function fmtWan(v) {
+    if (v === null || v === undefined || isNaN(v)) return '0.00';
+    return (Number(v) / 10000).toFixed(2);
+}
 
 // ========== 加载数据 ==========
 async function loadData() {
@@ -3030,7 +2186,19 @@ async function loadData() {
     } catch (e) {
         document.getElementById('updateTime').textContent = '数据加载失败';
         console.error('加载数据失败:', e);
-        alert('数据加载失败：' + e.message + '\n请确认 finance_v2.json 已上传到GitHub');
+        return false;
+    }
+}
+
+async function loadAnalysisData() {
+    try {
+        const resp = await fetch('finance_analysis.json?t=' + Date.now(), {cache: 'no-store'});
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        ANALYSIS_DATA = await resp.json();
+        return true;
+    } catch (e) {
+        console.error('加载分析数据失败:', e);
+        alert('财务分析数据加载失败：' + e.message);
         return false;
     }
 }
@@ -3038,46 +2206,33 @@ async function loadData() {
 // ========== 渲染财务查询页面 ==========
 function renderFinance() {
     if (!DATA) return;
-    
-    // 更新页面标题数据周期
     const finHeader = document.querySelector('#page-finance .page-header p');
     if (finHeader) finHeader.textContent = '支持按月份、项目名称、部门名称多维度筛选查询 · 数据周期：' + DATA.dataPeriod;
-    
-    // 填充筛选器选项
     const monthSel = document.getElementById('filterMonth');
     const projSel = document.getElementById('filterProject');
     const groupSel = document.getElementById('filterGroup');
-    
-    // 月份
     monthSel.innerHTML = '<option value="all">全部月份</option>' +
         DATA.filterOptions.months.map(m => `<option value="${m}">${m}</option>`).join('');
-    
-    // 项目
     projSel.innerHTML = '<option value="all">全部项目</option>' +
         DATA.filterOptions.projects.map(p => `<option value="${p}">${p}</option>`).join('');
-    
-    // 部门
     groupSel.innerHTML = '<option value="all">全部部门</option>' +
         DATA.filterOptions.groups.map(g => `<option value="${g}">${g}</option>`).join('');
-    
     applyFilters();
 }
 
-// ========== 筛选逻辑 ==========
+// ========== 筛选逻辑（财务查询） ==========
 function setReceivableFilter(type) {
     receivableFilter = (receivableFilter === type) ? 'all' : type;
     document.getElementById('btnUnpaid').classList.toggle('active', receivableFilter === 'unpaid');
     document.getElementById('btnPaid').classList.toggle('active', receivableFilter === 'paid');
     applyFilters();
 }
-
 function setSort(order) {
     sortOrder = (sortOrder === order) ? 'none' : order;
     document.getElementById('btnSortAsc').classList.toggle('active', sortOrder === 'asc');
     document.getElementById('btnSortDesc').classList.toggle('active', sortOrder === 'desc');
     applyFilters();
 }
-
 function onYearChange() {
     const year = document.getElementById('filterYear').value;
     const monthSel = document.getElementById('filterMonth');
@@ -3089,15 +2244,12 @@ function onYearChange() {
     }
     applyFilters();
 }
-
 function applyFilters() {
     if (!DATA) return;
     const year = document.getElementById('filterYear').value;
     const month = document.getElementById('filterMonth').value;
     const project = document.getElementById('filterProject').value;
     const group = document.getElementById('filterGroup').value;
-
-    // 2025年以前：固定显示历史应收款
     if (year === 'before2026') {
         const hist = DATA.yearData.before2026;
         document.getElementById('sumEstimate').innerHTML = '—<span class="unit"></span>';
@@ -3108,30 +2260,23 @@ function applyFilters() {
         document.getElementById('recordCount').textContent = '历史数据';
         return;
     }
-    
     let filtered = DATA.detailRows.filter(row => {
         if (month !== 'all' && row.month !== month) return false;
         if (project !== 'all' && row.name !== project) return false;
         if (group !== 'all' && row.group !== group) return false;
         return true;
     });
-
-    // 回款筛选
     if (receivableFilter === 'unpaid') {
         filtered = filtered.filter(r => r.receivable > 0);
     } else if (receivableFilter === 'paid') {
         filtered = filtered.filter(r => r.receivable === 0);
     }
-
-    // 排序（按项目收入）
     if (sortOrder === 'asc') {
         filtered = filtered.slice().sort((a, b) => a.estimate - b.estimate);
     } else if (sortOrder === 'desc') {
         filtered = filtered.slice().sort((a, b) => b.estimate - a.estimate);
     }
-
     const isDefault = (month === 'all' && project === 'all' && group === 'all' && receivableFilter === 'all' && sortOrder === 'none');
-
     let sumEst, sumRec, sumRecv;
     if (isDefault) {
         sumEst = DATA.summary.totalEstimate;
@@ -3142,12 +2287,10 @@ function applyFilters() {
         sumRec = filtered.reduce((s, r) => s + r.received, 0);
         sumRecv = filtered.reduce((s, r) => s + r.receivable, 0);
     }
-
     document.getElementById('sumEstimate').innerHTML = (sumEst/10000).toFixed(2) + '<span class="unit">万元</span>';
     document.getElementById('sumReceived').innerHTML = (sumRec/10000).toFixed(2) + '<span class="unit">万元</span>';
     document.getElementById('sumReceivable').innerHTML = (sumRecv/10000).toFixed(2) + '<span class="unit">万元</span>';
     document.getElementById('recordCount').textContent = '共 ' + filtered.length + ' 条记录';
-
     const tbody = document.getElementById('financeTableBody');
     let rowsHtml = filtered.map(row => {
         const inv = row.invoice || '-';
@@ -3161,8 +2304,6 @@ function applyFilters() {
             '<td class="num" style="color:#fca5a5">' + row.receivable.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '</td>' +
         '</tr>';
     }).join('');
-
-    // 底部小计行
     if (filtered.length > 0) {
         const subEst = filtered.reduce((s, r) => s + r.estimate, 0);
         const subRec = filtered.reduce((s, r) => s + r.received, 0);
@@ -3177,7 +2318,6 @@ function applyFilters() {
     }
     tbody.innerHTML = rowsHtml;
 }
-
 function resetFilters() {
     document.getElementById('filterYear').value = '2026';
     document.getElementById('filterMonth').disabled = false;
@@ -3193,574 +2333,715 @@ function resetFilters() {
     applyFilters();
 }
 
-// ========== 渲染仪表盘 ==========
-function renderDashboard() {
-    if (!DATA) return;
-    
-    // 销毁旧图表
-    Object.values(dashboardCharts).forEach(c => { if (c) c.destroy(); });
-    dashboardCharts = {};
-    
+// ========== 财务指标分析 ==========
+function getAnalysisMonths() {
+    if (!ANALYSIS_DATA) return [];
+    const from = document.getElementById('analysisMonthFrom').value;
+    const to = document.getElementById('analysisMonthTo').value;
+    const all = ANALYSIS_DATA.months;
+    if (from === 'all' || to === 'all') return all;
+    const fi = all.indexOf(from);
+    const ti = all.indexOf(to);
+    if (fi === -1 || ti === -1 || fi > ti) return all;
+    return all.slice(fi, ti + 1);
+}
+
+function getSectorData() {
+    if (!ANALYSIS_DATA) return null;
+    const sector = document.getElementById('analysisSector').value;
+    return ANALYSIS_DATA.sectors[sector] || null;
+}
+
+function destroyAnalysisCharts() {
+    Object.values(analysisCharts).forEach(c => { if (c) c.destroy(); });
+    analysisCharts = {};
+}
+
+function renderAnalysis() {
+    if (!ANALYSIS_DATA) return;
+    destroyAnalysisCharts();
     Chart.defaults.color = '#94a3b8';
     Chart.defaults.font.family = '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
-    
-    const s = DATA.summary;
-    
-    // 更新仪表盘标题周期和更新时间
-    const dashPeriod = document.getElementById('dashPeriod');
-    if (dashPeriod) dashPeriod.textContent = DATA.dataPeriod;
-    const dashUpdate = document.getElementById('dashUpdate');
-    if (dashUpdate) dashUpdate.textContent = DATA.updateTime.split(' ')[0];
-    const crp = document.getElementById('cardRevenuePeriod');
-    if (crp) crp.textContent = '（1-' + DATA.currentMonth + '月）';
-    const crcp = document.getElementById('cardReceivedPeriod');
-    if (crcp) crcp.textContent = '（1-' + DATA.currentMonth + '月）';
-    
-    // 更新仪表盘汇总卡片
-    const cards = document.querySelectorAll('#page-dashboard .card');
-    if (cards.length >= 4) {
-        // 业务总收入
-        cards[0].querySelector('.card-value').innerHTML = s.totalEstimateWan + '<span class="card-unit">万元</span>';
-        cards[0].querySelector('.card-sub').innerHTML = '累计收入小计 <strong>¥' + s.totalEstimate.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</strong>';
-        cards[0].querySelector('.progress-label').innerHTML = '<span>年度目标 2,000 万</span><span>' + s.targetProgress + '%</span>';
-        cards[0].querySelector('.progress-fill').style.width = s.targetProgress + '%';
-        // 回款总计
-        cards[1].querySelector('.card-value').innerHTML = s.totalReceivedWan + '<span class="card-unit">万元</span>';
-        cards[1].querySelector('.card-sub').innerHTML = '累计回款小计 <strong>¥' + s.totalReceived.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</strong>';
-        cards[1].querySelector('.progress-label').innerHTML = '<span>占业务收入比</span><span>' + s.receivedRatio + '%</span>';
-        cards[1].querySelector('.progress-fill').style.width = s.receivedRatio + '%';
-        // 应收款总计
-        cards[2].querySelector('.card-value').innerHTML = s.totalReceivableWan + '<span class="card-unit">万元</span>';
-        cards[2].querySelector('.card-sub').innerHTML = '业务收入 − 回款总计 = <strong>¥' + s.totalReceivable.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</strong>';
-        cards[2].querySelector('.progress-label').innerHTML = '<span>未回款占比</span><span>' + s.receivableRatio + '%</span>';
-        cards[2].querySelector('.progress-fill').style.width = s.receivableRatio + '%';
-        // 月均目标
-        cards[3].querySelector('.card-value').innerHTML = s.monthlyTargetWan + '<span class="card-unit">万元/月</span>';
-        cards[3].querySelector('.card-sub').innerHTML = '剩余 <strong>' + s.remainingMonths + ' 个月</strong>（' + (parseInt(DATA.currentMonth)+1) + '-12月）需完成 <strong>' + s.remainingTargetWan + ' 万</strong>';
-        cards[3].querySelector('.progress-label').innerHTML = '<span>距年度目标缺口</span><span>' + s.targetGap + '%</span>';
-        cards[3].querySelector('.progress-fill').style.width = s.targetGap + '%';
+
+    // 填充月份下拉框
+    const fromSel = document.getElementById('analysisMonthFrom');
+    const toSel = document.getElementById('analysisMonthTo');
+    if (fromSel.options.length <= 1) {
+        const monthOpts = ANALYSIS_DATA.months.map(m => `<option value="${m}">${m}</option>`).join('');
+        fromSel.innerHTML = '<option value="all">全部月份</option>' + monthOpts;
+        toSel.innerHTML = '<option value="all">全部月份</option>' + monthOpts;
     }
-    
-    // 第三板块卡片
-    const cards3 = document.querySelectorAll('#page-dashboard .cards-grid-3 .card');
-    if (cards3.length >= 3) {
-        cards3[0].querySelector('.card-value').innerHTML = s.totalReceivableWan + '<span class="card-unit">万元</span>';
-        cards3[0].querySelector('.card-sub').innerHTML = '各项目（预估收入 − 实际回款）汇总 <strong>¥' + s.totalReceivable.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</strong>';
-        cards3[1].querySelector('.card-value').innerHTML = s.overdueTotalWan + '<span class="card-unit">万元</span>';
-        cards3[1].querySelector('.card-sub').innerHTML = '1-5月到期未回款部分 <strong>¥' + s.overdueTotal.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</strong><br>占2026应收款 <strong>' + s.overdueRatio + '%</strong>';
-        cards3[2].querySelector('.card-value').innerHTML = s.totalWithHistoryWan + '<span class="card-unit">万元</span>';
-        cards3[2].querySelector('.year-breakdown').innerHTML =
-            '<span class="year-item">2024: ¥' + s.year2024Receivable.toLocaleString() + '</span>' +
-            '<span class="year-item">2025: ¥' + s.year2025Receivable + '</span>' +
-            '<span class="year-item">2026: ¥' + s.totalReceivable.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</span>';
-    }
-    
-    // 更新页脚
-    const footer = document.querySelector('#page-dashboard .footer');
-    if (footer) footer.textContent = '数据来源：飞书表格「2026账单」｜ 聚光直播经营分析 ｜ 共 ' + DATA.projectCount + ' 个项目';
-    
-    // 图表1：项目总收入降序
-    dashboardCharts.revenue = new Chart(document.getElementById('chartRevenue'), {
+
+    renderOverview();
+    renderRevenueChart();
+    renderCostChart();
+    renderProfitChart();
+    renderTaxChart();
+    renderLaborChart();
+    renderMgmtChart();
+    renderPerCapitaChart();
+}
+
+function applyAnalysisFilters() {
+    renderAnalysis();
+}
+
+// 第一部分：数据概览
+function renderOverview() {
+    const container = document.getElementById('overviewCards');
+    if (!container || !ANALYSIS_DATA) return;
+    const months = getAnalysisMonths();
+    let html = '';
+    ANALYSIS_DATA.sector_list.forEach(sector => {
+        const sdata = ANALYSIS_DATA.sectors[sector];
+        if (!sdata) return;
+        let totalRev = 0, totalCost = 0, totalProfit = 0;
+        months.forEach(m => {
+            const d = sdata[m];
+            if (d) {
+                totalRev += d.revenue || 0;
+                totalCost += d.total_cost || 0;
+                totalProfit += d.net_profit || 0;
+            }
+        });
+        const profitColor = totalProfit >= 0 ? '#6ee7b7' : '#fca5a5';
+        const margin = totalRev > 0 ? (totalProfit / totalRev * 100).toFixed(2) : '0.00';
+        html += `<div class="card" style="background:linear-gradient(135deg,rgba(30,41,59,0.9),rgba(15,23,42,0.95));border:1px solid rgba(56,189,248,0.15);border-radius:12px;padding:20px;">
+            <div class="card-label" style="color:#38bdf8;font-size:14px;font-weight:600;margin-bottom:12px;">${sector}</div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                <span style="color:#94a3b8;font-size:12px;">总收入</span>
+                <span style="color:#e2e8f0;font-size:15px;font-weight:600;">${fmtWan(totalRev)}万</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                <span style="color:#94a3b8;font-size:12px;">总成本</span>
+                <span style="color:#fbbf24;font-size:15px;font-weight:600;">${fmtWan(totalCost)}万</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;border-top:1px solid rgba(255,255,255,0.08);padding-top:8px;">
+                <span style="color:#94a3b8;font-size:12px;">净利润</span>
+                <span style="color:${profitColor};font-size:16px;font-weight:700;">${fmtWan(totalProfit)}万</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+                <span style="color:#64748b;font-size:11px;">利润率</span>
+                <span style="color:${profitColor};font-size:12px;">${margin}%</span>
+            </div>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+// 第二部分：业务收入分析
+function renderRevenueChart() {
+    const sdata = getSectorData();
+    const months = getAnalysisMonths();
+    if (!sdata) return;
+    const revenues = months.map(m => (sdata[m]?.revenue || 0) / 10000);
+    analysisCharts.revenue = new Chart(document.getElementById('chartRevenueAnalysis'), {
         type: 'bar',
         data: {
-            labels: DATA.projectsByRevenue.map(p => p.name),
+            labels: months,
             datasets: [{
-                data: DATA.projectsByRevenue.map(p => p.value),
-                backgroundColor: 'rgba(56,189,248,0.6)',
+                label: '业务收入（万元）',
+                data: revenues,
+                backgroundColor: 'rgba(56,189,248,0.65)',
                 borderColor: '#38bdf8',
-                borderWidth: 1,
-                borderRadius: 4,
-                barPercentage: 0.6
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: { ...tooltipStyle, callbacks: { label: c => '¥' + c.parsed.x.toLocaleString('zh-CN',{minimumFractionDigits:2}) } }
-            },
-            scales: {
-                x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
-            }
-        }
-    });
-    
-    // 图表2：项目月均收入
-    dashboardCharts.avgMonthly = new Chart(document.getElementById('chartAvgMonthly'), {
-        type: 'bar',
-        data: {
-            labels: DATA.projectsByAvg.slice(0, 15).map(p => p.name),
-            datasets: [{
-                data: DATA.projectsByAvg.slice(0, 15).map(p => p.value),
-                backgroundColor: 'rgba(129,140,248,0.6)',
-                borderColor: '#818cf8',
-                borderWidth: 1,
-                borderRadius: 4,
-                barPercentage: 0.6
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: { ...tooltipStyle, callbacks: { label: c => '月均 ¥' + c.parsed.x.toLocaleString('zh-CN',{minimumFractionDigits:2}) } }
-            },
-            scales: {
-                x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
-            }
-        }
-    });
-    
-    // 图表3：项目应收款降序（超2个月红色）
-    dashboardCharts.receivable = new Chart(document.getElementById('chartReceivable'), {
-        type: 'bar',
-        data: {
-            labels: DATA.projectsByReceivable.map(p => p.name),
-            datasets: [{
-                data: DATA.projectsByReceivable.map(p => p.value),
-                backgroundColor: DATA.projectsByReceivable.map(p => p.overdue ? 'rgba(248,113,113,0.7)' : 'rgba(56,189,248,0.6)'),
-                borderColor: DATA.projectsByReceivable.map(p => p.overdue ? '#f87171' : '#38bdf8'),
-                borderWidth: 1,
-                borderRadius: 4,
-                barPercentage: 0.6
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: { ...tooltipStyle, callbacks: { label: c => '应收 ¥' + c.parsed.x.toLocaleString('zh-CN',{minimumFractionDigits:2}) } }
-            },
-            scales: {
-                x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
-            }
-        }
-    });
-    
-    // 图表4：每月应收款（tooltip显示明细）
-    dashboardCharts.monthlyReceivable = new Chart(document.getElementById('chartMonthlyReceivable'), {
-        type: 'bar',
-        data: {
-            labels: DATA.monthlyReceivable.map(m => m.month),
-            datasets: [{
-                label: '应收款',
-                data: DATA.monthlyReceivable.map(m => m.receivable),
-                backgroundColor: 'rgba(251,146,60,0.6)',
-                borderColor: '#fb923c',
                 borderWidth: 1,
                 borderRadius: 6,
                 barPercentage: 0.5
             }]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            responsive: true, maintainAspectRatio: false,
             plugins: {
-                legend: { display: false },
+                legend: { labels: { color: '#94a3b8' } },
+                tooltip: { ...tooltipStyle, callbacks: { label: c => '收入: ¥' + fmtMoney(c.parsed.y * 10000) + ' (' + c.parsed.y.toFixed(2) + '万)' } }
+            },
+            scales: {
+                x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                y: { ticks: { color: '#64748b', callback: v => v + '万' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+            }
+        }
+    });
+}
+
+// 第三部分：成本分析（嵌套柱状图）
+function renderCostChart() {
+    const sdata = getSectorData();
+    const months = getAnalysisMonths();
+    if (!sdata) return;
+    const costItems = [
+        { key: 'main_business_cost', label: '主营业务成本', color: 'rgba(56,189,248,0.7)' },
+        { key: 'labor_cost', label: '人工成本', color: 'rgba(251,146,60,0.7)' },
+        { key: 'mgmt_fee', label: '管理费用', color: 'rgba(129,140,248,0.7)' },
+        { key: 'sales_fee', label: '销售费用', color: 'rgba(52,211,153,0.7)' },
+        { key: 'financial_fee', label: '财务费用', color: 'rgba(251,191,36,0.7)' },
+        { key: 'business_tax', label: '营业税及附加', color: 'rgba(244,114,182,0.7)' },
+        { key: 'non_operating', label: '营业外支出', color: 'rgba(148,163,184,0.7)' },
+    ];
+    const datasets = costItems.map(item => ({
+        label: item.label,
+        data: months.map(m => (sdata[m]?.[item.key] || 0) / 10000),
+        backgroundColor: item.color,
+        borderColor: item.color.replace('0.7', '1'),
+        borderWidth: 1,
+        borderRadius: 2,
+        barPercentage: 0.6
+    }));
+    analysisCharts.cost = new Chart(document.getElementById('chartCostAnalysis'), {
+        type: 'bar',
+        data: { labels: months, datasets: datasets },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#94a3b8', usePointStyle: true, padding: 12, font: { size: 11 } } },
                 tooltip: {
                     ...tooltipStyle,
                     callbacks: {
-                        label: c => {
-                            const m = DATA.monthlyReceivable[c.dataIndex];
-                            let lines = ['应收款: ¥' + m.receivable.toLocaleString('zh-CN',{minimumFractionDigits:2})];
-                            m.unpaid.forEach(u => lines.push('  ' + u.name + ': ¥' + u.amount.toLocaleString('zh-CN',{minimumFractionDigits:2})));
-                            return lines;
+                        label: function(c) {
+                            const month = months[c.dataIndex];
+                            const d = sdata[month];
+                            const totalCost = d ? d.total_cost : 0;
+                            const val = c.parsed.y * 10000;
+                            const pct = totalCost > 0 ? (val / totalCost * 100).toFixed(2) : '0.00';
+                            return c.dataset.label + ': ¥' + fmtMoney(val) + ' (' + pct + '%)';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { stacked: true, ticks: { color: '#94a3b8' }, grid: { display: false } },
+                y: { stacked: true, ticks: { color: '#64748b', callback: v => v + '万' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+            }
+        }
+    });
+}
+
+// 第四部分：净利润分析
+function renderProfitChart() {
+    const sdata = getSectorData();
+    const months = getAnalysisMonths();
+    if (!sdata) return;
+    const profits = months.map(m => (sdata[m]?.net_profit || 0) / 10000);
+    const profitColors = profits.map(p => p >= 0 ? 'rgba(110,231,183,0.7)' : 'rgba(248,113,113,0.7)');
+    const profitBorders = profits.map(p => p >= 0 ? '#6ee7b7' : '#f87171');
+    analysisCharts.profit = new Chart(document.getElementById('chartProfitAnalysis'), {
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    type: 'line',
+                    label: '当月收入（万元）',
+                    data: months.map(m => (sdata[m]?.revenue || 0) / 10000),
+                    borderColor: '#38bdf8',
+                    backgroundColor: 'rgba(56,189,248,0.1)',
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#38bdf8',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    tension: 0.3,
+                    fill: false,
+                    yAxisID: 'y',
+                    order: 1
+                },
+                {
+                    type: 'bar',
+                    label: '当月总成本（万元）',
+                    data: months.map(m => (sdata[m]?.total_cost || 0) / 10000),
+                    backgroundColor: 'rgba(251,191,36,0.5)',
+                    borderColor: '#fbbf24',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.4,
+                    yAxisID: 'y',
+                    order: 2
+                },
+                {
+                    type: 'bar',
+                    label: '净利润（万元）',
+                    data: profits,
+                    backgroundColor: profitColors,
+                    borderColor: profitBorders,
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.4,
+                    yAxisID: 'y',
+                    order: 3
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { labels: { color: '#94a3b8', usePointStyle: true, padding: 14 } },
+                tooltip: {
+                    ...tooltipStyle,
+                    callbacks: {
+                        label: function(c) {
+                            const val = c.parsed.y;
+                            const label = c.dataset.label;
+                            if (label.includes('净利润')) {
+                                const color = val >= 0 ? '#6ee7b7' : '#f87171';
+                                return label + ': ' + (val >= 0 ? '+' : '') + val.toFixed(2) + '万 (¥' + fmtMoney(val * 10000) + ')';
+                            }
+                            return label + ': ' + val.toFixed(2) + '万 (¥' + fmtMoney(val * 10000) + ')';
                         }
                     }
                 }
             },
             scales: {
                 x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
-                y: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                y: {
+                    ticks: { color: '#64748b', callback: v => v + '万' },
+                    grid: { color: 'rgba(255,255,255,0.04)' }
+                }
             }
         }
     });
-    
-    // 图表5：每月收入趋势 + 存续项目数
-    dashboardCharts.trend = new Chart(document.getElementById('chartTrend'), {
+}
+
+// 第五部分：营业税及附加分析
+function renderTaxChart() {
+    const sdata = getSectorData();
+    const months = getAnalysisMonths();
+    if (!sdata) return;
+    const taxPcts = months.map(m => {
+        const d = sdata[m];
+        if (!d || !d.revenue) return 0;
+        return (d.business_tax / d.revenue * 100);
+    });
+    analysisCharts.tax = new Chart(document.getElementById('chartTaxAnalysis'), {
         data: {
-            labels: DATA.monthlyTrend.months,
+            labels: months,
             datasets: [
                 {
-                    type: 'bar',
-                    label: '月度收入（万元）',
-                    data: DATA.monthlyTrend.revenue,
-                    backgroundColor: 'rgba(56,189,248,0.55)',
-                    borderColor: '#38bdf8',
-                    borderWidth: 1,
-                    borderRadius: 6,
-                    barPercentage: 0.5,
-                    yAxisID: 'y'
-                },
-                {
                     type: 'line',
-                    label: '存续项目数',
-                    data: DATA.monthlyTrend.activeCount,
-                    borderColor: '#a855f7',
-                    backgroundColor: 'rgba(168,85,247,0.1)',
+                    label: '当月收入（万元）',
+                    data: months.map(m => (sdata[m]?.revenue || 0) / 10000),
+                    borderColor: '#38bdf8',
                     borderWidth: 2.5,
-                    pointBackgroundColor: '#a855f7',
+                    pointBackgroundColor: '#38bdf8',
                     pointBorderColor: '#fff',
                     pointBorderWidth: 2,
                     pointRadius: 5,
-                    pointHoverRadius: 7,
                     tension: 0.3,
                     fill: false,
-                    yAxisID: 'y1'
+                    yAxisID: 'y',
+                    order: 1
+                },
+                {
+                    type: 'bar',
+                    label: '营业税及附加（万元）',
+                    data: months.map(m => (sdata[m]?.business_tax || 0) / 10000),
+                    backgroundColor: 'rgba(244,114,182,0.6)',
+                    borderColor: '#f472b6',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.5,
+                    yAxisID: 'y',
+                    order: 2
+                },
+                {
+                    type: 'line',
+                    label: '营业税占收入比（%）',
+                    data: taxPcts,
+                    borderColor: '#a855f7',
+                    borderWidth: 2,
+                    borderDash: [6, 4],
+                    pointBackgroundColor: '#a855f7',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    tension: 0.3,
+                    fill: false,
+                    yAxisID: 'y1',
+                    order: 3
                 }
             ]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            responsive: true, maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
             plugins: {
-                legend: { labels: { color: '#94a3b8', usePointStyle: true, padding: 16 } },
+                legend: { labels: { color: '#94a3b8', usePointStyle: true, padding: 12 } },
+                tooltip: {
+                    ...tooltipStyle,
+                    callbacks: {
+                        label: function(c) {
+                            const month = months[c.dataIndex];
+                            const d = sdata[month];
+                            if (c.dataset.label.includes('占收入比')) {
+                                return '营业税占收入比: ' + c.parsed.y.toFixed(2) + '%';
+                            }
+                            if (c.dataset.label.includes('营业税')) {
+                                const val = c.parsed.y * 10000;
+                                const pct = d && d.revenue ? (val / d.revenue * 100).toFixed(2) : '0';
+                                return '营业税及附加: ¥' + fmtMoney(val) + ' (占收入' + pct + '%)';
+                            }
+                            return c.dataset.label + ': ' + c.parsed.y.toFixed(2) + '万';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                y: {
+                    position: 'left',
+                    title: { display: true, text: '金额（万元）', color: '#38bdf8', font: { size: 11 } },
+                    ticks: { color: '#64748b' },
+                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    beginAtZero: true
+                },
+                y1: {
+                    position: 'right',
+                    title: { display: true, text: '占比（%）', color: '#a855f7', font: { size: 11 } },
+                    ticks: { color: '#64748b', callback: v => v + '%' },
+                    grid: { drawOnChartArea: false },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// 第六部分：人工成本分析
+function renderLaborChart() {
+    const sdata = getSectorData();
+    const months = getAnalysisMonths();
+    if (!sdata) return;
+    const laborPcts = months.map(m => {
+        const d = sdata[m];
+        if (!d || !d.revenue) return 0;
+        return (d.labor_cost / d.revenue * 100);
+    });
+    analysisCharts.labor = new Chart(document.getElementById('chartLaborAnalysis'), {
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    type: 'line',
+                    label: '当月收入（万元）',
+                    data: months.map(m => (sdata[m]?.revenue || 0) / 10000),
+                    borderColor: '#38bdf8',
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#38bdf8',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    tension: 0.3,
+                    fill: false,
+                    yAxisID: 'y',
+                    order: 1
+                },
+                {
+                    type: 'bar',
+                    label: '人工成本（万元）',
+                    data: months.map(m => (sdata[m]?.labor_cost || 0) / 10000),
+                    backgroundColor: 'rgba(251,146,60,0.6)',
+                    borderColor: '#fb923c',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.5,
+                    yAxisID: 'y',
+                    order: 2
+                },
+                {
+                    type: 'line',
+                    label: '人工成本占收入比（%）',
+                    data: laborPcts,
+                    borderColor: '#a855f7',
+                    borderWidth: 2,
+                    borderDash: [6, 4],
+                    pointBackgroundColor: '#a855f7',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    tension: 0.3,
+                    fill: false,
+                    yAxisID: 'y1',
+                    order: 3
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { labels: { color: '#94a3b8', usePointStyle: true, padding: 12 } },
+                tooltip: {
+                    ...tooltipStyle,
+                    callbacks: {
+                        label: function(c) {
+                            if (c.dataset.label.includes('占收入比')) {
+                                return '人工成本占收入比: ' + c.parsed.y.toFixed(2) + '%';
+                            }
+                            if (c.dataset.label.includes('人工成本')) {
+                                return '人工成本: ¥' + fmtMoney(c.parsed.y * 10000);
+                            }
+                            return c.dataset.label + ': ' + c.parsed.y.toFixed(2) + '万';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                y: {
+                    position: 'left',
+                    title: { display: true, text: '金额（万元）', color: '#38bdf8', font: { size: 11 } },
+                    ticks: { color: '#64748b' },
+                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    beginAtZero: true
+                },
+                y1: {
+                    position: 'right',
+                    title: { display: true, text: '占比（%）', color: '#a855f7', font: { size: 11 } },
+                    ticks: { color: '#64748b', callback: v => v + '%' },
+                    grid: { drawOnChartArea: false },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// 第七部分：管理费用分析
+function renderMgmtChart() {
+    const sdata = getSectorData();
+    const months = getAnalysisMonths();
+    if (!sdata) return;
+    const mgmtPcts = months.map(m => {
+        const d = sdata[m];
+        if (!d || !d.revenue) return 0;
+        return (d.mgmt_fee / d.revenue * 100);
+    });
+    analysisCharts.mgmt = new Chart(document.getElementById('chartMgmtAnalysis'), {
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: '管理费用（万元）',
+                    data: months.map(m => (sdata[m]?.mgmt_fee || 0) / 10000),
+                    backgroundColor: 'rgba(129,140,248,0.6)',
+                    borderColor: '#818cf8',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.5,
+                    yAxisID: 'y',
+                    order: 2
+                },
+                {
+                    type: 'line',
+                    label: '管理费用占收入比（%）',
+                    data: mgmtPcts,
+                    borderColor: '#f472b6',
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#f472b6',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    tension: 0.3,
+                    fill: false,
+                    yAxisID: 'y1',
+                    order: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { labels: { color: '#94a3b8', usePointStyle: true, padding: 12 } },
                 tooltip: { ...tooltipStyle }
             },
             scales: {
                 x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
                 y: {
                     position: 'left',
-                    title: { display: true, text: '收入（万元）', color: '#38bdf8', font: { size: 11 } },
+                    title: { display: true, text: '金额（万元）', color: '#818cf8', font: { size: 11 } },
                     ticks: { color: '#64748b' },
-                    grid: { color: 'rgba(255,255,255,0.04)' }
+                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    beginAtZero: true
                 },
                 y1: {
                     position: 'right',
-                    title: { display: true, text: '存续项目数', color: '#a855f7', font: { size: 11 } },
-                    ticks: { color: '#64748b', stepSize: 2 },
+                    title: { display: true, text: '占比（%）', color: '#f472b6', font: { size: 11 } },
+                    ticks: { color: '#64748b', callback: v => v + '%' },
                     grid: { drawOnChartArea: false },
-                    min: 0,
-                    max: 35
+                    beginAtZero: true
                 }
             }
         }
     });
-    
-    // 图表6：项目月均收入排名
-    dashboardCharts.avgRank = new Chart(document.getElementById('chartAvgRank'), {
-        type: 'bar',
-        data: {
-            labels: DATA.projectsByAvg.map(p => p.name),
-            datasets: [{
-                data: DATA.projectsByAvg.map(p => p.value),
-                backgroundColor: 'rgba(129,140,248,0.6)',
-                borderColor: '#818cf8',
-                borderWidth: 1,
-                borderRadius: 4,
-                barPercentage: 0.7
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: { ...tooltipStyle, callbacks: { label: c => '月均 ¥' + c.parsed.x.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '（' + DATA.projectsByAvg[c.dataIndex].months + '个月）' } }
-            },
-            scales: {
-                x: { ticks: { color: '#64748b', callback: v => (v/10000).toFixed(0) + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
-            }
-        },
-        plugins: [valueLabelPlugin]
+
+    // 管理费用明细表格
+    const tbody = document.querySelector('#mgmtDetailTable tbody');
+    if (!tbody) return;
+    const agg = {};
+    let total = 0;
+    months.forEach(m => {
+        const d = sdata[m];
+        if (!d || !d.mgmt_breakdown) return;
+        Object.entries(d.mgmt_breakdown).forEach(([item, val]) => {
+            agg[item] = (agg[item] || 0) + val;
+            total += val;
+        });
     });
-    
-    // 图表7：项目存续时间排名
-    dashboardCharts.activeMonths = new Chart(document.getElementById('chartActiveMonths'), {
-        type: 'bar',
-        data: {
-            labels: DATA.projectsByActive.map(p => p.name),
-            datasets: [{
-                data: DATA.projectsByActive.map(p => p.value),
-                backgroundColor: DATA.projectsByActive.map(p => {
-                    if (p.value >= 7) return 'rgba(52,211,153,0.6)';
-                    if (p.value >= 4) return 'rgba(56,189,248,0.6)';
-                    if (p.value >= 2) return 'rgba(251,146,60,0.6)';
-                    return 'rgba(248,113,113,0.6)';
-                }),
-                borderColor: DATA.projectsByActive.map(p => {
-                    if (p.value >= 7) return '#34d399';
-                    if (p.value >= 4) return '#38bdf8';
-                    if (p.value >= 2) return '#fb923c';
-                    return '#f87171';
-                }),
-                borderWidth: 1,
-                borderRadius: 4,
-                barPercentage: 0.7
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: { ...tooltipStyle, callbacks: { label: c => '存续 ' + c.parsed.x + ' 个月，总收入 ¥' + DATA.projectsByActive[c.dataIndex].total.toLocaleString('zh-CN',{minimumFractionDigits:2}) } }
-            },
-            scales: {
-                x: { ticks: { color: '#64748b', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.04)' }, max: 8 },
-                y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
-            }
-        },
-        plugins: [valueLabelPlugin]
+    let rowsHtml = '';
+    Object.entries(agg).sort((a, b) => b[1] - a[1]).forEach(([item, val]) => {
+        const pct = total > 0 ? (val / total * 100).toFixed(2) : '0.00';
+        rowsHtml += `<tr><td>${item}</td><td class="num">${fmtMoney(val)}</td><td class="num" style="color:#818cf8;">${pct}%</td></tr>`;
     });
+    if (total > 0) {
+        rowsHtml += `<tr style="background:rgba(129,140,248,0.1);font-weight:600;border-top:2px solid rgba(129,140,248,0.3);">
+            <td style="color:#818cf8;">合计</td><td class="num" style="color:#e2e8f0;">${fmtMoney(total)}</td><td class="num">100.00%</td></tr>`;
+    }
+    tbody.innerHTML = rowsHtml || '<tr><td colspan="3" style="text-align:center;padding:20px;color:#64748b;">暂无数据</td></tr>';
 }
 
-// ========== 渲染应收款分析 ==========
-function renderReceivable() {
-    if (!DATA) return;
-    if (receivableChart) { receivableChart.destroy(); receivableChart = null; }
-    
-    const s = DATA.summary;
-    const curMonth = DATA.monthlyPayment.estimates.length - 1;
-    const curEst = DATA.monthlyPayment.estimates[curMonth];
-    const curRec = DATA.monthlyPayment.receiveds[curMonth];
-    const curRecv = Math.max(0, curEst - curRec);
-    const curRate = curEst > 0 ? (curRec / curEst * 100).toFixed(1) : '0';
-    
-    // 更新年度目标卡片（第一组target-cards）
-    const targetCards = document.querySelectorAll('#page-receivable .target-cards');
-    if (targetCards.length >= 2) {
-        // 第一组：年度目标
-        const tc1 = targetCards[0].querySelectorAll('.target-card');
-        if (tc1.length >= 4) {
-            tc1[1].querySelector('.tc-value').innerHTML = s.totalReceivedWan + '<span style="font-size:14px">万元</span>';
-            tc1[1].querySelector('.tc-sub').textContent = '完成率 ' + (s.totalReceived / s.annualTarget * 100).toFixed(1) + '%';
-            const remain = (s.annualTarget - s.totalReceived) / 10000;
-            tc1[2].querySelector('.tc-value').innerHTML = remain.toFixed(2) + '<span style="font-size:14px">万元</span>';
-            tc1[2].querySelector('.tc-sub').textContent = '还需完成 ' + (remain / (s.annualTarget/10000) * 100).toFixed(1) + '%';
-            const monthly = remain / s.remainingMonths;
-            tc1[3].querySelector('.tc-value').innerHTML = monthly.toFixed(2) + '<span style="font-size:14px">万元/月</span>';
-            tc1[3].querySelector('.tc-sub').textContent = '剩余' + s.remainingMonths + '个月需完成';
+// 第八部分：人均薪资及人效分析
+function renderPerCapitaChart() {
+    const sdata = getSectorData();
+    const months = getAnalysisMonths();
+    const sector = document.getElementById('analysisSector').value;
+    if (!sdata || !ANALYSIS_DATA) return;
+
+    // 获取该板块的人员数量
+    const hcKey = sector === '集团总计' ? '集团总计' : sector;
+    const avgSalary = [];
+    const avgRevenue = [];
+    const avgMgmt = [];
+    const labels = [];
+
+    months.forEach(m => {
+        const d = sdata[m];
+        const hc = ANALYSIS_DATA.headcount[m]?.[hcKey] || 0;
+        if (!d || hc === 0) {
+            avgSalary.push(0); avgRevenue.push(0); avgMgmt.push(0);
+        } else {
+            avgSalary.push(d.labor_cost / hc);
+            avgRevenue.push(d.revenue / hc);
+            avgMgmt.push(d.mgmt_fee / hc);
         }
-        // 第二组：实际经营数据
-        const tc2 = targetCards[1].querySelectorAll('.target-card');
-        if (tc2.length >= 4) {
-            tc2[0].querySelector('.tc-value').innerHTML = s.totalEstimateWan + '<span style="font-size:14px">万元</span>';
-            tc2[0].querySelector('.tc-sub').textContent = DATA.projectCount + '个项目累计';
-            tc2[1].querySelector('.tc-value').innerHTML = s.totalReceivedWan + '<span style="font-size:14px">万元</span>';
-            tc2[1].querySelector('.tc-sub').textContent = '回款率 ' + s.receivedRatio + '%';
-            tc2[2].querySelector('.tc-value').innerHTML = s.totalReceivableWan + '<span style="font-size:14px">万元</span>';
-            tc2[2].querySelector('.tc-sub').textContent = '占收入 ' + s.receivableRatio + '%';
-            tc2[3].querySelector('.tc-value').innerHTML = s.overdueTotalWan + '<span style="font-size:14px">万元</span>';
-            tc2[3].querySelector('.tc-sub').textContent = '需重点跟进';
-        }
-    }
-    
-    // 更新当前月标题
-    const cmTitle = document.getElementById('cmTitle');
-    if (cmTitle) cmTitle.textContent = '📊 当前月（' + DATA.currentMonth + '月）回款数据';
-    
-    // 更新当前月回款数据
-    const cmStats = document.querySelectorAll('#page-receivable .cm-stat .cm-value');
-    if (cmStats.length >= 4) {
-        cmStats[0].textContent = curEst + '万';
-        cmStats[1].textContent = curRec + '万';
-        cmStats[2].textContent = curRecv.toFixed(2) + '万';
-        cmStats[3].textContent = DATA.monthlyPayment.targets[curMonth] + '万';
-    }
-    const cmBadge = document.querySelector('#page-receivable .cm-badge');
-    if (cmBadge) {
-        cmBadge.textContent = '回款率 ' + curRate + '%' + (parseFloat(curRate) < 50 ? ' - 待跟进' : ' - 正常');
-    }
-    
-    // 更新页面标题中的更新时间
-    const recvHeader = document.querySelector('#page-receivable .page-header p');
-    if (recvHeader) {
-        recvHeader.textContent = '多维度回款分析与应收款监控 · 数据周期：' + DATA.dataPeriod + ' · 更新时间：' + DATA.updateTime.split(' ')[0];
-    }
-    
-    Chart.defaults.color = '#94a3b8';
-    Chart.defaults.font.family = '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
-    
-    const mp = DATA.monthlyPayment;
-    receivableChart = new Chart(document.getElementById('chartMonthlyTrend'), {
-        type: 'bar',
+        labels.push(m);
+    });
+
+    analysisCharts.perCapita = new Chart(document.getElementById('chartPerCapitaAnalysis'), {
         data: {
-            labels: mp.labels,
+            labels: labels,
             datasets: [
                 {
-                    label: '预估收入',
-                    data: mp.estimates,
-                    backgroundColor: 'rgba(56,189,248,0.5)',
-                    borderColor: '#38bdf8',
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    barPercentage: 0.6
-                },
-                {
-                    label: '实际回款',
-                    data: mp.receiveds,
-                    backgroundColor: 'rgba(52,211,153,0.6)',
-                    borderColor: '#34d399',
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    barPercentage: 0.6
-                },
-                {
-                    label: '目标红线',
-                    data: mp.targets,
                     type: 'line',
-                    borderColor: '#f87171',
-                    borderWidth: 2,
-                    borderDash: [6, 4],
-                    pointBackgroundColor: '#f87171',
-                    pointRadius: 4,
-                    fill: false
+                    label: '人均薪资（元/人）',
+                    data: avgSalary,
+                    borderColor: '#fb923c',
+                    backgroundColor: 'rgba(251,146,60,0.1)',
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#fb923c',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    tension: 0.3,
+                    fill: false,
+                    yAxisID: 'y',
+                    order: 1
+                },
+                {
+                    type: 'line',
+                    label: '人均创收（元/人）',
+                    data: avgRevenue,
+                    borderColor: '#38bdf8',
+                    backgroundColor: 'rgba(56,189,248,0.1)',
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#38bdf8',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    tension: 0.3,
+                    fill: false,
+                    yAxisID: 'y',
+                    order: 2
+                },
+                {
+                    type: 'bar',
+                    label: '人均管理费用（元/人）',
+                    data: avgMgmt,
+                    backgroundColor: 'rgba(129,140,248,0.55)',
+                    borderColor: '#818cf8',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.4,
+                    yAxisID: 'y',
+                    order: 3
                 }
             ]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
             plugins: {
-                legend: { position: 'top', labels: { usePointStyle: true, padding: 15 } },
+                legend: { labels: { color: '#94a3b8', usePointStyle: true, padding: 14 } },
                 tooltip: {
-                    backgroundColor: 'rgba(15,23,42,0.95)',
-                    titleColor: '#e2e8f0',
-                    bodyColor: '#cbd5e1',
-                    borderColor: 'rgba(56,189,248,0.3)',
-                    borderWidth: 1,
-                    padding: 12,
-                    callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y + '万元' }
+                    ...tooltipStyle,
+                    callbacks: {
+                        label: function(c) {
+                            return c.dataset.label + ': ¥' + fmtMoney(c.parsed.y) + '/人';
+                        }
+                    }
                 }
             },
             scales: {
                 x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
-                y: { ticks: { color: '#64748b', callback: v => v + '万' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                y: {
+                    ticks: { color: '#64748b', callback: v => (v/1000).toFixed(0) + 'k' },
+                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    beginAtZero: true
+                }
             }
         }
     });
 }
 
-// ========== 刷新数据 ==========
-// 进度条控制
-function setProgress(percent, stepNum) {
-    document.getElementById('refreshBar').style.width = percent + '%';
-    document.getElementById('rsPercent').textContent = percent + '%';
-    for (let i = 1; i <= 4; i++) {
-        const el = document.getElementById('rs-step' + i);
-        if (i < stepNum) { el.className = 'rs-step done'; el.textContent = '✓ ' + el.textContent.substring(2); }
-        else if (i === stepNum) { el.className = 'rs-step current'; }
-        else { el.className = 'rs-step'; }
-    }
-}
-function showRefreshUI() {
-    document.getElementById('refreshOverlay').classList.add('active');
-    document.getElementById('refreshStatus').classList.add('active');
-    setProgress(0, 1);
-}
-function hideRefreshUI() {
-    setTimeout(() => {
-        document.getElementById('refreshOverlay').classList.remove('active');
-        document.getElementById('refreshStatus').classList.remove('active');
-        document.getElementById('refreshBar').style.width = '0%';
-    }, 800);
-}
-
-async function refreshData() {
-    if (isLoading) return;
-    isLoading = true;
-    const btn = document.getElementById('refreshBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spin">🔄</span> 刷新中...';
-    
-    const oldTime = DATA ? DATA.updateTime : '';
-    showRefreshUI();
-    
-    try {
-        // 步骤1：连接服务器 (0-20%)
-        setProgress(15, 1);
-        await new Promise(r => setTimeout(r, 400));
-        
-        // 步骤2：读取最新数据 (20-55%)
-        setProgress(40, 2);
-        const resp = await fetch('finance_v2.json?t=' + Date.now(), {cache: 'no-store'});
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
-        const newData = await resp.json();
-        await new Promise(r => setTimeout(r, 300));
-        
-        // 步骤3：计算指标 (55-80%)
-        setProgress(65, 3);
-        DATA = newData;
-        document.getElementById('updateTime').textContent = '更新于 ' + DATA.updateTime;
-        await new Promise(r => setTimeout(r, 300));
-        
-        // 步骤4：更新页面 (80-100%)
-        setProgress(85, 4);
-        renderFinance();
-        const activePage = document.querySelector('.page-container.active').id;
-        if (activePage === 'page-dashboard') renderDashboard();
-        if (activePage === 'page-receivable') renderReceivable();
-        await new Promise(r => setTimeout(r, 300));
-        
-        setProgress(100, 4);
-        
-        // 提示是否有更新
-        const hasUpdate = oldTime !== DATA.updateTime;
-        const statusEl = document.querySelector('.refresh-status .rs-title');
-        if (hasUpdate) {
-            statusEl.innerHTML = '✅ 数据已更新（' + DATA.dataPeriod + '）';
-            statusEl.style.color = '#34d399';
-        } else {
-            statusEl.innerHTML = 'ℹ️ 数据已是最新';
-            statusEl.style.color = '#fbbf24';
-        }
-        
-    } catch (e) {
-        console.error('刷新失败:', e);
-        document.querySelector('.refresh-status .rs-title').innerHTML = '❌ 刷新失败：' + e.message;
-        document.querySelector('.refresh-status .rs-title').style.color = '#f87171';
-    }
-    
-    hideRefreshUI();
-    btn.disabled = false;
-    btn.innerHTML = '<span id="refreshIcon">🔄</span> 刷新数据';
-    isLoading = false;
-}
-
-// ========== 页面切换 ==========
+// ========== Tab切换 ==========
 document.querySelectorAll('.nav-tab').forEach(tab => {
     tab.addEventListener('click', function() {
         document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
         this.classList.add('active');
+        document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
         const page = this.getAttribute('data-page');
         document.getElementById('page-' + page).classList.add('active');
-        if (page === 'dashboard') {
-            setTimeout(() => { renderDashboard(); window.dispatchEvent(new Event('resize')); }, 100);
-        }
-        if (page === 'receivable') {
-            setTimeout(() => { renderReceivable(); }, 100);
-        }
+        if (page === 'finance') renderFinance();
+        if (page === 'analysis') renderAnalysis();
     });
 });
 
-// 筛选器事件
+// ========== 初始化 ==========
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('filterYear').addEventListener('change', onYearChange);
-    document.getElementById('filterMonth').addEventListener('change', applyFilters);
-    document.getElementById('filterProject').addEventListener('change', applyFilters);
-    document.getElementById('filterGroup').addEventListener('change', applyFilters);
+    // 财务查询筛选事件
+    const fm = document.getElementById('filterMonth');
+    const fp = document.getElementById('filterProject');
+    const fg = document.getElementById('filterGroup');
+    if (fm) fm.addEventListener('change', applyFilters);
+    if (fp) fp.addEventListener('change', applyFilters);
+    if (fg) fg.addEventListener('change', applyFilters);
+    // 分析页筛选事件
+    const amf = document.getElementById('analysisMonthFrom');
+    const amt = document.getElementById('analysisMonthTo');
+    const ams = document.getElementById('analysisSector');
+    if (amf) amf.addEventListener('change', applyAnalysisFilters);
+    if (amt) amt.addEventListener('change', applyAnalysisFilters);
+    if (ams) ams.addEventListener('change', applyAnalysisFilters);
 });
 
-// ========== 初始化 ==========
 (async function init() {
-    const ok = await loadData();
-    if (ok) {
-        renderFinance();
+    isLoading = true;
+    await Promise.all([loadData(), loadAnalysisData()]);
+    isLoading = false;
+    renderFinance();
+    // 如果默认在分析页也渲染
+    const activePage = document.querySelector('.page-container.active');
+    if (activePage && activePage.id === 'page-analysis') {
+        renderAnalysis();
     }
 })();
 </script>
