@@ -888,7 +888,7 @@ body {
 <div class="page-container active" id="page-finance">
     <div class="page-header">
         <h1>财务收入数据查询</h1>
-        <p>支持按月份、项目名称、部门名称多维度筛选查询 · 数据周期：2026年1月-7月</p>
+        <p>支持按月份、项目名称、部门名称多维度筛选查询 · 数据周期：2026年1月-9月</p>
     </div>
 
     <!-- 筛选区 -->
@@ -896,7 +896,8 @@ body {
         <div class="filter-item">
             <label>年度</label>
             <select id="filterYear" onchange="onYearChange()">
-                <option value="2026">2026年</option>
+                <option value="all">全部年份</option>
+                <option value="2026" selected>2026年</option>
                 <option value="before2026">2025年以前</option>
             </select>
         </div>
@@ -2267,25 +2268,33 @@ function applyFilters() {
         return true;
     });
     if (receivableFilter === 'unpaid') {
-        filtered = filtered.filter(r => r.receivable > 0);
+        filtered = filtered.filter(r => r.received === 0);
     } else if (receivableFilter === 'paid') {
-        filtered = filtered.filter(r => r.receivable === 0);
+        filtered = filtered.filter(r => r.received > 0);
     }
     if (sortOrder === 'asc') {
         filtered = filtered.slice().sort((a, b) => a.estimate - b.estimate);
     } else if (sortOrder === 'desc') {
         filtered = filtered.slice().sort((a, b) => b.estimate - a.estimate);
     }
-    const isDefault = (month === 'all' && project === 'all' && group === 'all' && receivableFilter === 'all' && sortOrder === 'none');
+    const isDefault = (year === '2026' && month === 'all' && project === 'all' && group === 'all' && receivableFilter === 'all' && sortOrder === 'none');
     let sumEst, sumRec, sumRecv;
     if (isDefault) {
         sumEst = DATA.summary.totalEstimate;
         sumRec = DATA.summary.totalReceived;
         sumRecv = DATA.summary.totalReceivable;
+    } else if (year === 'all' && month === 'all' && project === 'all' && group === 'all' && receivableFilter === 'all' && sortOrder === 'none') {
+        // 全部年份：收入回款用2026年，应收款加总历史
+        sumEst = DATA.summary.totalEstimate;
+        sumRec = DATA.summary.totalReceived;
+        sumRecv = DATA.summary.totalReceivable + DATA.yearData.before2026.receivable;
     } else {
         sumEst = filtered.reduce((s, r) => s + r.estimate, 0);
         sumRec = filtered.reduce((s, r) => s + r.received, 0);
         sumRecv = filtered.reduce((s, r) => s + r.receivable, 0);
+        if (year === 'all') {
+            sumRecv += DATA.yearData.before2026.receivable;
+        }
     }
     document.getElementById('sumEstimate').innerHTML = (sumEst/10000).toFixed(2) + '<span class="unit">万元</span>';
     document.getElementById('sumReceived').innerHTML = (sumRec/10000).toFixed(2) + '<span class="unit">万元</span>';
