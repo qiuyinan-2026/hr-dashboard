@@ -1,11 +1,22 @@
 {
-  "updateTime": "2026-09-28 15:30:00",
+  "updateTime": "2026-09-28 16:30:00",
   "dataPeriod": "2026年1月 — 9月",
   "currentMonth": "9",
   "summary": {
-    "totalEstimate": 10487200.98,
-    "totalReceived": 7680559.68,
-    "totalReceivable": 4125310.42
+    "totalEstimate": 10676438.0,
+    "totalReceived": 8116314.48,
+    "totalReceivable": 2560123.52
+  },
+  "monthlyUnpaid": {
+    "1月": 73711.92,
+    "2月": 40940.64,
+    "3月": 0.0,
+    "4月": 15423.06,
+    "5月": 70087.01,
+    "6月": 119676.01,
+    "7月": 184631.98,
+    "8月": 966452.9,
+    "9月": 1089200.0
   },
   "yearData": {
     "before2026": {
@@ -13,8 +24,8 @@
       "receivableWan": "31.47"
     },
     "2026": {
-      "receivable": 4125310.42,
-      "receivableWan": "412.53"
+      "receivable": 2560123.52,
+      "receivableWan": "256.01"
     }
   },
   "filterOptions": {
@@ -51,6 +62,7 @@
       "素颜霜",
       "素颜霜（达）",
       "美菱小家电",
+      "营业外收入",
       "蓝漂",
       "蓝漂（达）",
       "追觅吸尘器",
@@ -66,6 +78,7 @@
       "B组",
       "C组",
       "传媒",
+      "其他",
       "私域",
       "聚能"
     ]
@@ -438,8 +451,8 @@
       "month": "3月",
       "estimate": 29384.1,
       "invoice": "已回款",
-      "received": 0.0,
-      "receivable": 29384.1
+      "received": 29384.1,
+      "receivable": 0.0
     },
     {
       "group": "A组",
@@ -868,8 +881,8 @@
       "month": "5月",
       "estimate": 217133.68,
       "invoice": "已回款",
-      "received": 0.0,
-      "receivable": 217133.68
+      "received": 217133.68,
+      "receivable": 0.0
     },
     {
       "group": "B组",
@@ -1539,6 +1552,76 @@
       "estimate": 11835.18,
       "invoice": "已回款",
       "received": 11835.18,
+      "receivable": 0.0
+    },
+    {
+      "group": "其他",
+      "name": "营业外收入",
+      "code": 1027,
+      "month": "1月",
+      "estimate": 21613.2,
+      "invoice": "已回款",
+      "received": 21613.2,
+      "receivable": 0.0
+    },
+    {
+      "group": "其他",
+      "name": "营业外收入",
+      "code": 1027,
+      "month": "2月",
+      "estimate": 19029.16,
+      "invoice": "已回款",
+      "received": 19029.16,
+      "receivable": 0.0
+    },
+    {
+      "group": "其他",
+      "name": "营业外收入",
+      "code": 1027,
+      "month": "3月",
+      "estimate": 18882.06,
+      "invoice": "已回款",
+      "received": 18882.06,
+      "receivable": 0.0
+    },
+    {
+      "group": "其他",
+      "name": "营业外收入",
+      "code": 1027,
+      "month": "4月",
+      "estimate": 15825.0,
+      "invoice": "已回款",
+      "received": 15825.0,
+      "receivable": 0.0
+    },
+    {
+      "group": "其他",
+      "name": "营业外收入",
+      "code": 1027,
+      "month": "5月",
+      "estimate": 15000.0,
+      "invoice": "已回款",
+      "received": 15000.0,
+      "receivable": 0.0
+    },
+    {
+      "group": "其他",
+      "name": "营业外收入",
+      "code": 1027,
+      "month": "8月",
+      "estimate": 19743.6,
+      "invoice": "-",
+      "received": 19743.6,
+      "receivable": 0.0
+    },
+    {
+      "group": "其他",
+      "name": "营业外收入",
+      "code": 1027,
+      "month": "9月",
+      "estimate": 79144.0,
+      "invoice": "-",
+      "received": 79144.0,
       "receivable": 0.0
     }
   ]
