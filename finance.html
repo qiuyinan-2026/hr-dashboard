@@ -299,6 +299,26 @@ body {
     font-size: 12px;
     color: #64748b;
 }
+.filter-btn {
+    padding: 4px 12px;
+    font-size: 12px;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    background: rgba(30, 41, 59, 0.6);
+    color: #94a3b8;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.filter-btn:hover {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    border-color: rgba(56, 189, 248, 0.5);
+}
+.filter-btn.active {
+    background: rgba(56, 189, 248, 0.2);
+    color: #38bdf8;
+    border-color: #38bdf8;
+}
 .data-table {
     width: 100%;
     border-collapse: collapse;
@@ -880,7 +900,13 @@ body {
     <div class="data-table-wrapper">
         <div class="data-table-header">
             <h3>收入明细数据</h3>
-            <span class="count" id="recordCount">共 119 条记录</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <button class="filter-btn" id="btnUnpaid" onclick="setReceivableFilter('unpaid')">只看未回</button>
+                <button class="filter-btn" id="btnPaid" onclick="setReceivableFilter('paid')">只看已回</button>
+                <button class="filter-btn" id="btnSortAsc" onclick="setSort('asc')">排序↑</button>
+                <button class="filter-btn" id="btnSortDesc" onclick="setSort('desc')">排序↓</button>
+                <span class="count" id="recordCount">共 119 条记录</span>
+            </div>
         </div>
         <div style="max-height: 600px; overflow-y: auto;">
             <table class="data-table" id="financeTable">
@@ -2953,6 +2979,8 @@ body {
 // ========== 全局数据 ==========
 let DATA = null;
 let dashboardCharts = {};
+let receivableFilter = 'all';
+let sortOrder = 'none';
 let receivableChart = null;
 let isLoading = false;
 
@@ -3036,6 +3064,20 @@ function renderFinance() {
 }
 
 // ========== 筛选逻辑 ==========
+function setReceivableFilter(type) {
+    receivableFilter = (receivableFilter === type) ? 'all' : type;
+    document.getElementById('btnUnpaid').classList.toggle('active', receivableFilter === 'unpaid');
+    document.getElementById('btnPaid').classList.toggle('active', receivableFilter === 'paid');
+    applyFilters();
+}
+
+function setSort(order) {
+    sortOrder = (sortOrder === order) ? 'none' : order;
+    document.getElementById('btnSortAsc').classList.toggle('active', sortOrder === 'asc');
+    document.getElementById('btnSortDesc').classList.toggle('active', sortOrder === 'desc');
+    applyFilters();
+}
+
 function onYearChange() {
     const year = document.getElementById('filterYear').value;
     const monthSel = document.getElementById('filterMonth');
@@ -3073,9 +3115,23 @@ function applyFilters() {
         if (group !== 'all' && row.group !== group) return false;
         return true;
     });
-    
-    const isDefault = (month === 'all' && project === 'all' && group === 'all');
-    
+
+    // 回款筛选
+    if (receivableFilter === 'unpaid') {
+        filtered = filtered.filter(r => r.receivable > 0);
+    } else if (receivableFilter === 'paid') {
+        filtered = filtered.filter(r => r.receivable === 0);
+    }
+
+    // 排序（按项目收入）
+    if (sortOrder === 'asc') {
+        filtered = filtered.slice().sort((a, b) => a.estimate - b.estimate);
+    } else if (sortOrder === 'desc') {
+        filtered = filtered.slice().sort((a, b) => b.estimate - a.estimate);
+    }
+
+    const isDefault = (month === 'all' && project === 'all' && group === 'all' && receivableFilter === 'all' && sortOrder === 'none');
+
     let sumEst, sumRec, sumRecv;
     if (isDefault) {
         sumEst = DATA.summary.totalEstimate;
@@ -3086,14 +3142,14 @@ function applyFilters() {
         sumRec = filtered.reduce((s, r) => s + r.received, 0);
         sumRecv = filtered.reduce((s, r) => s + r.receivable, 0);
     }
-    
+
     document.getElementById('sumEstimate').innerHTML = (sumEst/10000).toFixed(2) + '<span class="unit">万元</span>';
     document.getElementById('sumReceived').innerHTML = (sumRec/10000).toFixed(2) + '<span class="unit">万元</span>';
     document.getElementById('sumReceivable').innerHTML = (sumRecv/10000).toFixed(2) + '<span class="unit">万元</span>';
     document.getElementById('recordCount').textContent = '共 ' + filtered.length + ' 条记录';
-    
+
     const tbody = document.getElementById('financeTableBody');
-    tbody.innerHTML = filtered.map(row => {
+    let rowsHtml = filtered.map(row => {
         const inv = row.invoice || '-';
         return '<tr>' +
             '<td>' + row.name + '</td>' +
@@ -3105,6 +3161,21 @@ function applyFilters() {
             '<td class="num" style="color:#fca5a5">' + row.receivable.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '</td>' +
         '</tr>';
     }).join('');
+
+    // 底部小计行
+    if (filtered.length > 0) {
+        const subEst = filtered.reduce((s, r) => s + r.estimate, 0);
+        const subRec = filtered.reduce((s, r) => s + r.received, 0);
+        const subRecv = filtered.reduce((s, r) => s + r.receivable, 0);
+        rowsHtml += '<tr style="background:rgba(56,189,248,0.08);font-weight:600;border-top:2px solid rgba(56,189,248,0.3);">' +
+            '<td colspan="3" style="text-align:right;color:#38bdf8;">小计</td>' +
+            '<td class="num" style="color:#e2e8f0;">' + subEst.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '</td>' +
+            '<td></td>' +
+            '<td class="num" style="color:#6ee7b7;">' + subRec.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '</td>' +
+            '<td class="num" style="color:#fca5a5;">' + subRecv.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '</td>' +
+        '</tr>';
+    }
+    tbody.innerHTML = rowsHtml;
 }
 
 function resetFilters() {
@@ -3113,6 +3184,12 @@ function resetFilters() {
     document.getElementById('filterMonth').value = 'all';
     document.getElementById('filterProject').value = 'all';
     document.getElementById('filterGroup').value = 'all';
+    receivableFilter = 'all';
+    sortOrder = 'none';
+    document.getElementById('btnUnpaid').classList.remove('active');
+    document.getElementById('btnPaid').classList.remove('active');
+    document.getElementById('btnSortAsc').classList.remove('active');
+    document.getElementById('btnSortDesc').classList.remove('active');
     applyFilters();
 }
 
