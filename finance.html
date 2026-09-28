@@ -3074,9 +3074,18 @@ function applyFilters() {
         return true;
     });
     
-    const sumEst = filtered.reduce((s, r) => s + r.estimate, 0);
-    const sumRec = filtered.reduce((s, r) => s + r.received, 0);
-    const sumRecv = filtered.reduce((s, r) => s + r.receivable, 0);
+    const isDefault = (month === 'all' && project === 'all' && group === 'all');
+    
+    let sumEst, sumRec, sumRecv;
+    if (isDefault) {
+        sumEst = DATA.summary.totalEstimate;
+        sumRec = DATA.summary.totalReceived;
+        sumRecv = DATA.summary.totalReceivable;
+    } else {
+        sumEst = filtered.reduce((s, r) => s + r.estimate, 0);
+        sumRec = filtered.reduce((s, r) => s + r.received, 0);
+        sumRecv = filtered.reduce((s, r) => s + r.receivable, 0);
+    }
     
     document.getElementById('sumEstimate').innerHTML = (sumEst/10000).toFixed(2) + '<span class="unit">万元</span>';
     document.getElementById('sumReceived').innerHTML = (sumRec/10000).toFixed(2) + '<span class="unit">万元</span>';
