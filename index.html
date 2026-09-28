@@ -976,8 +976,9 @@ async function loadData() {
             document.getElementById('data-update-time').textContent = '数据截止：' + DATA.months[DATA.months.length-1];
         }
     } catch(e) {
-        document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:100px;font-size:18px;">数据加载中...<br><span style="font-size:14px;color:#94a3b8;">如长时间未显示，请刷新页面</span></div>';
-        setTimeout(() => location.reload(), 3000);
+        console.error('加载失败:', e);
+        const el = document.getElementById('data-update-time');
+        if (el) el.textContent = '加载失败，请刷新';
     }
 }
 // ===== 密码验证 =====
