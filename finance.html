@@ -2179,7 +2179,7 @@ function fmtWan(v) {
 // ========== 加载数据 ==========
 async function loadData() {
     try {
-        const resp = await fetch('finance_v2.json?t=' + Date.now(), {cache: 'no-store'});
+        const resp = await fetch('finance_v3.json?t=' + Date.now(), {cache: 'no-store'});
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         DATA = await resp.json();
         document.getElementById('updateTime').textContent = '更新于 ' + DATA.updateTime;
