@@ -73,8 +73,8 @@
   }
 
   .card-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 28px; max-width: 1200px; width: 100%;
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 24px; max-width: 1400px; width: 100%;
   }
   .sys-card {
     background: rgba(15, 31, 61, 0.5);
@@ -124,13 +124,17 @@
   .sys-card.profit { --card-color: #f59e0b; --card-glow: rgba(245,158,11,0.15); --card-bg: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(239,68,68,0.1)); }
   .sys-card.finance { --card-color: #34d399; --card-glow: rgba(52,211,153,0.15); --card-bg: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(16,185,129,0.1)); }
   .sys-card.project { --card-color: #a78bfa; --card-glow: rgba(167,139,250,0.15); --card-bg: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(139,92,246,0.1)); }
+  .sys-card.liveroom { --card-color: #f472b6; --card-glow: rgba(244,114,182,0.15); --card-bg: linear-gradient(135deg, rgba(244,114,182,0.15), rgba(236,72,153,0.1)); }
 
   .footer {
     text-align: center; padding: 20px; font-size: 12px;
     color: #334155; letter-spacing: 1px; position: relative; z-index: 1;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1200px) {
+    .card-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 768px) {
     .card-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 600px) {
@@ -171,19 +175,25 @@
     <a href="profit.html" class="sys-card profit">
       <div class="card-icon">📊</div>
       <div class="card-name">聚光利润核算系统</div>
-      <div class="card-desc">项目经营分析看板<br>直播间平面图</div>
+      <div class="card-desc">项目经营分析看板<br>收入成本利润多维分析</div>
       <div class="card-arrow">进入系统 →</div>
     </a>
     <a href="finance.html" class="sys-card finance">
       <div class="card-icon">💰</div>
       <div class="card-name">聚光财务管理系统</div>
-      <div class="card-desc">财务收入数据查询<br>经营数据仪表盘<br>应收款分析</div>
+      <div class="card-desc">财务收入数据查询<br>财务指标分析</div>
       <div class="card-arrow">进入系统 →</div>
     </a>
     <a href="https://juguangzb.feishuapp.com/app/app_17bytez7qwn/" target="_blank" class="sys-card project">
       <div class="card-icon">📁</div>
       <div class="card-name">聚光项目管理系统</div>
       <div class="card-desc">项目数据总览<br>项目进度跟踪<br>项目明细管理</div>
+      <div class="card-arrow">进入系统 →</div>
+    </a>
+    <a href="live_room.html" class="sys-card liveroom">
+      <div class="card-icon">🎬</div>
+      <div class="card-name">聚光直播间平面图</div>
+      <div class="card-desc">三楼/四楼/五楼布局<br>项目与直播间关联管理</div>
       <div class="card-arrow">进入系统 →</div>
     </a>
   </div>
