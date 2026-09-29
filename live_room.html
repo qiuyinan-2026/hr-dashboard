@@ -465,6 +465,42 @@ body {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
+.btn-data {
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  height: 40px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-data:hover {
+  background: rgba(148, 163, 184, 0.22);
+  color: #e2e8f0;
+  border-color: rgba(148, 163, 184, 0.4);
+}
+.data-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  flex-wrap: wrap;
+}
+.data-bar .label {
+  font-size: 12px;
+  color: #64748b;
+  margin-right: 4px;
+}
+.data-bar .hint {
+  font-size: 11px;
+  color: #475569;
+  margin-left: auto;
+}
 .project-list-box {
   max-height: 320px;
   overflow-y: auto;
@@ -560,6 +596,19 @@ body {
   <div class="control-item" style="margin-left:auto;">
     <label>操作提示</label>
     <div style="font-size:12px;color:#94a3b8;max-width:280px;">先创建项目，再选择直播间编号和项目点击关联。数据自动保存。</div>
+  </div>
+</div>
+
+<!-- 数据管理栏 -->
+<div class="control-panel" style="padding:14px 24px;margin-bottom:24px;">
+  <div class="data-bar" style="margin-top:0;padding-top:0;border-top:none;">
+    <span class="label">📦 数据管理：</span>
+    <button class="btn-data" onclick="exportConfig()">⬇️ 导出配置</button>
+    <button class="btn-data" onclick="document.getElementById('importFile').click()">⬆️ 导入配置</button>
+    <button class="btn-data" onclick="copyShareLink()">🔗 复制分享链接</button>
+    <button class="btn-data" onclick="clearAllData()" style="color:#f87171;border-color:rgba(239,68,68,0.3);">🗑️ 清空数据</button>
+    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="handleImport(event)">
+    <span class="hint">数据保存在当前浏览器，换浏览器请用导出/导入或分享链接</span>
   </div>
 </div>
 
@@ -698,6 +747,7 @@ const ALL_ROOMS = [1,2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
 
 // ========== 初始化 ==========
 function init() {
+  loadFromUrlHash();
   initRoomSelect();
   initProjectSelect();
   loadAssociations();
@@ -1016,6 +1066,93 @@ document.addEventListener('click', (e) => {
     e.target.classList.remove('show');
   }
 });
+
+// ========== 数据导入/导出/分享 ==========
+function exportConfig() {
+  const data = {
+    projects: getProjects(),
+    associations: getAssociations(),
+    exportedAt: new Date().toLocaleString('zh-CN'),
+    version: '1.0'
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `直播间配置_${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('配置已导出，请在新浏览器中导入');
+}
+
+function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.projects && Array.isArray(data.projects)) {
+        saveProjects(data.projects);
+      }
+      if (data.associations && typeof data.associations === 'object') {
+        saveAssociations(data.associations);
+      }
+      initProjectSelect();
+      initRoomSelect();
+      renderAllFloors();
+      showToast(`配置导入成功：${data.projects ? data.projects.length : 0}个项目，${data.associations ? Object.keys(data.associations).length : 0}个关联`);
+    } catch (err) {
+      showToast('导入失败：文件格式错误', true);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function copyShareLink() {
+  const data = {
+    projects: getProjects(),
+    associations: getAssociations()
+  };
+  const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
+  const url = window.location.origin + window.location.pathname + '#config=' + encoded;
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('分享链接已复制，在任意浏览器打开即可恢复数据');
+  }).catch(() => {
+    // 降级方案：prompt显示
+    prompt('复制以下链接，在任意浏览器打开：', url);
+  });
+}
+
+function loadFromUrlHash() {
+  const hash = window.location.hash;
+  if (!hash || !hash.includes('config=')) return;
+  try {
+    const encoded = hash.split('config=')[1];
+    const data = JSON.parse(decodeURIComponent(atob(encoded)));
+    if (data.projects && Array.isArray(data.projects) && data.projects.length > 0) {
+      saveProjects(data.projects);
+    }
+    if (data.associations && typeof data.associations === 'object') {
+      saveAssociations(data.associations);
+    }
+    showToast('已从分享链接恢复数据');
+  } catch (err) {
+    console.error('从URL恢复数据失败', err);
+  }
+}
+
+function clearAllData() {
+  if (!confirm('确定要清空所有项目和关联数据吗？此操作不可恢复。')) return;
+  localStorage.removeItem(PROJECTS_KEY);
+  localStorage.removeItem(STORAGE_KEY);
+  initProjectSelect();
+  renderAllFloors();
+  showToast('所有数据已清空');
+}
 
 // ========== 工具函数 ==========
 function showToast(msg, isError = false) {
