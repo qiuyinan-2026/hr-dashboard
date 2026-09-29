@@ -73,6 +73,42 @@ body {
   background: #1e293b;
   color: #e2e8f0;
 }
+.control-item input {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #e2e8f0;
+  font-size: 14px;
+  width: 100px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.control-item input:hover, .control-item input:focus {
+  border-color: #818cf8;
+}
+.btn-create {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 40px;
+  white-space: nowrap;
+}
+.btn-create:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+.input-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
 .btn-associate {
   background: linear-gradient(135deg, #8b5cf6, #6366f1);
   color: white;
@@ -345,6 +381,13 @@ body {
     </select>
   </div>
   <div class="control-item">
+    <label>创建直播间</label>
+    <div class="input-row">
+      <input type="number" id="newRoomInput" placeholder="输入编号" min="1">
+      <button class="btn-create" onclick="createRoom()">+ 创建</button>
+    </div>
+  </div>
+  <div class="control-item">
     <label>直播间名称（项目）</label>
     <select id="projectSelect">
       <option value="">请选择项目</option>
@@ -354,7 +397,7 @@ body {
   <button class="btn-reset" onclick="clearAssociation()">清除选中关联</button>
   <div class="control-item" style="margin-left:auto;">
     <label>操作提示</label>
-    <div style="font-size:12px;color:#94a3b8;max-width:280px;">选择直播间编号和项目名称，点击关联即可更新平面图。数据自动保存。</div>
+    <div style="font-size:12px;color:#94a3b8;max-width:280px;">先输入编号创建直播间，再选择直播间和项目名称点击关联。数据自动保存。</div>
   </div>
 </div>
 
@@ -458,6 +501,7 @@ const FLOOR5 = [
 ];
 
 const STORAGE_KEY = 'juguang_room_associations';
+const ROOMS_KEY = 'juguang_room_list';
 
 // ========== 初始化 ==========
 function init() {
@@ -467,15 +511,54 @@ function init() {
   renderAllFloors();
 }
 
+function getRoomList() {
+  try {
+    return JSON.parse(localStorage.getItem(ROOMS_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveRoomList(list) {
+  localStorage.setItem(ROOMS_KEY, JSON.stringify(list));
+}
+
 function initRoomSelect() {
   const sel = document.getElementById('roomSelect');
-  const allRooms = [1,2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
-  allRooms.forEach(n => {
+  // 清空现有选项（保留第一个占位项）
+  sel.innerHTML = '<option value="">请选择直播间</option>';
+  const rooms = getRoomList();
+  rooms.sort((a, b) => a - b);
+  rooms.forEach(n => {
     const opt = document.createElement('option');
     opt.value = n;
     opt.textContent = n + '号直播间';
     sel.appendChild(opt);
   });
+}
+
+function createRoom() {
+  const input = document.getElementById('newRoomInput');
+  const val = input.value.trim();
+  if (!val) {
+    showToast('请输入直播间编号', true);
+    return;
+  }
+  const num = parseInt(val, 10);
+  if (isNaN(num) || num < 1) {
+    showToast('请输入有效的编号', true);
+    return;
+  }
+  const rooms = getRoomList();
+  if (rooms.includes(num)) {
+    showToast(num + '号直播间已存在', true);
+    return;
+  }
+  rooms.push(num);
+  saveRoomList(rooms);
+  initRoomSelect();
+  input.value = '';
+  showToast(num + '号直播间已创建');
 }
 
 function initProjectSelect() {
