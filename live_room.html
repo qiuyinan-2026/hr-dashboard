@@ -358,6 +358,173 @@ body {
   background: rgba(239, 68, 68, 0.9);
 }
 
+/* 模态框 */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.show {
+  display: flex;
+}
+.modal-box {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 16px;
+  padding: 28px;
+  min-width: 420px;
+  max-width: 520px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal-field {
+  margin-bottom: 16px;
+}
+.modal-field label {
+  display: block;
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.modal-field input {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #e2e8f0;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.modal-field input:focus {
+  border-color: #818cf8;
+}
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+.btn-confirm {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+.btn-cancel {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-cancel:hover {
+  background: rgba(148, 163, 184, 0.25);
+}
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+.project-list-box {
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  padding: 8px;
+}
+.project-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.project-list-item:hover {
+  background: rgba(139, 92, 246, 0.1);
+}
+.project-list-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #8b5cf6;
+  cursor: pointer;
+}
+.project-list-item .pname {
+  flex: 1;
+  font-size: 14px;
+  color: #e2e8f0;
+}
+.project-list-item .pid {
+  font-size: 12px;
+  color: #94a3b8;
+  background: rgba(148, 163, 184, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.project-list-empty {
+  text-align: center;
+  padding: 32px;
+  color: #64748b;
+  font-size: 13px;
+}
+.select-all-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #94a3b8;
+  cursor: pointer;
+}
+.select-all-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #8b5cf6;
+}
+
 @media (max-width: 768px) {
   .control-panel { flex-direction: column; align-items: stretch; }
   .control-item select { min-width: 100%; }
@@ -393,11 +560,13 @@ body {
       <option value="">请选择项目</option>
     </select>
   </div>
+  <button class="btn-create" onclick="openCreateProjectModal()" style="height:40px;">+ 创建项目</button>
+  <button class="btn-reset" onclick="openDeleteProjectModal()" style="height:40px;">删除项目</button>
   <button class="btn-associate" onclick="associateRoom()">🔗 关 联</button>
   <button class="btn-reset" onclick="clearAssociation()">清除选中关联</button>
   <div class="control-item" style="margin-left:auto;">
     <label>操作提示</label>
-    <div style="font-size:12px;color:#94a3b8;max-width:280px;">先输入编号创建直播间，再选择直播间和项目名称点击关联。数据自动保存。</div>
+    <div style="font-size:12px;color:#94a3b8;max-width:280px;">先创建直播间和项目，再选择编号和项目点击关联。数据自动保存。</div>
   </div>
 </div>
 
@@ -463,28 +632,57 @@ body {
 
 <div class="toast" id="toast"></div>
 
+<!-- 创建项目模态框 -->
+<div class="modal-overlay" id="createProjectModal">
+  <div class="modal-box">
+    <div class="modal-title">➕ 创建新项目</div>
+    <div class="modal-field">
+      <label>项目名称</label>
+      <input type="text" id="newProjectName" placeholder="请输入项目名称">
+    </div>
+    <div class="modal-field">
+      <label>项目编号</label>
+      <input type="text" id="newProjectId" placeholder="请输入项目编号，如 1001">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeCreateProjectModal()">取消</button>
+      <button class="btn-confirm" onclick="confirmCreateProject()">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 删除项目模态框 -->
+<div class="modal-overlay" id="deleteProjectModal">
+  <div class="modal-box">
+    <div class="modal-title">🗑️ 删除项目</div>
+    <div class="select-all-row" onclick="toggleSelectAllProjects()">
+      <input type="checkbox" id="selectAllProjects">
+      <span>全选</span>
+      <span style="margin-left:auto;color:#64748b;" id="deleteSelectedCount">已选 0 项</span>
+    </div>
+    <div class="project-list-box" id="deleteProjectList"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeDeleteProjectModal()">取消</button>
+      <button class="btn-danger" onclick="confirmDeleteProjects()">删除选中</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ========== 项目数据（来自飞书表格2026账单 - A/B/C组） ==========
-const PROJECTS = [
-  { group: 'A组', id: '1001', name: '阴山优麦冲饮' },
-  { group: 'A组', id: '1002', name: '阴山优麦食品' },
-  { group: 'A组', id: '1003', name: '抖音超市美妆' },
-  { group: 'A组', id: '1004', name: '抖超箱包' },
-  { group: 'A组', id: '1005', name: '追觅戒指' },
-  { group: 'A组', id: '1006', name: '美菱小家电' },
-  { group: 'A组', id: '1007', name: '蓝漂' },
-  { group: 'B组', id: '1008', name: '古井店播' },
-  { group: 'B组', id: '1009', name: '桂格' },
-  { group: 'B组', id: '1010', name: '南方黑芝麻-1' },
-  { group: 'B组', id: '1011', name: '南方黑芝麻-2' },
-  { group: 'B组', id: '1012', name: '旺旺' },
-  { group: 'B组', id: '1013', name: '乐锦记' },
-  { group: 'B组', id: '1014', name: '养舒优1' },
-  { group: 'B组', id: '1015', name: '养舒优2' },
-  { group: 'C组', id: '1016', name: '素颜霜' },
-  { group: 'C组', id: '1017', name: '拓趣（沐浴油）' },
-  { group: 'C组', id: '1018', name: '拓趣（护手霜）' },
-];
+// ========== 项目数据（手工创建，localStorage持久化） ==========
+const PROJECTS_KEY = 'juguang_project_list';
+
+function getProjects() {
+  try {
+    return JSON.parse(localStorage.getItem(PROJECTS_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveProjects(list) {
+  localStorage.setItem(PROJECTS_KEY, JSON.stringify(list));
+}
 
 // ========== 直播间布局配置 ==========
 const FLOOR3 = [
@@ -563,19 +761,13 @@ function createRoom() {
 
 function initProjectSelect() {
   const sel = document.getElementById('projectSelect');
-  let currentGroup = '';
-  let optgroup = null;
-  PROJECTS.forEach(p => {
-    if (p.group !== currentGroup) {
-      currentGroup = p.group;
-      optgroup = document.createElement('optgroup');
-      optgroup.label = p.group;
-      sel.appendChild(optgroup);
-    }
+  sel.innerHTML = '<option value="">请选择项目</option>';
+  const projects = getProjects();
+  projects.forEach(p => {
     const opt = document.createElement('option');
     opt.value = p.id;
     opt.textContent = `${p.name}（${p.id}）`;
-    optgroup.appendChild(opt);
+    sel.appendChild(opt);
   });
 }
 
@@ -610,11 +802,15 @@ function associateRoom() {
   }
   
   const associations = getAssociations();
-  const project = PROJECTS.find(p => p.id === projectId);
+  const project = getProjects().find(p => p.id === projectId);
+  if (!project) {
+    showToast('项目不存在', true);
+    return;
+  }
   associations[roomId] = {
     projectId: project.id,
     projectName: project.name,
-    group: project.group,
+    group: project.group || '自定义',
     updatedAt: new Date().toLocaleString('zh-CN')
   };
   saveAssociations(associations);
@@ -745,6 +941,125 @@ function updateStats() {
   document.getElementById('floor5-used').textContent = f5used;
   document.getElementById('floor5-free').textContent = 5 - f5used;
 }
+
+// ========== 项目创建/删除 ==========
+function openCreateProjectModal() {
+  document.getElementById('newProjectName').value = '';
+  document.getElementById('newProjectId').value = '';
+  document.getElementById('createProjectModal').classList.add('show');
+  setTimeout(() => document.getElementById('newProjectName').focus(), 100);
+}
+
+function closeCreateProjectModal() {
+  document.getElementById('createProjectModal').classList.remove('show');
+}
+
+function confirmCreateProject() {
+  const name = document.getElementById('newProjectName').value.trim();
+  const id = document.getElementById('newProjectId').value.trim();
+  if (!name) {
+    showToast('请输入项目名称', true);
+    return;
+  }
+  if (!id) {
+    showToast('请输入项目编号', true);
+    return;
+  }
+  const projects = getProjects();
+  if (projects.find(p => p.id === id)) {
+    showToast('项目编号已存在', true);
+    return;
+  }
+  if (projects.find(p => p.name === name)) {
+    showToast('项目名称已存在', true);
+    return;
+  }
+  projects.push({ id, name, group: '自定义' });
+  saveProjects(projects);
+  initProjectSelect();
+  closeCreateProjectModal();
+  showToast(`项目「${name}」创建成功`);
+}
+
+function openDeleteProjectModal() {
+  renderDeleteProjectList();
+  document.getElementById('deleteProjectModal').classList.add('show');
+}
+
+function closeDeleteProjectModal() {
+  document.getElementById('deleteProjectModal').classList.remove('show');
+}
+
+function renderDeleteProjectList() {
+  const box = document.getElementById('deleteProjectList');
+  const projects = getProjects();
+  if (projects.length === 0) {
+    box.innerHTML = '<div class="project-list-empty">暂无项目，请先创建</div>';
+    document.getElementById('deleteSelectedCount').textContent = '已选 0 项';
+    return;
+  }
+  box.innerHTML = projects.map(p => `
+    <label class="project-list-item">
+      <input type="checkbox" class="delete-project-cb" value="${p.id}" onchange="updateDeleteCount()">
+      <span class="pname">${p.name}</span>
+      <span class="pid">${p.id}</span>
+    </label>
+  `).join('');
+  updateDeleteCount();
+}
+
+function toggleSelectAllProjects() {
+  const cb = document.getElementById('selectAllProjects');
+  const all = document.querySelectorAll('.delete-project-cb');
+  all.forEach(c => c.checked = cb.checked);
+  updateDeleteCount();
+}
+
+function updateDeleteCount() {
+  const checked = document.querySelectorAll('.delete-project-cb:checked');
+  document.getElementById('deleteSelectedCount').textContent = `已选 ${checked.length} 项`;
+  const all = document.querySelectorAll('.delete-project-cb');
+  document.getElementById('selectAllProjects').checked = all.length > 0 && checked.length === all.length;
+}
+
+function confirmDeleteProjects() {
+  const checked = document.querySelectorAll('.delete-project-cb:checked');
+  if (checked.length === 0) {
+    showToast('请先选择要删除的项目', true);
+    return;
+  }
+  const idsToDelete = Array.from(checked).map(c => c.value);
+  if (!confirm(`确定要删除选中的 ${idsToDelete.length} 个项目吗？\n已关联这些项目的直播间将变为空闲。`)) {
+    return;
+  }
+  let projects = getProjects();
+  const deletedNames = projects.filter(p => idsToDelete.includes(p.id)).map(p => p.name);
+  projects = projects.filter(p => !idsToDelete.includes(p.id));
+  saveProjects(projects);
+
+  // 清除已关联这些项目的直播间
+  const associations = getAssociations();
+  let changed = false;
+  Object.keys(associations).forEach(roomId => {
+    if (idsToDelete.includes(associations[roomId].projectId)) {
+      delete associations[roomId];
+      changed = true;
+    }
+  });
+  if (changed) saveAssociations(associations);
+
+  initProjectSelect();
+  renderAllFloors();
+  closeDeleteProjectModal();
+  showToast(`已删除 ${deletedNames.length} 个项目`);
+}
+
+// 点击模态框背景关闭
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('modal-overlay')) {
+    e.target.classList.remove('show');
+  }
+});
 
 // ========== 工具函数 ==========
 function showToast(msg, isError = false) {
