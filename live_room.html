@@ -548,13 +548,6 @@ body {
     </select>
   </div>
   <div class="control-item">
-    <label>创建直播间</label>
-    <div class="input-row">
-      <input type="number" id="newRoomInput" placeholder="输入编号" min="1">
-      <button class="btn-create" onclick="createRoom()">+ 创建</button>
-    </div>
-  </div>
-  <div class="control-item">
     <label>直播间名称（项目）</label>
     <select id="projectSelect">
       <option value="">请选择项目</option>
@@ -566,7 +559,7 @@ body {
   <button class="btn-reset" onclick="clearAssociation()">清除选中关联</button>
   <div class="control-item" style="margin-left:auto;">
     <label>操作提示</label>
-    <div style="font-size:12px;color:#94a3b8;max-width:280px;">先创建直播间和项目，再选择编号和项目点击关联。数据自动保存。</div>
+    <div style="font-size:12px;color:#94a3b8;max-width:280px;">先创建项目，再选择直播间编号和项目点击关联。数据自动保存。</div>
   </div>
 </div>
 
@@ -699,7 +692,9 @@ const FLOOR5 = [
 ];
 
 const STORAGE_KEY = 'juguang_room_associations';
-const ROOMS_KEY = 'juguang_room_list';
+
+// 固定直播间列表（3楼1-12无7号，4楼13-16，5楼17-21）
+const ALL_ROOMS = [1,2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
 
 // ========== 初始化 ==========
 function init() {
@@ -709,54 +704,15 @@ function init() {
   renderAllFloors();
 }
 
-function getRoomList() {
-  try {
-    return JSON.parse(localStorage.getItem(ROOMS_KEY)) || [];
-  } catch {
-    return [];
-  }
-}
-
-function saveRoomList(list) {
-  localStorage.setItem(ROOMS_KEY, JSON.stringify(list));
-}
-
 function initRoomSelect() {
   const sel = document.getElementById('roomSelect');
-  // 清空现有选项（保留第一个占位项）
   sel.innerHTML = '<option value="">请选择直播间</option>';
-  const rooms = getRoomList();
-  rooms.sort((a, b) => a - b);
-  rooms.forEach(n => {
+  ALL_ROOMS.forEach(n => {
     const opt = document.createElement('option');
     opt.value = n;
     opt.textContent = n + '号直播间';
     sel.appendChild(opt);
   });
-}
-
-function createRoom() {
-  const input = document.getElementById('newRoomInput');
-  const val = input.value.trim();
-  if (!val) {
-    showToast('请输入直播间编号', true);
-    return;
-  }
-  const num = parseInt(val, 10);
-  if (isNaN(num) || num < 1) {
-    showToast('请输入有效的编号', true);
-    return;
-  }
-  const rooms = getRoomList();
-  if (rooms.includes(num)) {
-    showToast(num + '号直播间已存在', true);
-    return;
-  }
-  rooms.push(num);
-  saveRoomList(rooms);
-  initRoomSelect();
-  input.value = '';
-  showToast(num + '号直播间已创建');
 }
 
 function initProjectSelect() {
