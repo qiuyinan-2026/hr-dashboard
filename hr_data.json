@@ -26440,7 +26440,7 @@
         "group": "B组",
         "month": "8月",
         "headcount": 0,
-        "income": 20000.0,
+        "income": 0,
         "direct_cost": 0,
         "content_share": 0,
         "mgmt_share": 0,
@@ -26448,10 +26448,10 @@
         "labor_total": 0,
         "main_business_cost": 0,
         "qianchuan_cost": 0,
-        "mgmt_fee_alloc": 17077.29,
-        "total_cost": 17077.29,
-        "profit": 2922.71,
-        "cost_ratio": 85.39
+        "mgmt_fee_alloc": 0,
+        "total_cost": 0,
+        "profit": 0,
+        "cost_ratio": 0
       },
       "1030": {
         "project_id": "1030",
@@ -26619,9 +26619,9 @@
       "group": "C组"
     },
     {
-      "id": "1022",
+      "id": "1029",
       "name": "燕之坊",
-      "group": "C组"
+      "group": "B组"
     },
     {
       "id": "1019",
