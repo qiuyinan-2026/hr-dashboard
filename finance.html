@@ -2252,10 +2252,10 @@ function applyFilters() {
     const project = document.getElementById('filterProject').value;
     const group = document.getElementById('filterGroup').value;
     if (year === 'before2026') {
-        const hist = DATA.yearData.before2026;
+        const histRecv = (DATA.historicalReceivable ? (DATA.historicalReceivable['2024'] + DATA.historicalReceivable['2025']) : 314690);
         document.getElementById('sumEstimate').innerHTML = '—<span class="unit"></span>';
         document.getElementById('sumReceived').innerHTML = '—<span class="unit"></span>';
-        document.getElementById('sumReceivable').innerHTML = hist.receivableWan + '<span class="unit">万元</span>';
+        document.getElementById('sumReceivable').innerHTML = (histRecv/10000).toFixed(2) + '<span class="unit">万元</span>';
         const tbody = document.querySelector('#financeTable tbody');
         tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#94a3b8;">2024年度应收款 314,690元 + 2025年度应收款 0元 = 314,690元</td></tr>';
         document.getElementById('recordCount').textContent = '历史数据';
@@ -2263,14 +2263,14 @@ function applyFilters() {
     }
     let filtered = DATA.detailRows.filter(row => {
         if (month !== 'all' && row.month !== month) return false;
-        if (project !== 'all' && row.name !== project) return false;
+        if (project !== 'all' && row.project !== project) return false;
         if (group !== 'all' && row.group !== group) return false;
         return true;
     });
     if (receivableFilter === 'unpaid') {
-        filtered = filtered.filter(r => r.received === 0);
+        filtered = filtered.filter(r => r.receivable > 0);
     } else if (receivableFilter === 'paid') {
-        filtered = filtered.filter(r => r.received > 0);
+        filtered = filtered.filter(r => r.receivable === 0);
     }
     if (sortOrder === 'asc') {
         filtered = filtered.slice().sort((a, b) => a.estimate - b.estimate);
@@ -2280,20 +2280,20 @@ function applyFilters() {
     const isDefault = (year === '2026' && month === 'all' && project === 'all' && group === 'all' && receivableFilter === 'all' && sortOrder === 'none');
     let sumEst, sumRec, sumRecv;
     if (isDefault) {
-        sumEst = DATA.summary.totalEstimate;
+        sumEst = DATA.summary.totalRevenue;
         sumRec = DATA.summary.totalReceived;
         sumRecv = DATA.summary.totalReceivable;
     } else if (year === 'all' && month === 'all' && project === 'all' && group === 'all' && receivableFilter === 'all' && sortOrder === 'none') {
         // 全部年份：收入回款用2026年，应收款加总历史
-        sumEst = DATA.summary.totalEstimate;
+        sumEst = DATA.summary.totalRevenue;
         sumRec = DATA.summary.totalReceived;
-        sumRecv = DATA.summary.totalReceivable + DATA.yearData.before2026.receivable;
+        sumRecv = DATA.summary.totalReceivable + (DATA.historicalReceivable ? (DATA.historicalReceivable['2024'] + DATA.historicalReceivable['2025']) : 314690);
     } else {
         sumEst = filtered.reduce((s, r) => s + r.estimate, 0);
         sumRec = filtered.reduce((s, r) => s + r.received, 0);
         sumRecv = filtered.reduce((s, r) => s + r.receivable, 0);
         if (year === 'all') {
-            sumRecv += DATA.yearData.before2026.receivable;
+            sumRecv += (DATA.historicalReceivable ? (DATA.historicalReceivable['2024'] + DATA.historicalReceivable['2025']) : 314690);
         }
     }
     document.getElementById('sumEstimate').innerHTML = (sumEst/10000).toFixed(2) + '<span class="unit">万元</span>';
@@ -2302,9 +2302,9 @@ function applyFilters() {
     document.getElementById('recordCount').textContent = '共 ' + filtered.length + ' 条记录';
     const tbody = document.getElementById('financeTableBody');
     let rowsHtml = filtered.map(row => {
-        const inv = row.invoice || '-';
+        const inv = '-';
         return '<tr>' +
-            '<td>' + row.name + '</td>' +
+            '<td>' + row.project + '</td>' +
             '<td>' + row.group + '</td>' +
             '<td>' + row.month + '</td>' +
             '<td class="num">' + row.estimate.toLocaleString('zh-CN', {minimumFractionDigits:2}) + '</td>' +
