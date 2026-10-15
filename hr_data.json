@@ -23817,8 +23817,8 @@
       "10",
       "12",
       "0.0",
-      "0",
-      "/"
+      "/",
+      "0"
     ],
     "emp_types": [
       "兼职",
@@ -26010,14 +26010,14 @@
         "group": "A组",
         "month": "8月",
         "headcount": 11,
-        "income": 127661.0,
+        "income": 130103.21,
         "direct_cost": 80096.04,
         "content_share": 11905.41,
         "mgmt_share": 6383.76,
         "manager_share": 19495.41,
         "total_cost": 117880.62,
-        "cost_ratio": 92.34,
-        "profit": 9780.38,
+        "cost_ratio": 90.61,
+        "profit": 12222.59,
         "labor_total": 117880.62
       },
       "1011": {
@@ -26154,14 +26154,14 @@
         "group": "传媒",
         "month": "8月",
         "headcount": 9,
-        "income": 4878.9,
+        "income": 4662.9,
         "direct_cost": 55360.67,
         "content_share": 8228.77,
         "mgmt_share": 4412.32,
         "manager_share": 13474.81,
         "total_cost": 81476.57,
-        "cost_ratio": 1669.98,
-        "profit": -76597.67,
+        "cost_ratio": 1747.34,
+        "profit": -76813.67,
         "labor_total": 81476.57
       },
       "1018": {
