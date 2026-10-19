@@ -904,7 +904,7 @@ body {
         <div class="filter-item">
             <label>月份</label>
             <select id="filterMonth">
-                <option value="all">全部月份</option><option value="1月">1月</option><option value="2月">2月</option><option value="3月">3月</option><option value="4月">4月</option><option value="5月">5月</option><option value="6月">6月</option><option value="7月">7月</option><option value="8月">8月</option>
+                <option value="all">全部月份</option><option value="1月">1月</option><option value="2月">2月</option><option value="3月">3月</option><option value="4月">4月</option><option value="5月">5月</option><option value="6月">6月</option><option value="7月">7月</option><option value="8月">8月</option><option value="9月">9月</option>
             </select>
         </div>
         <div class="filter-item">
@@ -3024,6 +3024,69 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
     });
 });
 
+// ========== 刷新数据 ==========
+async function refreshData() {
+    const overlay = document.getElementById('refreshOverlay');
+    const status = document.getElementById('refreshStatus');
+    const bar = document.getElementById('refreshBar');
+    const percent = document.getElementById('rsPercent');
+    if (!overlay || !status) return;
+    
+    overlay.style.display = 'block';
+    status.style.display = 'block';
+    bar.style.width = '0%';
+    percent.textContent = '0%';
+    
+    const steps = ['rs-step1', 'rs-step2', 'rs-step3', 'rs-step4'];
+    steps.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.textContent = '○ ' + el.textContent.replace(/^[○●✓]\s*/, ''); el.style.color = ''; }
+    });
+    
+    function setStep(idx, text) {
+        const el = document.getElementById(steps[idx]);
+        if (el) { el.textContent = '● ' + text; el.style.color = '#4fc3f7'; }
+        bar.style.width = ((idx + 1) * 25) + '%';
+        percent.textContent = ((idx + 1) * 25) + '%';
+    }
+    function doneStep(idx) {
+        const el = document.getElementById(steps[idx]);
+        if (el) { el.textContent = '✓ ' + el.textContent.replace(/^[○●]\s*/, ''); el.style.color = '#66bb6a'; }
+    }
+    
+    try {
+        setStep(0, '连接数据服务器');
+        await new Promise(r => setTimeout(r, 300));
+        doneStep(0);
+        
+        setStep(1, '读取最新经营数据');
+        const ok = await loadData();
+        await loadAnalysisData();
+        await new Promise(r => setTimeout(r, 300));
+        doneStep(1);
+        
+        setStep(2, '计算汇总指标');
+        await new Promise(r => setTimeout(r, 200));
+        doneStep(2);
+        
+        setStep(3, '更新页面数据');
+        renderFinance();
+        const activePage = document.querySelector('.page-container.active');
+        if (activePage && activePage.id === 'page-analysis') {
+            renderAnalysis();
+        }
+        await new Promise(r => setTimeout(r, 200));
+        doneStep(3);
+        
+        await new Promise(r => setTimeout(r, 400));
+    } catch (e) {
+        console.error('刷新失败:', e);
+        alert('数据刷新失败：' + e.message);
+    } finally {
+        overlay.style.display = 'none';
+        status.style.display = 'none';
+    }
+}
 // ========== 初始化 ==========
 document.addEventListener('DOMContentLoaded', function() {
     // 财务查询筛选事件
