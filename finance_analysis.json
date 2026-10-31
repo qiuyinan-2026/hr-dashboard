@@ -1,6 +1,6 @@
 {
-  "updateTime": "2026-09-28 15:35:33",
-  "dataPeriod": "2026年1月 — 8月",
+  "updateTime": "2026-10-31 19:05:00",
+  "dataPeriod": "2026年1月 — 9月",
   "months": [
     "1月",
     "2月",
@@ -9,7 +9,8 @@
     "5月",
     "6月",
     "7月",
-    "8月"
+    "8月",
+    "9月"
   ],
   "sectors": {
     "集团总计": {
@@ -201,6 +202,30 @@
           "3.6 办公费": 29114.18,
           "3.7 直播及道具采购": 1156.56,
           "3.8 其他费用": 5364.76
+        },
+        "sales_breakdown": {},
+        "financial_breakdown": {}
+      },
+      "9月": {
+        "revenue": 1307200.9,
+        "total_cost": 1389483.02,
+        "main_business_cost": 97818.44,
+        "labor_cost": 872179.84,
+        "mgmt_fee": 187034.23,
+        "sales_fee": 63846.36,
+        "financial_fee": 16458.05,
+        "business_tax": 45779.55,
+        "non_operating": 43355.78,
+        "net_profit": -82282.12,
+        "mgmt_breakdown": {
+          "3.1 设备采购": 18000.0,
+          "3.2 差旅费用": 1354.6,
+          "3.3 招待费用": 19191.79,
+          "3.4 房租水电装修": 81433.59,
+          "3.5 福利及补贴": 17910.3,
+          "3.6 办公费": 36880.55,
+          "3.7 直播及道具采购": 2998.64,
+          "3.8 其他费用": 9264.76
         },
         "sales_breakdown": {},
         "financial_breakdown": {}
@@ -454,6 +479,30 @@
         "business_tax": 47235.22,
         "non_operating": 0.0,
         "net_profit": 52304.26
+      },
+      "9月": {
+        "revenue": 1122644.0,
+        "total_cost": 1212554.21,
+        "main_business_cost": 74280.0,
+        "labor_cost": 791513.24,
+        "mgmt_fee": 177321.23,
+        "sales_fee": 63846.36,
+        "financial_fee": 16458.05,
+        "business_tax": 45779.55,
+        "non_operating": 43355.78,
+        "net_profit": -89910.21,
+        "mgmt_breakdown": {
+          "3.1 设备采购": 18000.0,
+          "3.2 差旅费用": 1354.6,
+          "3.3 招待费用": 18153.79,
+          "3.4 房租水电装修": 72758.59,
+          "3.5 福利及补贴": 17910.3,
+          "3.6 办公费": 36880.55,
+          "3.7 直播及道具采购": 2998.64,
+          "3.8 其他费用": 9264.76
+        },
+        "sales_breakdown": {},
+        "financial_breakdown": {}
       }
     },
     "传媒板块": {
@@ -696,6 +745,30 @@
         "business_tax": 0.0,
         "non_operating": 0.0,
         "net_profit": 21732.38
+      },
+      "9月": {
+        "revenue": 110000.0,
+        "total_cost": 81189.92,
+        "main_business_cost": 0.0,
+        "labor_cost": 31735.92,
+        "mgmt_fee": 9454.0,
+        "sales_fee": 40000.0,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "non_operating": 0.0,
+        "net_profit": 28810.08,
+        "mgmt_breakdown": {
+          "3.1 设备采购": 18000.0,
+          "3.2 差旅费用": 1354.6,
+          "3.3 招待费用": 18153.79,
+          "3.4 房租水电装修": 72758.59,
+          "3.5 福利及补贴": 17910.3,
+          "3.6 办公费": 36880.55,
+          "3.7 直播及道具采购": 2998.64,
+          "3.8 其他费用": 9264.76
+        },
+        "sales_breakdown": {},
+        "financial_breakdown": {}
       }
     },
     "私域板块": {
@@ -938,45 +1011,69 @@
         "business_tax": 0.0,
         "non_operating": 0.0,
         "net_profit": -19142.41
+      },
+      "9月": {
+        "revenue": 74556.9,
+        "total_cost": 95738.88,
+        "main_business_cost": 23538.44,
+        "labor_cost": 48930.67,
+        "mgmt_fee": 259.0,
+        "sales_fee": 23010.77,
+        "financial_fee": 0.0,
+        "business_tax": 0.0,
+        "non_operating": 0.0,
+        "net_profit": -21181.98,
+        "mgmt_breakdown": {
+          "3.1 设备采购": 18000.0,
+          "3.2 差旅费用": 1354.6,
+          "3.3 招待费用": 18153.79,
+          "3.4 房租水电装修": 72758.59,
+          "3.5 福利及补贴": 17910.3,
+          "3.6 办公费": 36880.55,
+          "3.7 直播及道具采购": 2998.64,
+          "3.8 其他费用": 9264.76
+        },
+        "sales_breakdown": {},
+        "financial_breakdown": {}
       }
     }
   },
   "annual_summary": {
     "集团总计": {
-      "total_revenue": 9723141.53,
-      "total_revenue_wan": 972.31,
-      "total_cost": 10291299.83,
-      "total_cost_wan": 1029.13,
-      "total_profit": -568158.3,
-      "total_profit_wan": -56.82,
-      "profit_margin": -5.84
+      "total_revenue": 11030342.43,
+      "total_revenue_wan": 1103.03,
+      "total_cost": 11680782.85,
+      "total_cost_wan": 1168.08,
+      "total_profit": -650440.42,
+      "total_profit_wan": -65.04,
+      "profit_margin": -5.9
     },
     "代运营板块": {
-      "total_revenue": 9016667.84,
-      "total_revenue_wan": 901.67,
-      "total_cost": 9187383.74,
-      "total_cost_wan": 918.74,
-      "total_profit": -170715.9,
-      "total_profit_wan": -17.07,
-      "profit_margin": -1.89
+      "total_revenue": 10139311.84,
+      "total_revenue_wan": 1013.93,
+      "total_cost": 10399937.95,
+      "total_cost_wan": 1039.99,
+      "total_profit": -260626.11,
+      "total_profit_wan": -26.06,
+      "profit_margin": -2.57
     },
     "传媒板块": {
-      "total_revenue": 331714.93,
-      "total_revenue_wan": 33.17,
-      "total_cost": 498405.39,
-      "total_cost_wan": 49.84,
-      "total_profit": -166690.46,
-      "total_profit_wan": -16.67,
-      "profit_margin": -50.25
+      "total_revenue": 441714.93,
+      "total_revenue_wan": 44.17,
+      "total_cost": 579595.31,
+      "total_cost_wan": 57.96,
+      "total_profit": -137880.38,
+      "total_profit_wan": -13.79,
+      "profit_margin": -31.21
     },
     "私域板块": {
-      "total_revenue": 298764.4,
-      "total_revenue_wan": 29.88,
-      "total_cost": 380582.54,
-      "total_cost_wan": 38.06,
-      "total_profit": -81818.14,
-      "total_profit_wan": -8.18,
-      "profit_margin": -27.39
+      "total_revenue": 373321.3,
+      "total_revenue_wan": 37.33,
+      "total_cost": 476321.42,
+      "total_cost_wan": 47.63,
+      "total_profit": -103000.12,
+      "total_profit_wan": -10.3,
+      "profit_margin": -27.59
     }
   },
   "headcount": {
@@ -1043,6 +1140,14 @@
       "管理支撑": 11,
       "其他": 0,
       "集团总计": 119
+    },
+    "9月": {
+      "代运营板块": 90,
+      "传媒板块": 5,
+      "私域板块": 8,
+      "管理支撑": 12,
+      "其他": 0,
+      "集团总计": 115
     }
   },
   "sector_list": [
