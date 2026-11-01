@@ -2320,12 +2320,16 @@ function renderAnalysis() {
       sumSales += sd.sales_fee || 0;
       sumFinancial += sd.financial_fee || 0;
       sumTax += sd.business_tax || 0;
-      sumNonOp += ec.non_operating?.[m] || 0;
+      sumNonOp += sd.non_operating || 0;
     });
     sumTotalCost = sumLabor + sumMainBiz + sumMgmt + sumSales + sumFinancial + sumTax + sumNonOp;
     sumProfit = sumIncome - sumTotalCost;
-    sumQianchuan = _analysisMonths.reduce((s, m) => s + (ec.qianchuan['1003']?.[m] || 0) + (ec.qianchuan['1008']?.[m] || 0), 0);
-    sumMgmtAlloc = _analysisRows.reduce((s, r) => s + (r.mgmt_fee_alloc || 0), 0);
+    sumQianchuan = _analysisSector === 'daiyunying'
+      ? _analysisMonths.reduce((s, m) => s + (ec.qianchuan['1003']?.[m] || 0) + (ec.qianchuan['1008']?.[m] || 0), 0)
+      : _analysisMonths.reduce((s, m) => s + ((sectorData[m] || {}).sales_fee || 0), 0);
+    sumMgmtAlloc = _analysisSector === 'daiyunying'
+      ? _analysisRows.reduce((s, r) => s + (r.mgmt_fee_alloc || 0), 0)
+      : _analysisMonths.reduce((s, m) => s + ((sectorData[m] || {}).mgmt_fee || 0), 0);
   }
 
   const projLabel = project === 'all' ? '全部项目' : (_analysisRows[0]?.project_name || '');
@@ -2336,7 +2340,7 @@ function renderAnalysis() {
     '<div class="analysis-card income"><div class="ac-label">项目收入</div><div class="ac-value">¥' + fmt(sumIncome) + '</div><div class="ac-sub">' + _analysisMonths[0] + '-' + _analysisMonths[_analysisMonths.length-1] + (isSingleProject ? ' ' + projLabel : ' ' + getSectorName(_analysisSector) + ' ' + projLabel) + '</div></div>' +
     '<div class="analysis-card cost"><div class="ac-label">人工成本</div><div class="ac-value">¥' + fmt(sumLabor) + '</div><div class="ac-sub">' + (isSingleProject ? '直接+分摊' : '取自财务表格') + '</div></div>' +
     '<div class="analysis-card cost"><div class="ac-label">主营业务成本</div><div class="ac-value">¥' + fmt(sumMainBiz) + '</div></div>' +
-    '<div class="analysis-card cost"><div class="ac-label">千川投放</div><div class="ac-value">¥' + fmt(sumQianchuan) + '</div><div class="ac-sub">1003+1008</div></div>' +
+    '<div class="analysis-card cost"><div class="ac-label">千川投放</div><div class="ac-value">¥' + fmt(sumQianchuan) + '</div><div class="ac-sub">' + (_analysisSector === 'daiyunying' ? '1003+1008' : getSectorName(_analysisSector)) + '</div></div>' +
     '<div class="analysis-card cost"><div class="ac-label">管理费用分摊</div><div class="ac-value">¥' + fmt(sumMgmtAlloc) + '</div></div>' +
     '<div class="analysis-card cost"><div class="ac-label">总成本</div><div class="ac-value">¥' + fmt(sumTotalCost) + '</div></div>' +
     '<div class="analysis-card profit ' + (sumProfit >= 0 ? '' : 'negative') + '"><div class="ac-label">净利润</div><div class="ac-value">¥' + fmt(sumProfit) + '</div></div>' +
