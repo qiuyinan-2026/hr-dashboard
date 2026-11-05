@@ -1,26 +1,26 @@
 {
-  "updateTime": "2026-10-31 18:55:07",
+  "updateTime": "2026-11-05 10:27:19",
   "dataPeriod": "2026年1月 — 9月",
   "currentMonth": 9,
   "annualTarget": 20000000,
   "summary": {
-    "totalRevenue": 10946457.129999999,
-    "totalReceived": 9578677.65,
-    "totalReceivable": 1367779.4799999986,
-    "overdueAmount": 273991.9,
+    "totalRevenue": 10970834.78,
+    "totalReceived": 9771654.91,
+    "totalReceivable": 1199179.8699999992,
+    "overdueAmount": 219360.58000000002,
     "remainingMonths": 3,
-    "remainingTarget": 9053542.870000001,
-    "monthlyTarget": 3017847.6233333335,
-    "receivedRate": 0.8750482038383501,
-    "receivableRate": 0.12495179616164986,
-    "targetProgress": 0.5473228564999999,
+    "remainingTarget": 9029165.22,
+    "monthlyTarget": 3009721.74,
+    "receivedRate": 0.8906938356061909,
+    "receivableRate": 0.10930616439380916,
+    "targetProgress": 0.5485417389999999,
     "projectCount": 32
   },
   "currentMonthData": {
-    "estimate": 1276863.89,
-    "received": 504960.33,
-    "receivable": 771903.5599999998,
-    "rate": 0.39546919131686
+    "estimate": 1301241.54,
+    "received": 582872.67,
+    "receivable": 718368.87,
+    "rate": 0.44793579983620874
   },
   "filterOptions": {
     "months": [
@@ -292,9 +292,9 @@
       "project": "抖音超市美妆",
       "group": "",
       "month": "9月",
-      "estimate": 130000.0,
+      "estimate": 154377.65,
       "received": 0.0,
-      "receivable": 130000.0
+      "receivable": 154377.65
     },
     {
       "project": "抖超箱包",
@@ -445,32 +445,32 @@
       "group": "B组",
       "month": "7月",
       "estimate": 45765.82,
-      "received": 0.0,
-      "receivable": 45765.82
+      "received": 45765.82,
+      "receivable": 0.0
     },
     {
       "project": "古井快&视",
       "group": "B组",
       "month": "8月",
       "estimate": 48709.0,
-      "received": 0.0,
-      "receivable": 48709.0
+      "received": 48709.0,
+      "receivable": 0.0
     },
     {
       "project": "古井快&视",
       "group": "B组",
       "month": "9月",
       "estimate": 59780.09,
-      "received": 0.0,
-      "receivable": 59780.09
+      "received": 59780.09,
+      "receivable": 0.0
     },
     {
       "project": "古井抖音",
       "group": "",
       "month": "9月",
       "estimate": 2704.8,
-      "received": 0.0,
-      "receivable": 2704.8
+      "received": 2704.8,
+      "receivable": 0.0
     },
     {
       "project": "桂格官旗",
@@ -949,16 +949,16 @@
       "group": "传媒",
       "month": "7月",
       "estimate": 8865.5,
-      "received": 0.0,
-      "receivable": 8865.5
+      "received": 8865.5,
+      "receivable": 0.0
     },
     {
       "project": "古井（达）",
       "group": "传媒",
       "month": "8月",
       "estimate": 55418.5,
-      "received": 0.0,
-      "receivable": 55418.5
+      "received": 11724.6,
+      "receivable": 43693.9
     },
     {
       "project": "古井（达）",
@@ -1164,9 +1164,9 @@
       "project": "阴山优麦",
       "group": "私域",
       "month": "9月",
-      "estimate": 15427.5,
-      "received": 0.0,
-      "receivable": 15427.5
+      "estimate": 15427.45,
+      "received": 15427.45,
+      "receivable": 0.0
     },
     {
       "project": "南方黑芝麻（私）",
@@ -1346,11 +1346,11 @@
       "name": "抖音超市美妆",
       "group": "",
       "code": "1003",
-      "total_revenue": 969779.13,
+      "total_revenue": 994156.78,
       "total_received": 839779.13,
-      "receivable": 130000.0,
+      "receivable": 154377.65000000002,
       "active_months": 9,
-      "monthly_avg": 107753.23666666666
+      "monthly_avg": 110461.86444444445
     },
     {
       "name": "南方黑芝麻-1",
@@ -1387,8 +1387,8 @@
       "group": "B组",
       "code": "1008",
       "total_revenue": 598599.11,
-      "total_received": 444344.2,
-      "receivable": 154254.90999999997,
+      "total_received": 598599.11,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 66511.01222222223
     },
@@ -1407,8 +1407,8 @@
       "group": "传媒",
       "code": "1019",
       "total_revenue": 299160.04,
-      "total_received": 188569.94,
-      "receivable": 110590.09999999998,
+      "total_received": 209160.03999999998,
+      "receivable": 90000.0,
       "active_months": 9,
       "monthly_avg": 33240.00444444444
     },
@@ -1466,11 +1466,11 @@
       "name": "阴山优麦",
       "group": "私域",
       "code": "1024",
-      "total_revenue": 125941.47,
-      "total_received": 110513.97,
-      "receivable": 15427.5,
+      "total_revenue": 125941.42,
+      "total_received": 125941.42,
+      "receivable": 0.0,
       "active_months": 9,
-      "monthly_avg": 13993.496666666666
+      "monthly_avg": 13993.49111111111
     },
     {
       "name": "素颜霜",
@@ -1637,8 +1637,8 @@
       "group": "",
       "code": "",
       "total_revenue": 2704.8,
-      "total_received": 0.0,
-      "receivable": 2704.8,
+      "total_received": 2704.8,
+      "receivable": 0.0,
       "active_months": 1,
       "monthly_avg": 2704.8
     }
@@ -1678,11 +1678,11 @@
       "name": "抖音超市美妆",
       "group": "",
       "code": "1003",
-      "total_revenue": 969779.13,
+      "total_revenue": 994156.78,
       "total_received": 839779.13,
-      "receivable": 130000.0,
+      "receivable": 154377.65000000002,
       "active_months": 9,
-      "monthly_avg": 107753.23666666666
+      "monthly_avg": 110461.86444444445
     },
     {
       "name": "南方黑芝麻-1",
@@ -1709,8 +1709,8 @@
       "group": "B组",
       "code": "1008",
       "total_revenue": 598599.11,
-      "total_received": 444344.2,
-      "receivable": 154254.90999999997,
+      "total_received": 598599.11,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 66511.01222222223
     },
@@ -1789,8 +1789,8 @@
       "group": "传媒",
       "code": "1019",
       "total_revenue": 299160.04,
-      "total_received": 188569.94,
-      "receivable": 110590.09999999998,
+      "total_received": 209160.03999999998,
+      "receivable": 90000.0,
       "active_months": 9,
       "monthly_avg": 33240.00444444444
     },
@@ -1868,11 +1868,11 @@
       "name": "阴山优麦",
       "group": "私域",
       "code": "1024",
-      "total_revenue": 125941.47,
-      "total_received": 110513.97,
-      "receivable": 15427.5,
+      "total_revenue": 125941.42,
+      "total_received": 125941.42,
+      "receivable": 0.0,
       "active_months": 9,
-      "monthly_avg": 13993.496666666666
+      "monthly_avg": 13993.49111111111
     },
     {
       "name": "DAVIDGARCE男装",
@@ -1959,8 +1959,8 @@
       "group": "",
       "code": "",
       "total_revenue": 2704.8,
-      "total_received": 0.0,
-      "receivable": 2704.8,
+      "total_received": 2704.8,
+      "receivable": 0.0,
       "active_months": 1,
       "monthly_avg": 2704.8
     }
@@ -1987,24 +1987,14 @@
       "monthly_avg": 269922.72444444447
     },
     {
-      "name": "古井快&视",
-      "group": "B组",
-      "code": "1008",
-      "total_revenue": 598599.11,
-      "total_received": 444344.2,
-      "receivable": 154254.90999999997,
-      "active_months": 9,
-      "monthly_avg": 66511.01222222223
-    },
-    {
       "name": "抖音超市美妆",
       "group": "",
       "code": "1003",
-      "total_revenue": 969779.13,
+      "total_revenue": 994156.78,
       "total_received": 839779.13,
-      "receivable": 130000.0,
+      "receivable": 154377.65000000002,
       "active_months": 9,
-      "monthly_avg": 107753.23666666666
+      "monthly_avg": 110461.86444444445
     },
     {
       "name": "旺旺",
@@ -2021,8 +2011,8 @@
       "group": "传媒",
       "code": "1019",
       "total_revenue": 299160.04,
-      "total_received": 188569.94,
-      "receivable": 110590.09999999998,
+      "total_received": 209160.03999999998,
+      "receivable": 90000.0,
       "active_months": 9,
       "monthly_avg": 33240.00444444444
     },
@@ -2057,16 +2047,6 @@
       "monthly_avg": 32556.9
     },
     {
-      "name": "阴山优麦",
-      "group": "私域",
-      "code": "1024",
-      "total_revenue": 125941.47,
-      "total_received": 110513.97,
-      "receivable": 15427.5,
-      "active_months": 9,
-      "monthly_avg": 13993.496666666666
-    },
-    {
       "name": "上海赢内 （KOC）",
       "group": "",
       "code": "1081",
@@ -2095,16 +2075,6 @@
       "receivable": 4840.31,
       "active_months": 1,
       "monthly_avg": 4840.31
-    },
-    {
-      "name": "古井抖音",
-      "group": "",
-      "code": "",
-      "total_revenue": 2704.8,
-      "total_received": 0.0,
-      "receivable": 2704.8,
-      "active_months": 1,
-      "monthly_avg": 2704.8
     },
     {
       "name": "拓趣（沐浴油）",
@@ -2147,6 +2117,16 @@
       "monthly_avg": 102507.47555555556
     },
     {
+      "name": "古井快&视",
+      "group": "B组",
+      "code": "1008",
+      "total_revenue": 598599.11,
+      "total_received": 598599.11,
+      "receivable": 0.0,
+      "active_months": 9,
+      "monthly_avg": 66511.01222222223
+    },
+    {
       "name": "南方黑芝麻（私）",
       "group": "",
       "code": "1025",
@@ -2185,6 +2165,16 @@
       "receivable": 0.0,
       "active_months": 7,
       "monthly_avg": 27033.859999999997
+    },
+    {
+      "name": "阴山优麦",
+      "group": "私域",
+      "code": "1024",
+      "total_revenue": 125941.42,
+      "total_received": 125941.42,
+      "receivable": 0.0,
+      "active_months": 9,
+      "monthly_avg": 13993.49111111111
     },
     {
       "name": "素颜霜",
@@ -2285,6 +2275,16 @@
       "receivable": 0.0,
       "active_months": 1,
       "monthly_avg": 3893.46
+    },
+    {
+      "name": "古井抖音",
+      "group": "",
+      "code": "",
+      "total_revenue": 2704.8,
+      "total_received": 2704.8,
+      "receivable": 0.0,
+      "active_months": 1,
+      "monthly_avg": 2704.8
     }
   ],
   "projectsByDuration": [
@@ -2312,11 +2312,11 @@
       "name": "抖音超市美妆",
       "group": "",
       "code": "1003",
-      "total_revenue": 969779.13,
+      "total_revenue": 994156.78,
       "total_received": 839779.13,
-      "receivable": 130000.0,
+      "receivable": 154377.65000000002,
       "active_months": 9,
-      "monthly_avg": 107753.23666666666
+      "monthly_avg": 110461.86444444445
     },
     {
       "name": "南方黑芝麻-1",
@@ -2343,8 +2343,8 @@
       "group": "B组",
       "code": "1008",
       "total_revenue": 598599.11,
-      "total_received": 444344.2,
-      "receivable": 154254.90999999997,
+      "total_received": 598599.11,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 66511.01222222223
     },
@@ -2363,8 +2363,8 @@
       "group": "传媒",
       "code": "1019",
       "total_revenue": 299160.04,
-      "total_received": 188569.94,
-      "receivable": 110590.09999999998,
+      "total_received": 209160.03999999998,
+      "receivable": 90000.0,
       "active_months": 9,
       "monthly_avg": 33240.00444444444
     },
@@ -2382,11 +2382,11 @@
       "name": "阴山优麦",
       "group": "私域",
       "code": "1024",
-      "total_revenue": 125941.47,
-      "total_received": 110513.97,
-      "receivable": 15427.5,
+      "total_revenue": 125941.42,
+      "total_received": 125941.42,
+      "receivable": 0.0,
       "active_months": 9,
-      "monthly_avg": 13993.496666666666
+      "monthly_avg": 13993.49111111111
     },
     {
       "name": "营业外收入",
@@ -2603,8 +2603,8 @@
       "group": "",
       "code": "",
       "total_revenue": 2704.8,
-      "total_received": 0.0,
-      "receivable": 2704.8,
+      "total_received": 2704.8,
+      "receivable": 0.0,
       "active_months": 1,
       "monthly_avg": 2704.8
     }
@@ -2649,20 +2649,20 @@
     {
       "month": "7月",
       "estimate": 1181081.16,
-      "received": 1023080.64,
-      "receivable": 158000.5199999999
+      "received": 1077711.96,
+      "receivable": 103369.19999999995
     },
     {
       "month": "8月",
       "estimate": 1343155.99,
-      "received": 1021271.96,
-      "receivable": 321884.03
+      "received": 1081705.56,
+      "receivable": 261450.42999999993
     },
     {
       "month": "9月",
-      "estimate": 1276863.89,
-      "received": 504960.33,
-      "receivable": 771903.5599999998
+      "estimate": 1301241.54,
+      "received": 582872.67,
+      "receivable": 718368.87
     }
   ],
   "monthlyReceivableDetail": {
@@ -2693,16 +2693,8 @@
         "amount": 65184.83
       },
       {
-        "project": "古井快&视",
-        "amount": 45765.82
-      },
-      {
         "project": "养舒悠2",
         "amount": 38184.38
-      },
-      {
-        "project": "古井（达）",
-        "amount": 8865.5
       }
     ],
     "8月": [
@@ -2712,11 +2704,7 @@
       },
       {
         "project": "古井（达）",
-        "amount": 55418.5
-      },
-      {
-        "project": "古井快&视",
-        "amount": 48709.0
+        "amount": 43693.9
       },
       {
         "project": "养舒悠2",
@@ -2738,7 +2726,7 @@
       },
       {
         "project": "抖音超市美妆",
-        "amount": 130000.0
+        "amount": 154377.65
       },
       {
         "project": "养舒悠1",
@@ -2749,10 +2737,6 @@
         "amount": 60153.43
       },
       {
-        "project": "古井快&视",
-        "amount": 59780.09
-      },
-      {
         "project": "古井（达）",
         "amount": 46306.1
       },
@@ -2761,20 +2745,12 @@
         "amount": 32556.9
       },
       {
-        "project": "阴山优麦",
-        "amount": 15427.5
-      },
-      {
         "project": "拓趣（护手霜）",
         "amount": 5667.480000000003
       },
       {
         "project": "校企项目",
         "amount": 4840.31
-      },
-      {
-        "project": "古井抖音",
-        "amount": 2704.8
       }
     ]
   },
