@@ -1,26 +1,26 @@
 {
-  "updateTime": "2026-11-05 10:27:19",
+  "updateTime": "2026-11-15 10:03:50",
   "dataPeriod": "2026年1月 — 9月",
   "currentMonth": 9,
   "annualTarget": 20000000,
   "summary": {
-    "totalRevenue": 10970834.78,
-    "totalReceived": 9771654.91,
-    "totalReceivable": 1199179.8699999992,
-    "overdueAmount": 219360.58000000002,
+    "totalRevenue": 10958584.92,
+    "totalReceived": 10458938.01,
+    "totalReceivable": 499646.91000000015,
+    "overdueAmount": 15184.829999999987,
     "remainingMonths": 3,
-    "remainingTarget": 9029165.22,
-    "monthlyTarget": 3009721.74,
-    "receivedRate": 0.8906938356061909,
-    "receivableRate": 0.10930616439380916,
-    "targetProgress": 0.5485417389999999,
+    "remainingTarget": 9041415.08,
+    "monthlyTarget": 3013805.026666667,
+    "receivedRate": 0.9544058914862157,
+    "receivableRate": 0.045594108513784294,
+    "targetProgress": 0.547929246,
     "projectCount": 32
   },
   "currentMonthData": {
-    "estimate": 1301241.54,
-    "received": 582872.67,
-    "receivable": 718368.87,
-    "rate": 0.44793579983620874
+    "estimate": 1302330.49,
+    "received": 1008440.1,
+    "receivable": 293890.39,
+    "rate": 0.7743350153769339
   },
   "filterOptions": {
     "months": [
@@ -149,8 +149,8 @@
       "group": "A组",
       "month": "9月",
       "estimate": 312351.47,
-      "received": 0.0,
-      "receivable": 312351.47
+      "received": 312351.47,
+      "receivable": 0.0
     },
     {
       "project": "阴山优麦食品",
@@ -221,8 +221,8 @@
       "group": "",
       "month": "9月",
       "estimate": 60153.43,
-      "received": 0.0,
-      "receivable": 60153.43
+      "received": 60153.43,
+      "receivable": 0.0
     },
     {
       "project": "抖音超市美妆",
@@ -645,16 +645,16 @@
       "group": "",
       "month": "1月",
       "estimate": 73711.92,
-      "received": 0.0,
-      "receivable": 73711.92
+      "received": 73711.92,
+      "receivable": 0.0
     },
     {
       "project": "旺旺",
       "group": "",
       "month": "2月",
       "estimate": 40940.64,
-      "received": 0.0,
-      "receivable": 40940.64
+      "received": 40940.64,
+      "receivable": 0.0
     },
     {
       "project": "旺旺",
@@ -725,8 +725,8 @@
       "group": "",
       "month": "7月",
       "estimate": 162285.09,
-      "received": 97100.26,
-      "receivable": 65184.83
+      "received": 147100.26,
+      "receivable": 15184.829999999987
     },
     {
       "project": "养舒悠1",
@@ -749,8 +749,8 @@
       "group": "",
       "month": "7月",
       "estimate": 38184.38,
-      "received": 0.0,
-      "receivable": 38184.38
+      "received": 53369.21,
+      "receivable": -15184.830000000002
     },
     {
       "project": "养舒悠2",
@@ -804,9 +804,9 @@
       "project": "拓趣（沐浴油）",
       "group": "",
       "month": "4月",
-      "estimate": 31338.81,
+      "estimate": 30000.0,
       "received": 30000.0,
-      "receivable": 1338.8100000000013
+      "receivable": 0.0
     },
     {
       "project": "拓趣（沐浴油）",
@@ -893,8 +893,8 @@
       "group": "",
       "month": "9月",
       "estimate": 50667.48,
-      "received": 45000.0,
-      "receivable": 5667.480000000003
+      "received": 50667.48,
+      "receivable": 0.0
     },
     {
       "project": "古井（达）",
@@ -957,16 +957,16 @@
       "group": "传媒",
       "month": "8月",
       "estimate": 55418.5,
-      "received": 11724.6,
-      "receivable": 43693.9
+      "received": 55418.5,
+      "receivable": 0.0
     },
     {
       "project": "古井（达）",
       "group": "传媒",
       "month": "9月",
       "estimate": 46306.1,
-      "received": 0.0,
-      "receivable": 46306.1
+      "received": 46306.1,
+      "receivable": 0.0
     },
     {
       "project": "阴山优麦（达）",
@@ -1006,6 +1006,14 @@
       "month": "8月",
       "estimate": 4662.9,
       "received": 4662.9,
+      "receivable": 0.0
+    },
+    {
+      "project": "阴山优麦（达）",
+      "group": "",
+      "month": "9月",
+      "estimate": 1088.95,
+      "received": 1088.95,
       "receivable": 0.0
     },
     {
@@ -1071,14 +1079,6 @@
       "estimate": 3893.46,
       "received": 3893.46,
       "receivable": 0.0
-    },
-    {
-      "project": "上海赢内 （KOC）",
-      "group": "",
-      "month": "8月",
-      "estimate": 12000.0,
-      "received": 0.0,
-      "receivable": 12000.0
     },
     {
       "project": "上海赢内 （KOC）",
@@ -1327,8 +1327,8 @@
       "group": "A组",
       "code": "1001",
       "total_revenue": 2429304.52,
-      "total_received": 2116953.05,
-      "receivable": 312351.4700000002,
+      "total_received": 2429304.52,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 269922.72444444447
     },
@@ -1367,8 +1367,8 @@
       "group": "",
       "code": "1014",
       "total_revenue": 875905.38,
-      "total_received": 543262.85,
-      "receivable": 332642.53,
+      "total_received": 593262.85,
+      "receivable": 282642.53,
       "active_months": 6,
       "monthly_avg": 145984.23
     },
@@ -1377,8 +1377,8 @@
       "group": "",
       "code": "1002",
       "total_revenue": 786110.8,
-      "total_received": 725957.37,
-      "receivable": 60153.43000000005,
+      "total_received": 786110.8,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 87345.64444444445
     },
@@ -1397,8 +1397,8 @@
       "group": "",
       "code": "1018",
       "total_revenue": 507252.14,
-      "total_received": 501584.66000000003,
-      "receivable": 5667.479999999981,
+      "total_received": 507252.14,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 56361.34888888889
     },
@@ -1407,8 +1407,8 @@
       "group": "传媒",
       "code": "1019",
       "total_revenue": 299160.04,
-      "total_received": 209160.03999999998,
-      "receivable": 90000.0,
+      "total_received": 299160.04,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 33240.00444444444
     },
@@ -1417,8 +1417,8 @@
       "group": "",
       "code": "1012",
       "total_revenue": 274774.39,
-      "total_received": 160121.83000000002,
-      "receivable": 114652.56,
+      "total_received": 274774.39,
+      "receivable": 0.0,
       "active_months": 5,
       "monthly_avg": 54954.878000000004
     },
@@ -1483,16 +1483,6 @@
       "monthly_avg": 19433.338
     },
     {
-      "name": "拓趣（沐浴油）",
-      "group": "",
-      "code": "1017",
-      "total_revenue": 91338.81,
-      "total_received": 90000.0,
-      "receivable": 1338.8099999999977,
-      "active_months": 3,
-      "monthly_avg": 30446.27
-    },
-    {
       "name": "蓝漂",
       "group": "",
       "code": "1007",
@@ -1501,6 +1491,16 @@
       "receivable": 0.0,
       "active_months": 3,
       "monthly_avg": 30357.296666666665
+    },
+    {
+      "name": "拓趣（沐浴油）",
+      "group": "",
+      "code": "1017",
+      "total_revenue": 90000.0,
+      "total_received": 90000.0,
+      "receivable": 0.0,
+      "active_months": 3,
+      "monthly_avg": 30000.0
     },
     {
       "name": "乐锦记",
@@ -1517,20 +1517,10 @@
       "group": "",
       "code": "1015",
       "total_revenue": 77898.75,
-      "total_received": 0.0,
-      "receivable": 77898.75,
+      "total_received": 53369.21,
+      "receivable": 24529.54,
       "active_months": 2,
       "monthly_avg": 38949.375
-    },
-    {
-      "name": "上海赢内 （KOC）",
-      "group": "",
-      "code": "1081",
-      "total_revenue": 62000.0,
-      "total_received": 50000.0,
-      "receivable": 12000.0,
-      "active_months": 2,
-      "monthly_avg": 31000.0
     },
     {
       "name": "追觅投影仪",
@@ -1543,14 +1533,24 @@
       "monthly_avg": 56403.32
     },
     {
+      "name": "上海赢内 （KOC）",
+      "group": "",
+      "code": "1081",
+      "total_revenue": 50000.0,
+      "total_received": 50000.0,
+      "receivable": 0.0,
+      "active_months": 1,
+      "monthly_avg": 50000.0
+    },
+    {
       "name": "阴山优麦（达）",
       "group": "",
       "code": "1020",
-      "total_revenue": 39742.6,
-      "total_received": 39742.6,
+      "total_revenue": 40831.55,
+      "total_received": 40831.55,
       "receivable": 0.0,
-      "active_months": 5,
-      "monthly_avg": 7948.5199999999995
+      "active_months": 6,
+      "monthly_avg": 6805.258333333334
     },
     {
       "name": "拼多多店群",
@@ -1649,8 +1649,8 @@
       "group": "A组",
       "code": "1001",
       "total_revenue": 2429304.52,
-      "total_received": 2116953.05,
-      "receivable": 312351.4700000002,
+      "total_received": 2429304.52,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 269922.72444444447
     },
@@ -1669,8 +1669,8 @@
       "group": "",
       "code": "1014",
       "total_revenue": 875905.38,
-      "total_received": 543262.85,
-      "receivable": 332642.53,
+      "total_received": 593262.85,
+      "receivable": 282642.53,
       "active_months": 6,
       "monthly_avg": 145984.23
     },
@@ -1699,8 +1699,8 @@
       "group": "",
       "code": "1002",
       "total_revenue": 786110.8,
-      "total_received": 725957.37,
-      "receivable": 60153.43000000005,
+      "total_received": 786110.8,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 87345.64444444445
     },
@@ -1739,8 +1739,8 @@
       "group": "",
       "code": "1018",
       "total_revenue": 507252.14,
-      "total_received": 501584.66000000003,
-      "receivable": 5667.479999999981,
+      "total_received": 507252.14,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 56361.34888888889
     },
@@ -1749,8 +1749,8 @@
       "group": "",
       "code": "1012",
       "total_revenue": 274774.39,
-      "total_received": 160121.83000000002,
-      "receivable": 114652.56,
+      "total_received": 274774.39,
+      "receivable": 0.0,
       "active_months": 5,
       "monthly_avg": 54954.878000000004
     },
@@ -1763,6 +1763,16 @@
       "receivable": 0.0,
       "active_months": 4,
       "monthly_avg": 50527.71
+    },
+    {
+      "name": "上海赢内 （KOC）",
+      "group": "",
+      "code": "1081",
+      "total_revenue": 50000.0,
+      "total_received": 50000.0,
+      "receivable": 0.0,
+      "active_months": 1,
+      "monthly_avg": 50000.0
     },
     {
       "name": "乐锦记",
@@ -1779,8 +1789,8 @@
       "group": "",
       "code": "1015",
       "total_revenue": 77898.75,
-      "total_received": 0.0,
-      "receivable": 77898.75,
+      "total_received": 53369.21,
+      "receivable": 24529.54,
       "active_months": 2,
       "monthly_avg": 38949.375
     },
@@ -1789,8 +1799,8 @@
       "group": "传媒",
       "code": "1019",
       "total_revenue": 299160.04,
-      "total_received": 209160.03999999998,
-      "receivable": 90000.0,
+      "total_received": 299160.04,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 33240.00444444444
     },
@@ -1805,26 +1815,6 @@
       "monthly_avg": 32556.9
     },
     {
-      "name": "上海赢内 （KOC）",
-      "group": "",
-      "code": "1081",
-      "total_revenue": 62000.0,
-      "total_received": 50000.0,
-      "receivable": 12000.0,
-      "active_months": 2,
-      "monthly_avg": 31000.0
-    },
-    {
-      "name": "拓趣（沐浴油）",
-      "group": "",
-      "code": "1017",
-      "total_revenue": 91338.81,
-      "total_received": 90000.0,
-      "receivable": 1338.8099999999977,
-      "active_months": 3,
-      "monthly_avg": 30446.27
-    },
-    {
       "name": "蓝漂",
       "group": "",
       "code": "1007",
@@ -1833,6 +1823,16 @@
       "receivable": 0.0,
       "active_months": 3,
       "monthly_avg": 30357.296666666665
+    },
+    {
+      "name": "拓趣（沐浴油）",
+      "group": "",
+      "code": "1017",
+      "total_revenue": 90000.0,
+      "total_received": 90000.0,
+      "receivable": 0.0,
+      "active_months": 3,
+      "monthly_avg": 30000.0
     },
     {
       "name": "营业外收入",
@@ -1898,11 +1898,11 @@
       "name": "阴山优麦（达）",
       "group": "",
       "code": "1020",
-      "total_revenue": 39742.6,
-      "total_received": 39742.6,
+      "total_revenue": 40831.55,
+      "total_received": 40831.55,
       "receivable": 0.0,
-      "active_months": 5,
-      "monthly_avg": 7948.5199999999995
+      "active_months": 6,
+      "monthly_avg": 6805.258333333334
     },
     {
       "name": "校企项目",
@@ -1971,20 +1971,10 @@
       "group": "",
       "code": "1014",
       "total_revenue": 875905.38,
-      "total_received": 543262.85,
-      "receivable": 332642.53,
+      "total_received": 593262.85,
+      "receivable": 282642.53,
       "active_months": 6,
       "monthly_avg": 145984.23
-    },
-    {
-      "name": "阴山优麦冲饮",
-      "group": "A组",
-      "code": "1001",
-      "total_revenue": 2429304.52,
-      "total_received": 2116953.05,
-      "receivable": 312351.4700000002,
-      "active_months": 9,
-      "monthly_avg": 269922.72444444447
     },
     {
       "name": "抖音超市美妆",
@@ -1997,46 +1987,6 @@
       "monthly_avg": 110461.86444444445
     },
     {
-      "name": "旺旺",
-      "group": "",
-      "code": "1012",
-      "total_revenue": 274774.39,
-      "total_received": 160121.83000000002,
-      "receivable": 114652.56,
-      "active_months": 5,
-      "monthly_avg": 54954.878000000004
-    },
-    {
-      "name": "古井（达）",
-      "group": "传媒",
-      "code": "1019",
-      "total_revenue": 299160.04,
-      "total_received": 209160.03999999998,
-      "receivable": 90000.0,
-      "active_months": 9,
-      "monthly_avg": 33240.00444444444
-    },
-    {
-      "name": "养舒悠2",
-      "group": "",
-      "code": "1015",
-      "total_revenue": 77898.75,
-      "total_received": 0.0,
-      "receivable": 77898.75,
-      "active_months": 2,
-      "monthly_avg": 38949.375
-    },
-    {
-      "name": "阴山优麦食品",
-      "group": "",
-      "code": "1002",
-      "total_revenue": 786110.8,
-      "total_received": 725957.37,
-      "receivable": 60153.43000000005,
-      "active_months": 9,
-      "monthly_avg": 87345.64444444445
-    },
-    {
       "name": "拼多多店群",
       "group": "",
       "code": "",
@@ -2047,24 +1997,14 @@
       "monthly_avg": 32556.9
     },
     {
-      "name": "上海赢内 （KOC）",
+      "name": "养舒悠2",
       "group": "",
-      "code": "1081",
-      "total_revenue": 62000.0,
-      "total_received": 50000.0,
-      "receivable": 12000.0,
+      "code": "1015",
+      "total_revenue": 77898.75,
+      "total_received": 53369.21,
+      "receivable": 24529.54,
       "active_months": 2,
-      "monthly_avg": 31000.0
-    },
-    {
-      "name": "拓趣（护手霜）",
-      "group": "",
-      "code": "1018",
-      "total_revenue": 507252.14,
-      "total_received": 501584.66000000003,
-      "receivable": 5667.479999999981,
-      "active_months": 9,
-      "monthly_avg": 56361.34888888889
+      "monthly_avg": 38949.375
     },
     {
       "name": "校企项目",
@@ -2077,16 +2017,6 @@
       "monthly_avg": 4840.31
     },
     {
-      "name": "拓趣（沐浴油）",
-      "group": "",
-      "code": "1017",
-      "total_revenue": 91338.81,
-      "total_received": 90000.0,
-      "receivable": 1338.8099999999977,
-      "active_months": 3,
-      "monthly_avg": 30446.27
-    },
-    {
       "name": "素颜霜（达）",
       "group": "",
       "code": "1021",
@@ -2095,6 +2025,16 @@
       "receivable": 700.0,
       "active_months": 7,
       "monthly_avg": 3796.3300000000004
+    },
+    {
+      "name": "阴山优麦冲饮",
+      "group": "A组",
+      "code": "1001",
+      "total_revenue": 2429304.52,
+      "total_received": 2429304.52,
+      "receivable": 0.0,
+      "active_months": 9,
+      "monthly_avg": 269922.72444444447
     },
     {
       "name": "桂格官旗",
@@ -2117,6 +2057,16 @@
       "monthly_avg": 102507.47555555556
     },
     {
+      "name": "阴山优麦食品",
+      "group": "",
+      "code": "1002",
+      "total_revenue": 786110.8,
+      "total_received": 786110.8,
+      "receivable": 0.0,
+      "active_months": 9,
+      "monthly_avg": 87345.64444444445
+    },
+    {
       "name": "古井快&视",
       "group": "B组",
       "code": "1008",
@@ -2125,6 +2075,36 @@
       "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 66511.01222222223
+    },
+    {
+      "name": "拓趣（护手霜）",
+      "group": "",
+      "code": "1018",
+      "total_revenue": 507252.14,
+      "total_received": 507252.14,
+      "receivable": 0.0,
+      "active_months": 9,
+      "monthly_avg": 56361.34888888889
+    },
+    {
+      "name": "古井（达）",
+      "group": "传媒",
+      "code": "1019",
+      "total_revenue": 299160.04,
+      "total_received": 299160.04,
+      "receivable": 0.0,
+      "active_months": 9,
+      "monthly_avg": 33240.00444444444
+    },
+    {
+      "name": "旺旺",
+      "group": "",
+      "code": "1012",
+      "total_revenue": 274774.39,
+      "total_received": 274774.39,
+      "receivable": 0.0,
+      "active_months": 5,
+      "monthly_avg": 54954.878000000004
     },
     {
       "name": "南方黑芝麻（私）",
@@ -2197,6 +2177,16 @@
       "monthly_avg": 30357.296666666665
     },
     {
+      "name": "拓趣（沐浴油）",
+      "group": "",
+      "code": "1017",
+      "total_revenue": 90000.0,
+      "total_received": 90000.0,
+      "receivable": 0.0,
+      "active_months": 3,
+      "monthly_avg": 30000.0
+    },
+    {
       "name": "乐锦记",
       "group": "",
       "code": "1013",
@@ -2217,14 +2207,24 @@
       "monthly_avg": 56403.32
     },
     {
+      "name": "上海赢内 （KOC）",
+      "group": "",
+      "code": "1081",
+      "total_revenue": 50000.0,
+      "total_received": 50000.0,
+      "receivable": 0.0,
+      "active_months": 1,
+      "monthly_avg": 50000.0
+    },
+    {
       "name": "阴山优麦（达）",
       "group": "",
       "code": "1020",
-      "total_revenue": 39742.6,
-      "total_received": 39742.6,
+      "total_revenue": 40831.55,
+      "total_received": 40831.55,
       "receivable": 0.0,
-      "active_months": 5,
-      "monthly_avg": 7948.5199999999995
+      "active_months": 6,
+      "monthly_avg": 6805.258333333334
     },
     {
       "name": "美菱小家电",
@@ -2293,8 +2293,8 @@
       "group": "A组",
       "code": "1001",
       "total_revenue": 2429304.52,
-      "total_received": 2116953.05,
-      "receivable": 312351.4700000002,
+      "total_received": 2429304.52,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 269922.72444444447
     },
@@ -2333,8 +2333,8 @@
       "group": "",
       "code": "1002",
       "total_revenue": 786110.8,
-      "total_received": 725957.37,
-      "receivable": 60153.43000000005,
+      "total_received": 786110.8,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 87345.64444444445
     },
@@ -2353,8 +2353,8 @@
       "group": "",
       "code": "1018",
       "total_revenue": 507252.14,
-      "total_received": 501584.66000000003,
-      "receivable": 5667.479999999981,
+      "total_received": 507252.14,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 56361.34888888889
     },
@@ -2363,8 +2363,8 @@
       "group": "传媒",
       "code": "1019",
       "total_revenue": 299160.04,
-      "total_received": 209160.03999999998,
-      "receivable": 90000.0,
+      "total_received": 299160.04,
+      "receivable": 0.0,
       "active_months": 9,
       "monthly_avg": 33240.00444444444
     },
@@ -2413,18 +2413,28 @@
       "group": "",
       "code": "1014",
       "total_revenue": 875905.38,
-      "total_received": 543262.85,
-      "receivable": 332642.53,
+      "total_received": 593262.85,
+      "receivable": 282642.53,
       "active_months": 6,
       "monthly_avg": 145984.23
+    },
+    {
+      "name": "阴山优麦（达）",
+      "group": "",
+      "code": "1020",
+      "total_revenue": 40831.55,
+      "total_received": 40831.55,
+      "receivable": 0.0,
+      "active_months": 6,
+      "monthly_avg": 6805.258333333334
     },
     {
       "name": "旺旺",
       "group": "",
       "code": "1012",
       "total_revenue": 274774.39,
-      "total_received": 160121.83000000002,
-      "receivable": 114652.56,
+      "total_received": 274774.39,
+      "receivable": 0.0,
       "active_months": 5,
       "monthly_avg": 54954.878000000004
     },
@@ -2437,16 +2447,6 @@
       "receivable": 0.0,
       "active_months": 5,
       "monthly_avg": 19433.338
-    },
-    {
-      "name": "阴山优麦（达）",
-      "group": "",
-      "code": "1020",
-      "total_revenue": 39742.6,
-      "total_received": 39742.6,
-      "receivable": 0.0,
-      "active_months": 5,
-      "monthly_avg": 7948.5199999999995
     },
     {
       "name": "追觅戒指",
@@ -2469,16 +2469,6 @@
       "monthly_avg": 65950.65666666666
     },
     {
-      "name": "拓趣（沐浴油）",
-      "group": "",
-      "code": "1017",
-      "total_revenue": 91338.81,
-      "total_received": 90000.0,
-      "receivable": 1338.8099999999977,
-      "active_months": 3,
-      "monthly_avg": 30446.27
-    },
-    {
       "name": "蓝漂",
       "group": "",
       "code": "1007",
@@ -2487,6 +2477,16 @@
       "receivable": 0.0,
       "active_months": 3,
       "monthly_avg": 30357.296666666665
+    },
+    {
+      "name": "拓趣（沐浴油）",
+      "group": "",
+      "code": "1017",
+      "total_revenue": 90000.0,
+      "total_received": 90000.0,
+      "receivable": 0.0,
+      "active_months": 3,
+      "monthly_avg": 30000.0
     },
     {
       "name": "乐锦记",
@@ -2503,20 +2503,10 @@
       "group": "",
       "code": "1015",
       "total_revenue": 77898.75,
-      "total_received": 0.0,
-      "receivable": 77898.75,
+      "total_received": 53369.21,
+      "receivable": 24529.54,
       "active_months": 2,
       "monthly_avg": 38949.375
-    },
-    {
-      "name": "上海赢内 （KOC）",
-      "group": "",
-      "code": "1081",
-      "total_revenue": 62000.0,
-      "total_received": 50000.0,
-      "receivable": 12000.0,
-      "active_months": 2,
-      "monthly_avg": 31000.0
     },
     {
       "name": "美菱小家电",
@@ -2547,6 +2537,16 @@
       "receivable": 0.0,
       "active_months": 1,
       "monthly_avg": 56403.32
+    },
+    {
+      "name": "上海赢内 （KOC）",
+      "group": "",
+      "code": "1081",
+      "total_revenue": 50000.0,
+      "total_received": 50000.0,
+      "receivable": 0.0,
+      "active_months": 1,
+      "monthly_avg": 50000.0
     },
     {
       "name": "拼多多店群",
@@ -2613,14 +2613,14 @@
     {
       "month": "1月",
       "estimate": 1579806.02,
-      "received": 1506094.1,
-      "receivable": 73711.91999999993
+      "received": 1579806.02,
+      "receivable": 0.0
     },
     {
       "month": "2月",
       "estimate": 926979.45,
-      "received": 886038.81,
-      "receivable": 40940.6399999999
+      "received": 926979.45,
+      "receivable": 0.0
     },
     {
       "month": "3月",
@@ -2630,9 +2630,9 @@
     },
     {
       "month": "4月",
-      "estimate": 1045824.28,
+      "estimate": 1044485.47,
       "received": 1044485.47,
-      "receivable": 1338.8100000000559
+      "receivable": 0.0
     },
     {
       "month": "5月",
@@ -2649,52 +2649,33 @@
     {
       "month": "7月",
       "estimate": 1181081.16,
-      "received": 1077711.96,
-      "receivable": 103369.19999999995
+      "received": 1181081.17,
+      "receivable": -0.010000000009313226
     },
     {
       "month": "8月",
-      "estimate": 1343155.99,
-      "received": 1081705.56,
-      "receivable": 261450.42999999993
+      "estimate": 1331155.99,
+      "received": 1125399.46,
+      "receivable": 205756.53000000003
     },
     {
       "month": "9月",
-      "estimate": 1301241.54,
-      "received": 582872.67,
-      "receivable": 718368.87
+      "estimate": 1302330.49,
+      "received": 1008440.1,
+      "receivable": 293890.39
     }
   ],
   "monthlyReceivableDetail": {
-    "1月": [
-      {
-        "project": "旺旺",
-        "amount": 73711.92
-      }
-    ],
-    "2月": [
-      {
-        "project": "旺旺",
-        "amount": 40940.64
-      }
-    ],
+    "1月": [],
+    "2月": [],
     "3月": [],
-    "4月": [
-      {
-        "project": "拓趣（沐浴油）",
-        "amount": 1338.8100000000013
-      }
-    ],
+    "4月": [],
     "5月": [],
     "6月": [],
     "7月": [
       {
         "project": "养舒悠1",
-        "amount": 65184.83
-      },
-      {
-        "project": "养舒悠2",
-        "amount": 38184.38
+        "amount": 15184.829999999987
       }
     ],
     "8月": [
@@ -2703,16 +2684,8 @@
         "amount": 165342.16
       },
       {
-        "project": "古井（达）",
-        "amount": 43693.9
-      },
-      {
         "project": "养舒悠2",
         "amount": 39714.37
-      },
-      {
-        "project": "上海赢内 （KOC）",
-        "amount": 12000.0
       },
       {
         "project": "素颜霜（达）",
@@ -2720,10 +2693,6 @@
       }
     ],
     "9月": [
-      {
-        "project": "阴山优麦冲饮",
-        "amount": 312351.47
-      },
       {
         "project": "抖音超市美妆",
         "amount": 154377.65
@@ -2733,20 +2702,8 @@
         "amount": 102115.54
       },
       {
-        "project": "阴山优麦食品",
-        "amount": 60153.43
-      },
-      {
-        "project": "古井（达）",
-        "amount": 46306.1
-      },
-      {
         "project": "拼多多店群",
         "amount": 32556.9
-      },
-      {
-        "project": "拓趣（护手霜）",
-        "amount": 5667.480000000003
       },
       {
         "project": "校企项目",
